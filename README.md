@@ -14,8 +14,11 @@ Learning outcomes:
 + To use type systems for regulating the good formation of programs.
 # Summaries
 
+TBA 
+
 # Assessment
 
+Two tests (24 Mar. and 26 May)
  
 # Contacts
 
