@@ -12,13 +12,14 @@ Learning outcomes:
 + To use inductive techniques to argue about properties of programming languages.
 + To use lambda-calculus as a computational model and as a rewriting system.
 + To use type systems for regulating the good formation of programs.
+
 # Summaries
 
 TBA 
 
 # Assessment
 
-Two tests (24 Mar. and 26 May)
+Two tests (24 Mar and 26 May)
  
 # Contacts
 
