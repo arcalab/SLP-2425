@@ -131,7 +131,7 @@
   keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
   keywordstyle=\color{blue},       % keyword style
   language=C,                 % the language of the code
-  morekeywords={*,...},            % if you want to add more keywords to the set
+  morekeywords={then,*,...},            % if you want to add more keywords to the set
   rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
   showstringspaces=false,          % underline spaces within strings only
   showtabs=false,                  % show tabs within strings adding particular underscores
@@ -142,7 +142,7 @@
         \begin{lstlisting}
         x := -1; v := 0; a := 1;
         while true do {
-	            if x <= 0 then a := 1; else a :=-1;
+	            if x <= 0 then a := 1 else a :=-1;
     	        x' = v, v' = a for 0.5;
         }
         \end{lstlisting}
@@ -209,7 +209,7 @@
         \begin{tabular}{ l l }
         Operational semantics & \alert{How} a program operates
         \\
-        Denotational semantics & \alert{What} a program mathematically is 
+        Denotational semantics & \alert{What} a program is 
         \\
         Axiomatic semantics & \alert{Which} logical properties a program
         satisfies

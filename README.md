@@ -14,8 +14,11 @@ Learning outcomes:
 + To use type systems for regulating the good formation of programs.
 
 # Summaries
+  | Date         | Description |
+  | ----------   |------------ |
+  | 03 feb. 2025 | Introduction to the module and its logistics ([slides](intro.pdf)) |
+  | 04 feb. 2025 | NA |
 
-TBA 
 
 # Assessment
 
