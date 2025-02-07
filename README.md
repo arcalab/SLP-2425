@@ -1,5 +1,4 @@
 # Introduction and objectives
-
 This course introduces formal semantics of programming languages. It starts
 with different semantic approaches (operational, denotational, and axiomatic)
 in the imperative setting. It then focusses on the semantics of functional
@@ -17,7 +16,7 @@ Learning outcomes:
 
   | Date         | Description |
   | ----------   |------------ |
-  | 03 feb. 2025 | Introduction to the module and its logistics ([slides](intro.pdf)) |
+  | 03 feb. 2025 | Introduction to the module and its logistics ([slides](./intro.pdf)) |
   | 04 feb. 2025 | NA |
 
 

@@ -1,0 +1,225 @@
+\documentclass{beamer}
+\usepackage{etex} % fixes new-dimension error
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usetheme{metropolis}
+\metroset{block=fill}
+%\usetheme{Boadilla}
+
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.4\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertsection
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.1\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\makeatother
+\setbeamertemplate{navigation symbols}{}
+%----------------------------------------------------------------------------
+\usepackage{graphicx,amsmath}
+\usepackage{stmaryrd} % cf. interleave
+\usepackage{booktabs}
+\usepackage{amscd}
+\usepackage{multicol}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{alltt}
+\usepackage{proof}
+\usepackage{listings}
+\input{macros}
+%------ using pstricks (rnode etc) ------------------------------------------
+\usepackage{pstricks,pst-node,pst-text,pst-3d}
+
+% ------ using color ---------------------------------------------------------
+\newrgbcolor{goldenrod}{.80392 .60784 .11373}
+\newrgbcolor{darkgoldenrod}{.5451 .39608 .03137}
+\newrgbcolor{brown}{.15 .15 .15}
+\newrgbcolor{darkolivegreen}{.33333 .41961 .18431}
+\def\gold#1{{\goldenrod #1}}
+\def\dgold#1{{\alert{#1}}}
+\def\dkb#1{{\blue #1}}
+\def\tdkb#1{\textbf{\darkblue #1}}
+\def\gre#1{{\darkolivegreen #1}}
+\def\gry#1{{\gray #1}}
+\def\rdb#1{{\red #1}}
+%----------------------------------------------------------------------------
+
+\AtBeginSection[]
+{
+    \begin{frame}
+        \frametitle{Table of Contents}
+        \tableofcontents[currentsection]
+    \end{frame}
+}
+
+\author[Renato Neves]{Renato Neves}
+
+% logos of institutions
+\titlegraphic{
+  \begin{textblock*}{5cm}(6.5cm,7.4cm)
+     \includegraphics[scale=0.06]{images/uminho.png}\hspace*{.85cm}~%
+  \end{textblock*}
+  \begin{textblock*}{5cm}(9.2cm,7.45cm)
+    \includegraphics[scale=0.50]{images/haslab.pdf}
+  \end{textblock*}
+}
+
+% No date
+\date{}
+
+\begin{document}
+
+\title{Small-step Semantics}
+
+\frame[plain]{\titlepage}
+
+\section{Introduction}
+
+\begin{frame}{Semantics for every season}
+
+        \hspace*{+5pt}\makebox[\linewidth][c]{%
+        \begin{tabular}{ l l }
+        \alert{\underline{Operational semantics}} & How a program operates
+        \\
+        Denotational semantics & What a program is 
+        \\
+        Axiomatic semantics & Which logical properties a program satisfies
+        \end{tabular}
+        }
+
+\end{frame}
+
+
+\begin{frame}{Small-step operational semantics}
+
+        Describes \alert{how} a program operates \alert{\underline{step-by-step}}
+
+        \begin{example}
+                $\pv{\prog{x := 1 ; x := x +1}}{v} \longrightarrow
+                \pv{\prog{x := x + 1}}{1} \longrightarrow 2$
+        \end{example}
+
+        \bigskip
+        Idealised as a machine with an `evaluation stack' that is processed each step
+\end{frame}
+
+\begin{frame}{Small-step operational semantics}
+
+        Useful for:
+        \begin{itemize}
+                \item describing how a program is executed at each step
+                \item describing evaluation techniques (\eg\ short-circuiting)
+                \item tracing/debugging
+                \item obtaining notions of program equivalence
+                \item placing foundations under concurrency
+                \item \dots
+        \end{itemize}
+
+        \vfill 
+        \pause
+        Overall an essential tool for understanding a programming lang.
+
+\end{frame}
+
+\section{First steps}
+
+\begin{frame}{A minimalistic boolean language}
+
+        \begin{block}{\vspace*{-3.5ex}}
+        \[
+                b ::= \prog{x} \mid b \wedge b \mid \neg b
+        \]
+        \end{block} 
+
+        \bigskip
+        \centering
+        Every $\prog{x}$ is a proposition (\ie\ it has either value
+        $\prog{tt}$ or $\prog{ff}$)
+
+        \pause
+        \vfill
+        \centering
+        \fbox{ Let's give a small-step semantics to this language ! }
+\end{frame}
+
+\begin{frame}{The semantics -- key points}
+
+        It involves a \alert{\underline{memory}} $\sigma : X \to
+        \mathrm{Bool}$
+        which assigns to every proposition $\prog{x}$ its truth-value
+        $\sigma(\prog{x})$
+
+        \bigskip
+        A term $\prog{b}$ is evaluated step-by-step 
+        until we obtain a truth-value $v$ 
+        \[
+                \bullet \longrightarrow \bullet \longrightarrow \cdots  \,
+                \bullet \longrightarrow \bullet \longrightarrow v
+        \]
+        
+
+        The focus is on \alert{\underline{the next step}} (of the evaluation machine)
+\end{frame}
+
+\begin{frame}{The semantics}
+        \[
+                \infer[(\text{var})]{\langle \mathtt{x}, \sigma \rangle 
+                \longrightarrow \sigma(\mathtt{x})}{} \qquad \qquad
+                \qquad
+                %
+                \infer[(\text{neg$_1$})]{\langle \neg \prog{b}, \sigma \rangle 
+                \longrightarrow \neg v}{
+                   \pv{\prog{b}}{\sigma} \longrightarrow
+                   v
+                }
+        \] 
+        \pause
+        \vspace{0.2cm}        
+        \[
+                \infer[(\text{neg$_2$})]{
+                \pv{\neg \prog{b}}{\sigma} 
+                \longrightarrow \pv{\neg \prog{b'}}{\sigma'}
+                }{
+                \pv{\prog{b}}{\sigma} 
+                \longrightarrow \pv{\prog{b'}}{\sigma'}
+                } \qquad \qquad
+                %
+                \infer[(\text{and$_1$})]{
+                        \pv{\prog{b_1} \wedge \prog{b_2} }{\sigma}
+                \longrightarrow \prog{ff}}{
+                   \pv{\prog{b_1}}{\sigma} \longrightarrow
+                   \prog{ff}
+                }
+        \] 
+        \pause
+        \vspace{0.2cm}
+        \[
+                %
+                \hspace{-0.3cm}
+                \infer[(\text{and$_2$})]{
+                %
+                \pv{ \prog{b_1} \wedge \prog{b_2} }{ \sigma }
+                \longrightarrow 
+                \pv{ \prog{b_2} }{\sigma}  }
+                {
+                   \pv{\prog{b_1}}{\sigma} \longrightarrow
+                   \prog{tt}
+                }
+                \qquad 
+                \infer[(\text{and$_3$})]{
+                        \pv{\prog{b_1} \wedge \prog{b_2} }{\sigma}
+                \longrightarrow \pv{\prog{b_1'} \wedge \prog{b_2}}{\sigma'} }{
+                   \pv{\prog{b_1}}{\sigma} \longrightarrow
+                   \pv{\prog{b_1'}}{\sigma'}
+                }
+        \] 
+        \vfill
+\end{frame}
+\end{document}
