@@ -222,4 +222,211 @@
         \] 
         \vfill
 \end{frame}
+
+\begin{frame}{An example}
+
+        $\neg \neg \prog{x} \longrightarrow\ ?$
+
+        \centering
+        \[
+                \infer[(\text{neg$_1$})]{
+                        \pv{\neg \neg \prog{x}}{\sigma}
+                        \longrightarrow\ \neg \neg \sigma(\prog{x})
+                }{
+                        \infer[(\text{neg$_1$})]{
+                                \pv{\neg \prog{x}}{\sigma}
+                                \longrightarrow\ \neg \sigma(\prog{x})
+                        }{
+                                \infer[(\text{var})]{ 
+                                \pv{\prog{x}}{\sigma} \longrightarrow\  \sigma(\prog{x})
+                                }{
+                                }
+                        }
+                }
+        \]
+\end{frame}
+
+\begin{frame}{Another example}
+
+        $(\prog{x} \wedge \prog{b_1}) \wedge \prog{b_2} \longrightarrow\ ?$
+
+        \centering
+        If $\sigma(\prog{x}) = \prog{ff}$:
+        \[
+                \infer[(\text{and$_1$})]{
+                        \pv{(\prog{x} \wedge \prog{b_1}) \wedge
+                        \prog{b_2}}{\sigma} \longrightarrow\ \prog{ff} 
+                }{
+                        \infer[(\text{and$_1$})]{
+                                \pv{\prog{x} \wedge \prog{b_1}}{\sigma} 
+                                \longrightarrow\ \prog{ff}
+                        }{
+                                \infer[(\text{var})]{ 
+                                        \pv{\prog{x}}{\sigma} \longrightarrow\  \prog{ff}
+                                }{
+                                }
+                        }
+                }
+        \]
+
+\end{frame}
+
+\begin{frame}{Yet another example}
+
+        $(\prog{x} \wedge \prog{b_1}) \wedge \prog{b_2} \longrightarrow\ ?$
+
+        \centering
+        If $\sigma(\prog{x}) = \prog{tt}$:
+        \[
+                \infer[(\text{and$_3$})]{
+                        \pv{(\prog{x} \wedge \prog{b_1}) \wedge
+                        \prog{b_2}}{\sigma} \longrightarrow\ 
+                        \pv{\prog{b_1} \wedge \prog{b_2}}{\sigma}
+                }{
+                        \infer[(\text{and$_2$})]{
+                                \pv{\prog{x} \wedge \prog{b_1}}{\sigma} 
+                                \longrightarrow\ \pv{\prog{b_1}}{\sigma}
+                        }{
+                                \infer[(\text{var})]{ 
+                                        \pv{\prog{x}}{\sigma} \longrightarrow\  \prog{tt}
+                                }{
+                                }
+                        }
+                }
+        \]
+
+\end{frame}
+
+\begin{frame}{Exercises}
+
+        $\prog{x} \wedge \neg \prog{x} \longrightarrow\ ?$
+
+        $\neg (\neg \prog{x} \wedge \neg \prog{y}) \longrightarrow\ ?$
+
+        \bigskip
+        Provide semantics to the boolean implication $\prog{b} \Rightarrow
+        \prog{b}$
+\end{frame}
+
+\begin{frame}{From one step to many}
+        
+        Often one is interested on the next step \dots
+
+        \dots but rather on the \alert{\underline{output}} that the sequence of
+        steps leads to
+
+        \pause
+        \bigskip
+        \bigskip
+        This `multi-step' transition is denoted by $\longrightarrow^\star$
+        and defined by 
+        \[
+                \infer[\text{(stp)}]{ 
+                        \pv{\prog{b}}{\sigma} \longrightarrow^\star v 
+                }{
+                        \pv{\prog{b}}{\sigma} \longrightarrow v 
+                }
+                \hspace{1cm}
+                \infer[\text{(nxt)}]{ 
+                        \pv{\prog{b}}{\sigma} \longrightarrow^\star v 
+                }{
+                        \pv{\prog{b}}{\sigma} \longrightarrow 
+                        \pv{\prog{b'}}{\sigma'} 
+                        \qquad
+                        \pv{\prog{b'}}{\sigma'} \longrightarrow^\star v
+                }
+        \]
+\end{frame}
+\section{While-language}
+
+\begin{frame}{A simple while-language}
+
+        \vspace{0.7cm}
+	\begin{block}{Arithmetic expressions}
+	$e ::=  \mathtt{n}  \mid \mathtt{e \cdot e}
+        \mid  \mathtt{x}  \mid \mathtt{e + e}$
+	\end{block}
+
+	\vspace{0.7cm}
+	\begin{block}{Programs}
+        $\prog{p} ::= \mathtt{x} := \mathtt{e} \mid
+	\mathtt{p \> {\blue ;} \> q} \mid
+	\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> q} \mid
+	\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}}$
+	\end{block}
+
+\end{frame}
+
+\begin{frame}{A while-language and its semantics}
+        \[
+                \infer[(\text{asg})]{
+                        \langle \mathtt{x := e}, \sigma \rangle \longrightarrow
+                        \sigma[v / \mathtt{x}]
+                }{
+                       \langle \mathtt{e}, \sigma \rangle \longrightarrow^\star v
+                } \hspace{1cm}
+                \infer[(\text{seq$_1$})]{
+                        \langle \mathtt{p \> {\blue ;} \> q}, \sigma \rangle \longrightarrow 
+                        \pv{\prog{q}}{\sigma'}
+                }{
+                        \langle \mathtt{p}, \sigma \rangle \longrightarrow \sigma'
+                }
+        \]
+        \vspace{0.001cm}
+        \[
+                \hspace{-0.5cm}
+                \infer[(\text{seq$_2$})]{
+                        \langle \mathtt{p \> {\blue ;} \> q}, \sigma \rangle \longrightarrow 
+                        \pv{\prog{p' \> {\blue ;} \> q}}{\sigma'}
+                }{
+                        \langle \mathtt{p}, \sigma \rangle 
+                        \longrightarrow \pv{\prog{p'}}{\sigma'}
+                }
+                \hspace{0.5cm}
+                \infer[(\text{if$_1$})]{
+                        \langle \mathtt{{\blue if} \> b \> {\blue then} \> \> 
+                        p \> {\blue else} \> q}, 
+                        \sigma \rangle \longrightarrow \pv{\prog{p}}{\sigma}
+                }{
+                        \langle \mathtt{b}, \sigma \rangle \longrightarrow^\star \mathtt{tt} 
+                } 
+        \]
+        \vspace{0.001cm}
+        \[      \hspace{-0.9cm}
+                \infer[(\text{if$_2$})]{
+                        \langle \mathtt{{\blue if} \> b \> {\blue then} \> \> 
+                        p \> {\blue else} \> q}, 
+                        \sigma \rangle \longrightarrow \pv{\prog{q}}{\sigma}
+                }{
+                        \langle \mathtt{b}, \sigma \rangle \longrightarrow^\star \mathtt{ff} 
+                } 
+                \hspace{0.4cm}
+                \infer[(\text{wh$_2$})]{
+                        \langle 
+                        \mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}}, \sigma \rangle
+                        \longrightarrow^\star \sigma
+                }{
+                        \langle \mathtt{b}, \sigma \rangle \longrightarrow^\star \mathtt{ff}
+                }
+        \]\vspace{0.001cm}
+        \[
+                \infer[(\text{wh$_1$})]{
+                        \langle \mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}}, 
+                        \sigma \rangle
+                        \longrightarrow 
+                        \pv{\prog{p} \> {\blue ;} \> 
+                        \mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}}}{
+                        \sigma}
+                }{
+                        \pv{\prog{b}}{\sigma} \longrightarrow^\star \prog{tt} 
+                }
+        \]
+\end{frame}
+
+\begin{frame}{Exercise}
+        Write down the sequence of steps that originates from
+        \[
+           \pv{\mathtt{{\blue while} \> \prog{tt} \> {\blue do} \> \{ \> x := x +1 \> \}}}{\sigma}
+        \]
+\end{frame}
 \end{document}
