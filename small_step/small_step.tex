@@ -404,6 +404,47 @@
        \]
 \end{frame}
 
+\begin{frame}{When the number of steps does not matter \dots}
+
+        One often is uninterested on the number of steps \dots
+
+        \dots and rather just on the \alert{\underline{output}}
+
+        \pause
+        \bigskip
+        This \alert{\underline{multi-step transition}}  $\longrightarrow^\star$
+        is defined by the rules 
+        \smallskip
+        \[
+                \infer[\text{(stp)}]{ 
+                        \pv{\prog{b}}{\sigma} \longrightarrow^\star v 
+                }{
+                        \pv{\prog{b}}{\sigma} \longrightarrow v 
+                }
+                \hspace{1cm}
+                \infer[\text{(nxt)}]{ 
+                        \pv{\prog{b}}{\sigma} \longrightarrow^\star v 
+                }{
+                        \pv{\prog{b}}{\sigma} \longrightarrow 
+                        \pv{\prog{b'}}{\sigma'} 
+                        \qquad
+                        \pv{\prog{b'}}{\sigma'} \longrightarrow^\star v
+                }
+        \]
+
+\end{frame}
+
+\begin{frame}{Exercise 4}
+        Show by \alert{\underline{induction}} the following 
+        equivalence
+        \[
+                \pv{\prog{b}}{\sigma} \longrightarrow^n v\
+                 (\text{for some } n)
+                \text{ iff }
+                \pv{\prog{b}}{\sigma} \longrightarrow^\star v 
+       \]
+\end{frame}
+
 \section{Second steps: small-step for a while-language}
 
 \begin{frame}{A simple while-language}
@@ -490,10 +531,18 @@
         \]
 \end{frame}
 
-\begin{frame}{Exercise}
-        Write down the sequence of steps that originates from
-        \[
-           \pv{\mathtt{{\blue while} \> \prog{tt} \> {\blue do} \> \{ \> x := x +1 \> \}}}{\sigma}
-        \]
+\begin{frame}{Exercises}
+
+        \begin{enumerate}
+                \item Define a semantics for arithmetic expressions
+
+                \item Write down the sequence of steps that originates from
+                        \[
+                        \pv{\mathtt{{\blue while} \> \prog{tt} \> {\blue do} 
+                        \> \{ \> x := x +1 \> \}}}{\sigma}
+                        \]
+                \item Conclude that the while-language does not enjoy the
+                        termination property
+        \end{enumerate}
 \end{frame}
 \end{document}
