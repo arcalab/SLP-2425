@@ -18,7 +18,8 @@ Learning outcomes:
   | ----------   |------------ |
   | 03 feb. 2025 | Introduction to the module and its logistics ([slides](./intro.pdf)) |
   | 04 feb. 2025 | NA |
-
+  | 10 feb. 2025 | First steps with the small-step semantics ([slides](./small_step/small_step.pdf)) |
+  | 11 feb. 2025 | Exercises |
 
 # Assessment
 
