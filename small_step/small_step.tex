@@ -80,7 +80,7 @@
 
 \frame[plain]{\titlepage}
 
-\section{Introduction}
+\section{Outline}
 
 \begin{frame}{Semantics for every season}
 
@@ -99,76 +99,81 @@
 
 \begin{frame}{Small-step operational semantics}
 
-        Describes \alert{how} a program operates \alert{\underline{step-by-step}}
+        \alert{\underline{How}} a program operates \alert{\underline{step-by-step}}
 
         \begin{example}
                 $\pv{\prog{x := 1 ; x := x +1}}{v} \longrightarrow
                 \pv{\prog{x := x + 1}}{1} \longrightarrow 2$
         \end{example}
 
-        \bigskip
-        Idealised as a machine with an `evaluation stack' that is processed each step
+        A machine with an \alert{\underline{'evaluation stack'}} that is
+        processed at each step 
 \end{frame}
 
-\begin{frame}{Small-step operational semantics}
+\begin{frame}{Its uses}
 
-        Useful for:
-        \begin{itemize}
-                \item describing how a program is executed at each step
-                \item describing evaluation techniques (\eg\ short-circuiting)
-                \item tracing/debugging
-                \item obtaining notions of program equivalence
-                \item placing foundations under concurrency
-                \item \dots
-        \end{itemize}
+        Describes how a program operates step-by-step
 
-        \vfill 
+        Describes \alert{\underline{evaluation techniques}} (\eg\
+        short-circuiting)
+
+        A basis for tracing/debugging
+
+        Foundations of concurrency, complexity, \dots
+
+        Rich notions of equivalence
+
+        \dots
+
+        \medskip
         \pause
-        Overall an essential tool for understanding a programming lang.
+        Thus an essential tool for \alert{\underline{understanding}} a
+        programming language
 
 \end{frame}
 
 \section{First steps}
 
-\begin{frame}{A minimalistic boolean language}
+\begin{frame}{A propositional language}
 
         \begin{block}{\vspace*{-3.5ex}}
         \[
-                b ::= \prog{x} \mid b \wedge b \mid \neg b
+                \prog{b} ::= \prog{x} \mid \prog{b} \wedge \prog{b} \mid \neg \prog{b}
         \]
         \end{block} 
 
         \bigskip
         \centering
-        Every $\prog{x}$ is a proposition (\ie\ it has either value
-        $\prog{tt}$ or $\prog{ff}$)
+        Every $\prog{x}$ is a \alert{\underline{proposition}} (\ie\ it has
+        either value $\prog{tt}$ or $\prog{ff}$)
 
         \pause
         \vfill
         \centering
-        \fbox{ Let's give a small-step semantics to this language ! }
+        \fbox{ Can we provide a small-step semantics to this language ? }
 \end{frame}
 
-\begin{frame}{The semantics -- key points}
+\begin{frame}{Key points}
 
-        It involves a \alert{\underline{memory}} $\sigma : X \to
+        Uses a \alert{\underline{memory}} $\sigma : X \to
         \mathrm{Bool}$
-        which assigns to every proposition $\prog{x}$ its truth-value
+        that assigns to every proposition $\prog{x}$ its truth-value
         $\sigma(\prog{x})$
 
         \bigskip
         A term $\prog{b}$ is evaluated step-by-step 
-        until we obtain a truth-value $v$ 
+        until a truth-value $v$ is reached
         \[
-                \bullet \longrightarrow \bullet \longrightarrow \cdots  \,
+                \bullet \longrightarrow \bullet \longrightarrow \cdots 
+                \longrightarrow 
                 \bullet \longrightarrow \bullet \longrightarrow v
         \]
         
 
-        The focus is on \alert{\underline{the next step}} (of the evaluation machine)
+        Focus is on \alert{\underline{the next step}} (of the evaluation)
 \end{frame}
 
-\begin{frame}{The semantics}
+\begin{frame}{The semantics -- a universe of laws}
         \[
                 \infer[(\text{var})]{\langle \mathtt{x}, \sigma \rangle 
                 \longrightarrow \sigma(\mathtt{x})}{} \qquad \qquad
@@ -181,7 +186,7 @@
                 }
         \] 
         \pause
-        \vspace{0.2cm}        
+        \vspace{0.1cm}        
         \[
                 \infer[(\text{neg$_2$})]{
                 \pv{\neg \prog{b}}{\sigma} 
@@ -198,8 +203,7 @@
                    \prog{ff}
                 }
         \] 
-        \pause
-        \vspace{0.2cm}
+        \vspace{0.1cm}
         \[
                 %
                 \hspace{-0.3cm}
@@ -227,6 +231,7 @@
 
         $\neg \neg \prog{x} \longrightarrow\ ?$
 
+        \pause
         \centering
         \[
                 \infer[(\text{neg$_1$})]{
@@ -251,7 +256,9 @@
         $(\prog{x} \wedge \prog{b_1}) \wedge \prog{b_2} \longrightarrow\ ?$
 
         \centering
+        \bigskip
         If $\sigma(\prog{x}) = \prog{ff}$:
+        \smallskip
         \[
                 \infer[(\text{and$_1$})]{
                         \pv{(\prog{x} \wedge \prog{b_1}) \wedge
@@ -276,7 +283,9 @@
         $(\prog{x} \wedge \prog{b_1}) \wedge \prog{b_2} \longrightarrow\ ?$
 
         \centering
+        \bigskip
         If $\sigma(\prog{x}) = \prog{tt}$:
+        \smallskip
         \[
                 \infer[(\text{and$_3$})]{
                         \pv{(\prog{x} \wedge \prog{b_1}) \wedge
@@ -297,47 +306,105 @@
 
 \end{frame}
 
-\begin{frame}{Exercises}
+\begin{frame}{Now you try !}
 
         $\prog{x} \wedge \neg \prog{x} \longrightarrow\ ?$
 
         $\neg (\neg \prog{x} \wedge \neg \prog{y}) \longrightarrow\ ?$
 
         \bigskip
-        Provide semantics to the boolean implication $\prog{b} \Rightarrow
+        Provide semantics to the Boolean implication $\prog{b} \Rightarrow
         \prog{b}$
 \end{frame}
 
-\begin{frame}{From one step to many}
+\begin{frame}{From one step to many \dots}
         
-        Often one is interested on the next step \dots
+        One often is uninterested on the next step \dots
 
-        \dots but rather on the \alert{\underline{output}} that the sequence of
-        steps leads to
+        \dots and rather on the \alert{\underline{output}} (that the sequence of
+        steps leads to)
 
         \pause
         \bigskip
-        \bigskip
-        This `multi-step' transition is denoted by $\longrightarrow^\star$
-        and defined by 
+        This \alert{\underline{multi-step transition}}  $\longrightarrow^n$
+        is defined by the rules 
+        \smallskip
         \[
                 \infer[\text{(stp)}]{ 
-                        \pv{\prog{b}}{\sigma} \longrightarrow^\star v 
+                        \pv{\prog{b}}{\sigma} \longrightarrow^1 v 
                 }{
                         \pv{\prog{b}}{\sigma} \longrightarrow v 
                 }
                 \hspace{1cm}
                 \infer[\text{(nxt)}]{ 
-                        \pv{\prog{b}}{\sigma} \longrightarrow^\star v 
+                        \pv{\prog{b}}{\sigma} \longrightarrow^{n+1} v 
                 }{
                         \pv{\prog{b}}{\sigma} \longrightarrow 
                         \pv{\prog{b'}}{\sigma'} 
                         \qquad
-                        \pv{\prog{b'}}{\sigma'} \longrightarrow^\star v
+                        \pv{\prog{b'}}{\sigma'} \longrightarrow^n v
                 }
         \]
 \end{frame}
-\section{While-language}
+
+\begin{frame}{What's next ?}
+
+        Fine, we have an operational semantics; so what ?
+
+        \pause
+        \bigskip
+        We can now prove \alert{\underline{cool properties}} about our language
+        !!
+
+        \smallskip
+        \begin{example}[Termination]
+                It is always the case that $\pv{\prog{b}}{\sigma}
+                \longrightarrow^n v$ for some $v$ and $n$
+        \end{example}
+%        \smallskip
+%        \begin{example}[Determinism]
+%                If $\pv{\prog{b}}{\sigma} \longrightarrow^\star v$ and
+%                $\pv{\prog{b}}{\sigma} \longrightarrow^\star v'$ then $v = v'$
+%        \end{example}
+\end{frame}
+
+\begin{frame}{Exercise 1}
+
+        Define a `\alert{\underline{complexity}} function'
+        \begin{align*}
+                \mathrm{compl}(\prog{x}) & = 1  \\
+                \mathrm{compl}(\prog{\neg b}) & = \mathrm{compl}(\prog{b}) \\
+                \mathrm{compl}(\prog{b}_1 \wedge \prog{b}_2) & =
+                \mathrm{compl}(\prog{b}_1) + \mathrm{compl}(\prog{b}_2)
+        \end{align*}
+        
+        \medskip
+        Show by \alert{\underline{induction}} that $\mathrm{compl}(\prog{b})
+        \geq 1$ for every $\prog{b}$
+\end{frame}
+
+\begin{frame}{Exercise 2}
+
+        Show by \alert{\underline{induction}} the following 
+        implication
+        \[
+                \text{If } \pv{\prog{b}}{\sigma} \longrightarrow \pv{\prog{b}'}{\sigma'} 
+                \text{ then }
+                \mathrm{compl}(\prog{b}) > \mathrm{compl}(\prog{b}')
+       \]
+\end{frame}
+
+\begin{frame}{Exercise 3}
+        Show by \alert{\underline{induction}} the following 
+        implication
+        \[
+                \text{If } \pv{\prog{b}}{\sigma} \longrightarrow^n v 
+                \text{ then }
+                \mathrm{compl}(\prog{b}) \geq n 
+       \]
+\end{frame}
+
+\section{Second steps: small-step for a while-language}
 
 \begin{frame}{A simple while-language}
 
