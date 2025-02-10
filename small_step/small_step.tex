@@ -394,6 +394,32 @@
        \]
 \end{frame}
 
+\begin{frame}{Recognising the pattern}
+
+        Our induction proofs relied on
+        \begin{itemize}
+                \item a '\alert{\underline{base}}' (or terminating) case
+                \item assumption that hypothesis holds for the
+                        '\alert{\underline{simpler parts}}' of the case at hand
+        \end{itemize}
+
+        \pause
+        Often hard to see on which structure should induction be founded
+        \begin{itemize}
+                \item natural numbers
+                \item syntactic structure of programs
+                \item derivation trees
+                \item \dots
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{Keep in mind \dots}
+
+        \centering
+        \fbox{ Induction is a basic tool of every \alert{\underline{programming theorist}} }
+
+\end{frame}
+
 \begin{frame}{Exercise 3}
         Show by \alert{\underline{induction}} the following 
         implication
@@ -403,6 +429,8 @@
                 \mathrm{compl}(\prog{b}) \geq n 
        \]
 \end{frame}
+
+\section{Second steps}
 
 \begin{frame}{When the number of steps does not matter \dots}
 
@@ -445,24 +473,40 @@
        \]
 \end{frame}
 
-\section{Second steps: small-step for a while-language}
+\section{From a propositional to a while-language}
 
 \begin{frame}{A simple while-language}
 
         \vspace{0.7cm}
 	\begin{block}{Arithmetic expressions}
-	$e ::=  \mathtt{n}  \mid \mathtt{e \cdot e}
+        $\prog{e} ::=  \mathtt{n}  \mid \mathtt{e \cdot e}
         \mid  \mathtt{x}  \mid \mathtt{e + e}$
 	\end{block}
 
 	\vspace{0.7cm}
 	\begin{block}{Programs}
         $\prog{p} ::= \mathtt{x} := \mathtt{e} \mid
-	\mathtt{p \> {\blue ;} \> q} \mid
-	\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> q} \mid
+	\mathtt{p \> {\blue ;} \> p} \mid
+	\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> p} \mid
 	\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}}$
 	\end{block}
 
+        \vfill
+        \pause
+        Homework: provide semantics to the arithmentic expressions
+\end{frame}
+
+\begin{frame}{Key points}
+        Similar to before but now with assignments, conditionals \dots
+
+        Unlike before \alert{\underline{memory can be altered}} throughout the computation
+
+        The output values will now be memories
+
+        \pause
+        \vfill
+        We will use $\sigma[v/\prog{x}]$ to denote the memory that is like
+        $\sigma$ except for the fact that $\prog{x}$ has now value $v$
 \end{frame}
 
 \begin{frame}{A while-language and its semantics}
@@ -534,15 +578,100 @@
 \begin{frame}{Exercises}
 
         \begin{enumerate}
-                \item Define a semantics for arithmetic expressions
-
                 \item Write down the sequence of steps that originates from
                         \[
                         \pv{\mathtt{{\blue while} \> \prog{tt} \> {\blue do} 
                         \> \{ \> x := x +1 \> \}}}{\sigma}
                         \]
-                \item Conclude that the while-language does not enjoy the
-                        termination property
+                \item Conclude that our previous termination property was lost
         \end{enumerate}
 \end{frame}
+
+\section{Concurrency enters into the scene}
+
+\begin{frame}{A simple concurrent language}
+
+        \vspace{0.7cm}
+	\begin{block}{Arithmetic expressions}
+        $\prog{e} ::=  \mathtt{n}  \mid \mathtt{e \cdot e}
+        \mid  \mathtt{x}  \mid \mathtt{e + e}$
+	\end{block}
+
+	\vspace{0.7cm}
+	\begin{block}{Programs}
+        $\prog{p} ::= \mathtt{x} := \mathtt{e} \mid
+	\mathtt{p \> {\blue ;} \> p} \mid
+	\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> p} \mid
+	\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}}
+        \mid \prog{p}\parallel \prog{q}$
+	\end{block}
+
+\end{frame}
+
+\begin{frame}{A concurrent language and its semantics}
+        \[
+                \infer[(\text{par$_1$})]{
+                        \langle \mathtt{p \parallel  q}, \sigma \rangle \longrightarrow 
+                        \pv{\prog{q}}{\sigma'}
+                }{
+                        \langle \mathtt{p}, \sigma \rangle \longrightarrow \sigma'
+                }
+                \hspace{1cm}
+                \infer[(\text{par$_2$})]{
+                        \langle \mathtt{p  \parallel  q}, \sigma \rangle \longrightarrow 
+                        \pv{\prog{p}}{\sigma'}
+                }{
+                        \langle \mathtt{q}, \sigma \rangle \longrightarrow \sigma'
+                }
+        \]
+        \vspace{0.001cm}
+        \[
+                \hspace{-0.5cm}
+                \infer[(\text{par$_3$})]{
+                        \langle \mathtt{p \parallel q}, \sigma \rangle \longrightarrow 
+                        \pv{\prog{p' \parallel q}}{\sigma'}
+                }{
+                        \langle \mathtt{p}, \sigma \rangle 
+                        \longrightarrow \pv{\prog{p'}}{\sigma'}
+                }
+                \hspace{1cm}
+                \infer[(\text{par$_4$})]{
+                        \langle \mathtt{p \parallel q}, \sigma \rangle \longrightarrow 
+                        \pv{\prog{p \parallel q'}}{\sigma'}
+                }{
+                        \langle \mathtt{q}, \sigma \rangle 
+                        \longrightarrow \pv{\prog{q'}}{\sigma'}
+                }
+        \]
+\end{frame}
+
+\begin{frame}{Exercises}
+
+        \begin{enumerate}
+                \item Write down the possible outputs of 
+                        \[
+                        \pv{\, (\prog{y := y +1} \> {\blue ;}  \>  \prog{x := x + 1}) 
+                        \parallel \prog{x := 0}}{\sigma}
+                        \]
+                \item Conclude that our previous determinacy property was lost
+        \end{enumerate}
+\end{frame}
+
+\begin{frame}{Conclusions}
+
+        We (briefly) studied our first style of semantics
+
+        The gist: it describes how a program operates step-by-step
+
+        We also saw how valuable induction is in our context
+
+        \pause
+        \vfill
+        Further details about small-step semantics and induction can be
+        consulted \eg\ in \cite[Chapter 6]{reynolds98} and \cite[Chapter
+        3]{winskel93} respectively
+\end{frame}
+\bibliographystyle{amsalpha}
+\bibliography{small_step}
 \end{document}
+
