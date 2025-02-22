@@ -1,0 +1,387 @@
+\documentclass{beamer}
+\usepackage{etex} % fixes new-dimension error
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usetheme{metropolis}
+\metroset{block=fill}
+%\usetheme{Boadilla}
+
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.4\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertsection
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.1\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\makeatother
+\setbeamertemplate{navigation symbols}{}
+%----------------------------------------------------------------------------
+\usepackage{graphicx,amsmath}
+\usepackage{stmaryrd} % cf. interleave
+\usepackage{booktabs}
+\usepackage{amscd}
+\usepackage{multicol}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{alltt}
+\usepackage{proof}
+\usepackage{listings}
+\usepackage[all]{xy}
+\input{macros}
+%------ using pstricks (rnode etc) ------------------------------------------
+\usepackage{pstricks,pst-node,pst-text,pst-3d}
+
+% ------ using color ---------------------------------------------------------
+\newrgbcolor{goldenrod}{.80392 .60784 .11373}
+\newrgbcolor{darkgoldenrod}{.5451 .39608 .03137}
+\newrgbcolor{brown}{.15 .15 .15}
+\newrgbcolor{darkolivegreen}{.33333 .41961 .18431}
+\def\gold#1{{\goldenrod #1}}
+\def\dgold#1{{\alert{#1}}}
+\def\dkb#1{{\blue #1}}
+\def\tdkb#1{\textbf{\darkblue #1}}
+\def\gre#1{{\darkolivegreen #1}}
+\def\gry#1{{\gray #1}}
+\def\rdb#1{{\red #1}}
+%----------------------------------------------------------------------------
+
+\AtBeginSection[]
+{
+    \begin{frame}
+        \frametitle{Table of Contents}
+        \tableofcontents[currentsection]
+    \end{frame}
+}
+
+\author[Renato Neves]{Renato Neves}
+
+% logos of institutions
+\titlegraphic{
+  \begin{textblock*}{5cm}(6.5cm,7.4cm)
+     \includegraphics[scale=0.06]{images/uminho.png}\hspace*{.85cm}~%
+  \end{textblock*}
+  \begin{textblock*}{5cm}(9.2cm,7.45cm)
+    \includegraphics[scale=0.50]{images/haslab.pdf}
+  \end{textblock*}
+}
+
+% No date
+\date{}
+
+\begin{document}
+
+\title{Denotational Semantics}
+
+\frame[plain]{\titlepage}
+
+\section{Outline}
+
+\begin{frame}{Semantics for every season}
+
+        \hspace*{+5pt}\makebox[\linewidth][c]{%
+        \begin{tabular}{ l l }
+        Operational semantics & How a program operates
+        \\
+        \alert{\underline{Denotational semantics}} & What a program is 
+        \\
+        Axiomatic semantics & Which logical properties a program satisfies
+        \end{tabular}
+        }
+
+\end{frame}
+
+\section{Motivation}
+
+\begin{frame}{Contextual equivalence}
+        We adopted the following notion of
+        \alert{\underline{program equivalence}}         
+        \begin{flalign*}
+                \text{ $\mathtt{p} \equiv_o \mathtt{q}$ iff $\Big ($for
+                every $\sigma$. }
+                \langle \mathtt{p}, \sigma \rangle \Downarrow \mathtt{\sigma'} 
+                \text{ iff } \langle \mathtt{q}, \sigma \rangle \Downarrow \mathtt{\sigma'}
+                \Big )
+        \end{flalign*}
+
+        \pause
+        But compilers adopt the following \alert{\underline{stronger}} version
+        \begin{flalign*}
+                \text{ $\mathtt{p} \equiv \mathtt{q}$ iff }
+                \Big ( \text{for
+                every context $C$. }
+                C[\mathtt{p}] \equiv_o C[\mathtt{q}]
+                \Big )
+        \end{flalign*}
+
+        \pause
+        \bigskip
+        \centering
+        \fbox{ Why is that ? }
+\end{frame}
+
+\begin{frame}{Contextual equivalence for boolean terms}
+
+        \begin{block}{Boolean contexts}
+        \[
+                C ::= [-] \mid C \wedge \prog{b} \mid \prog{b} \wedge C \mid \neg C
+        \]
+        \end{block} 
+
+        \bigskip
+        \begin{block}{Exercise}
+                Prove the implication $\prog{b_1} \equiv_o \prog{b_2} 
+                \Longrightarrow \prog{b_1} \equiv \prog{b_2}$
+        \end{block}
+
+        \pause
+        \vfill
+        Homework: Repeat this exercise for arithmetic expressions
+\end{frame}
+
+\begin{frame}{Contextual equivalence for while-programs}
+
+        \begin{block}{Program contexts}
+                \small{
+                $C ::= [-] \mid C \> \prog{\blue ;} \> \prog{p} 
+                \mid \prog{p} \> \prog{\blue ;} \> C \mid
+                \mathtt{{\blue if} \> b \> {\blue then} \>} C \mathtt{\> {\blue else} \> p} 
+                \mid
+                \mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \>} C 
+                \mid 
+                \mathtt{{\blue while} \> b \> {\blue do} \> \{ \>} C \mathtt{\> \}}$
+        }
+        \end{block} 
+
+        \vfill
+        \pause
+        \centering
+        \fbox{Can we still prove $\prog{p} \equiv_o \prog{q} \Longrightarrow
+        \prog{p} \equiv \prog{q}$ ?}
+\end{frame}
+
+\begin{frame}{Programs as part of a mathematical theory}
+        
+        \begin{center}
+        \fbox{Programming language} \hspace{0.5cm} \scalebox{1.5}{${\hookrightarrow}$} 
+        \hspace{0.5cm} \fbox{Mathematical theory}
+        \end{center}
+
+        The latter include \emph{e.g.}
+        \begin{itemize}
+                \item functions (recall program calculus)
+                \item linear algebra
+                \item relations
+                \item games
+                \item \alert{\underline{domain theory}}
+        \end{itemize}
+\end{frame}
+
+\section{My first denotational semantics}
+
+\begin{frame}{Boolean terms and their denotational semantics}
+        \begin{block}{\vspace*{-3.5ex}}
+        \[
+                \prog{b} ::= \prog{x} \mid \prog{b} \wedge \prog{b} \mid \neg \prog{b}
+        \]
+        \end{block} 
+
+        \vfill
+        Terms $\prog{b}$ interpreted as \alert{\underline{functions}}
+        $\sem{\prog{b}} : State \to 2$
+        \begin{align*}
+                \sem{\prog{x}}(\sigma) & = \sigma (x) \\
+                \sem{\prog{b_1} \wedge \prog{b_2}} & 
+                = (\wedge) \comp \pv{\sem{\prog{b_1}}}{\sem{\prog{b_2}}} \\
+                \sem{\neg \prog{b}} & = (\neg) \comp \sem{\prog{b}}
+        \end{align*}
+\end{frame}
+
+\begin{frame}{Boolean terms and their denotational semantics}
+        
+        We can now reduce checking for equality of denotations \dots
+        \dots\ to \alert{\underline{program calculus}} and \alert{\underline{boolean algebra}}
+
+        \pause
+        \begin{align*}
+                \sem{\prog{b_1} \wedge \prog{b_2}} & =
+                (\wedge) \comp \pv{\sem{\prog{b_1}}}{\sem{\prog{b_2}}}
+                \\
+                                                   & = (\wedge) \comp \mathrm{sw}
+                                                   \comp 
+                                                   \pv{\sem{\prog{b_1}}}{\sem{\prog{b_2}}}
+                                                   \\
+                                                   & = (\wedge) \comp \pv{\pi_2}{\pi_1}
+                                                   \comp 
+                                                   \pv{\sem{\prog{b_1}}}{\sem{\prog{b_2}}}
+                                                   \\
+                                                   & = (\wedge) \comp \pv{\pi_2
+                                                   \comp \pv{\sem{\prog{b_1}}}{
+                                                   \sem{\prog{b_2}}}}{\pi_1
+                                                   \comp \pv{\sem{\prog{b_1}}}{\sem{\prog{b_2}}}}
+                                                   \\
+                                                   & = (\wedge) \comp 
+                                                   \pv{\sem{\prog{b_2}}}{\sem{\prog{b_1}}}
+                                                   \\
+                                                   & = \sem{\prog{b_2} \wedge \prog{b_1}}
+                                                   \\[20pt]
+              \sem{\prog{b} \wedge \prog{b}} & = \dots \dots
+        \end{align*}
+\end{frame}
+
+\begin{frame}{Boolean terms and their denotational semantics}
+
+        \begin{theorem}
+                For every term $\prog{b}$ and memory $\sigma$ we
+                have 
+                $\pv{\prog{b}}{\sigma} \Downarrow v \text{ iff }
+                \sem{\prog{b}}(\sigma) = v$
+        \end{theorem}
+
+        \begin{proof}
+                Straightforward \alert{\underline{induction}}
+        \end{proof}
+\end{frame}
+
+\begin{frame}{Exercises}
+        \begin{enumerate}
+                \item Define a denotational semantics for arithmetic
+                        expressions $\prog{e}$
+                \item Prove that $\sem{\prog{e_1} + \prog{e_2}} =
+                        \sem{\prog{e_2} + \prog{e_1}}$
+                \item Prove the equivalence $\pv{\prog{e}}{\sigma} \Downarrow v
+                        \text{ iff } \sem{\prog{e}}(\sigma) = v$
+        \end{enumerate}
+\end{frame}
+
+\section{Denotational semantics of a while-language}
+
+\begin{frame}{Key takeaways}
+        Programs $\prog{p}$ interpreted as \alert{\underline{functions}}
+        $\sem{\prog{p}} : State_\bot \to State_\bot$
+
+        $State_\bot = State \cup \{ \bot \}$ where $\bot$ represents
+        \alert{\underline{non-termination}}
+
+        Sequential composition will be \alert{\underline{function composition}}
+\end{frame}
+
+\begin{frame}{Programs and their denotational semantics}
+	\begin{block}{Programs}
+        $\prog{p} ::= \mathtt{x} := \mathtt{e} \mid
+	\mathtt{p \> {\blue ;} \> p} \mid
+	\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> p} \mid
+	\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}}$
+	\end{block}
+
+        \begin{align*}
+                \sem{\prog{x : = e}}(\sigma) & = \sigma[\sem{\prog{e}}/\prog{x}] \\
+                \sem{\prog{p} \> {\blue ;} \> \prog{q}} & 
+                = \sem{\prog{q}} \comp \sem{\prog{p}} \\
+                \sem{\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> p}}
+                                                        & 
+                                                        = [\sem{\prog{p}},\sem{\prog{q}}] \comp
+                                                        \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
+                \\
+                \sem{\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} }
+                                                        & =  \dots
+%                [\sem{\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} } \comp 
+%                \sem{\prog{p}},\id] \comp
+%                \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
+        \end{align*}
+
+        \pause
+\end{frame}
+
+\begin{frame}{Profits!}
+        Let us capitalise on this new semantics \dots
+
+        \dots\ recall when we had to prove the two equivalences
+        \begin{itemize}
+                \item $\mathtt{(p \> {\blue ;} \> q) \> {\blue ;} \> r} \equiv
+                        \mathtt{p \> {\blue ;} \> (q \> {\blue ;} \> r)}$
+                \item $\mathtt{({\blue if} \> b \> {\blue then} \> p \> {\blue else} \> q) 
+                      \> {\blue ;} \> \prog{r}} \equiv 
+                      \mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue ;} \> r \> 
+                      {\blue else} \> q \> {\blue ;} \> r}$ 
+        \end{itemize}
+        with the \alert{\underline{big-step semantics}}
+
+        \bigskip
+        Show now that
+        \begin{itemize}
+                \item $\sem{\mathtt{(p \> {\blue ;} \> q) \> {\blue ;} \> r}} =
+                        \sem{\mathtt{p \> {\blue ;} \> (q \> {\blue ;} \> r)}}$
+                \item $\sem{\mathtt{({\blue if} \> b \> {\blue then} \> p \> {\blue else} \> q) 
+                        \> {\blue ;} \> \prog{r}}} =
+                      \sem{\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue ;} \> r \> 
+                      {\blue else} \> q \> {\blue ;} \> r}}$ 
+        \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Programs and their denotational semantics}
+	\begin{block}{Programs}
+        $\prog{p} ::= \mathtt{x} := \mathtt{e} \mid
+	\mathtt{p \> {\blue ;} \> p} \mid
+	\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> p} \mid
+	\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}}$
+	\end{block}
+
+        \begin{align*}
+                \sem{\prog{x : = e}}(\sigma) & = \sigma[\sem{\prog{e}}/\prog{x}] \\
+                \sem{\prog{p} \> {\blue ;} \> \prog{q}} & 
+                = \sem{\prog{q}} \comp \sem{\prog{p}} \\
+                \sem{\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> p}}
+                                                        & 
+                                                        = [\sem{\prog{p}},\sem{\prog{q}}] \comp
+                                                        \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
+                \\
+                \sem{\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} }
+                                                        & = 
+                [\sem{\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} } \comp 
+                \sem{\prog{p}},\id] \comp
+                \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
+        \end{align*}
+\end{frame}
+
+\begin{frame}{Programs and their denotational semantics}
+
+        \begin{align*}
+                \sem{\prog{x : = e}}(\sigma) & = \sigma[\sem{\prog{e}}/\prog{x}] \\
+                \sem{\prog{p} \> {\blue ;} \> \prog{q}} & 
+                = \sem{\prog{q}} \comp \sem{\prog{p}} \\
+                \sem{\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> p}}
+                                                        & 
+                                                        = [\sem{\prog{p}},\sem{\prog{q}}] \comp
+                                                        \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
+                \\
+                \sem{\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} }
+                                                        & \> {\red \scalebox{1.2}{=}} \>
+                [\sem{\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} } \comp 
+                \sem{\prog{p}},\id] \comp
+                \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
+        \end{align*}
+
+        \pause
+        \begin{flushright}
+        \emph{Brexit means brexit}
+
+
+        \scriptsize{(Theresa May) \url{https://www.youtube.com/watch?v=oRDfFJAu6Bo}}
+        \end{flushright}
+
+\end{frame}
+
+\section{Domain theory}
+
+\bibliographystyle{amsalpha}
+\bibliography{big_step}
+\end{document}
+
