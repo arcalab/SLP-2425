@@ -381,9 +381,9 @@
         \end{align*}
 
         \pause
+        \smallskip
         \begin{flushright}
-        \emph{\textbf{Brexit means brexit}}
-
+        \emph{\textbf{I'm very clear, Brexit does mean brexit}}
 
         \scriptsize{(Theresa May) \url{https://www.youtube.com/watch?v=oRDfFJAu6Bo}}
         \end{flushright}
@@ -392,6 +392,94 @@
 
 \section{Domain theory}
 
+\begin{frame}{Partially ordered set}
+
+        \begin{definition}[Poset]
+                A set with a reflexive, anti-symmetric, and transitive
+                relation $\leq$
+        \end{definition}
+
+        \begin{examples}
+                \begin{itemize}
+                        \item $(\Nats, \text{ the usual order $\leq$ on natural numbers})$
+                        \item $(\Reals, \text{ the usual order $\leq$ on the real numbers})$
+                        \item $(X, \> \> =)$ \small{(for any set $X$)}
+                \end{itemize}
+        \end{examples}
+
+        \pause
+        \vfill
+        In our context $x \leq y$ reads as
+        \begin{center}
+                \fbox{
+                        $y$ \alert{\underline{more informative}} than $x$
+                }
+        \end{center}
+\end{frame}
+
+\begin{frame}{New posets from old ones}
+
+        \begin{block}{Addition of a bottom element}
+                If $(X, \leq_X)$ is a poset then $(X_\bot, \leq)$ is
+                a poset when defined as
+                \begin{itemize}
+                        \item $x_1 \leq x_2$  iff $x_1 \leq_X x_2$
+                        \item $\bot \leq x$ ($\text{for all } x \in X$)
+                \end{itemize}
+        \end{block}
+
+        $\bot$ is the least informative element, akin to non-termination
+
+        \pause
+        \medskip
+        \begin{example}
+                In what way is $State_\bot$ a poset ?
+        \end{example}
+\end{frame}
+
+\begin{frame}{Data aggregation}
+        We will often wish to collect an increasing \alert{\underline{seq. of information}}
+        \[
+                x_1 \leq x_2 \leq x_3 \leq \dots
+        \]
+        into a \alert{\underline{single}} datum, denoted by $\vee_{i \in \Nats}\, x_i$
+
+        \pause
+        \bigskip
+        This element should be \alert{\underline{more informative}}
+        than any $x_j$ ($j \in \Nats$), \ie\
+        \[
+                x_j \leq \vee_{i \in \Nats}\, x_i
+        \]
+        and contain \alert{\underline{no more information}} than the one
+        in the chain, \ie\
+        \[
+                (\forall j \in \Nats. \, x_j \leq y) \Longrightarrow
+                \vee_{i \in \Nats}\, x_i \leq y
+        \]
+\end{frame}
+
+\begin{frame}{Posets + Data aggregation}
+
+        \begin{definition}[$\omega$-CPO]
+                A poset with data aggregation as previously described
+        \end{definition}
+
+        \begin{examples}
+                \begin{itemize}
+                        \item $\Nats$ is \underline{not} an $\omega$-CPO but
+                                $\Nats \cup \{ \infty \}$ is
+                        \item $\Reals$ is \underline{not} an $\omega$-CPO but
+                                $\Reals \cup \{ \infty \}$ and $[0,1]$ are
+                \end{itemize}
+        \end{examples}
+
+        \pause
+        \bigskip
+        \begin{block}{Exercise}
+                Show that $State_\bot$ is an $\omega$-CPO
+        \end{block}
+\end{frame}
 \bibliographystyle{amsalpha}
 \bibliography{big_step}
 \end{document}
