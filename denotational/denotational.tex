@@ -302,7 +302,7 @@
                 \sem{\prog{x : = e}} & = \sigma \mapsto \sigma[\sem{\prog{e}}/\prog{x}] \\
                 \sem{\prog{p} \> {\blue ;} \> \prog{q}} & 
                 = \sem{\prog{q}} \comp \sem{\prog{p}} \\
-                \sem{\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> p}}
+                \sem{\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> q}}
                                                         & 
                                                         = [\sem{\prog{p}},\sem{\prog{q}}] \comp
                                                         \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
@@ -368,7 +368,7 @@
                 \sem{\prog{x : = e}} & = \sigma \mapsto \sigma[\sem{\prog{e}}/\prog{x}] \\
                 \sem{\prog{p} \> {\blue ;} \> \prog{q}} & 
                 = \sem{\prog{q}} \comp \sem{\prog{p}} \\
-                \sem{\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> p}}
+                \sem{\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> q}}
                                                         & 
                                                         = [\sem{\prog{p}},\sem{\prog{q}}] \comp
                                                         \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
