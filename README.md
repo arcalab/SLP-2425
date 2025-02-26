@@ -20,7 +20,7 @@ Learning outcomes:
   | 04 feb. 2025 | NA |
   | 10 feb. 2025 | First steps with the small-step semantics ([slides](./small_step/small_step.pdf)) |
   | 11 feb. 2025 | Exercises |
-  | 17 feb. 2025 | Big-step semantics ([slides](./big_step/big_step.pdf)) |
+  | 17 feb. 2025 | Second steps with the big-step semantics ([slides](./big_step/big_step.pdf)) |
   | 18 feb. 2025 | Implementation of a while-language and its big-step semantics ([code](./big_step/MyLang.hs)) |
   | 24 feb. 2025 | Introduction to denotational semantics ([slides](./denotational/denotational.pdf)) |
   | 25 feb. 2025 | Exercises  |
