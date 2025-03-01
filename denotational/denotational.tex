@@ -387,7 +387,6 @@
 
         \scriptsize{(Theresa May) \url{https://www.youtube.com/watch?v=oRDfFJAu6Bo}}
         \end{flushright}
-
 \end{frame}
 
 \section{Domain theory}
@@ -480,6 +479,214 @@
                 Show that $State_\bot$ is an $\omega$-CPO
         \end{block}
 \end{frame}
+
+\begin{frame}{Maps between $\omega$-CPOs}
+        We wish them to represent some form of
+        \alert{\underline{computability}} \dots
+
+        \dots\ and thus we cannot allow all maps
+
+        \pause
+        \bigskip
+        We enforce instead the following laws
+        \begin{align*}
+                f(\vee_n\, x_n) & = \vee_{n}\, f(x_n) & \text{(continuity)}
+                \\
+                x_1 \leq x_2 & \Rightarrow f(x_1) \leq f(x_2) & \text{(monotonicity)}
+        \end{align*}
+\end{frame}
+
+\begin{frame}{Continuity $\simeq$ Computability ?}
+
+        \begin{center}
+        \fbox{
+                What does it mean for $p : X \to \{ \bot \leq \top \}$ to be continuous ?
+        }
+        \end{center}
+
+        \vfill
+        Suppose $x \in X$ is given by a chain of \alert{\underline{finite}} approximations
+        \[
+                x_1 \leq x_2 \leq x_3 \dots
+        \]
+        \dots\ then deduce that
+        \begin{align*}
+                p(\vee_{n \in \Nats}\, x_n) = \top & \Longleftrightarrow \vee_{n \in \Nats}\, p(x_n) = \top
+                \\
+                                                   & \Longleftrightarrow \exists n \in \Nats.\, p(x_n) = \top
+        \end{align*}
+        \pause
+        \ie\ that $p$ \alert{\underline{terminates}} with $\mathtt{tt}$ for $x$
+        iff $p$ can evaluate a \alert{\underline{finite}} approximation of $x$ to
+        $\mathtt{tt}$
+\end{frame}
+
+\begin{frame}{ Continuity $\simeq$ Computability ?}
+        
+        \begin{block}{Exercise 1}
+                Show that $(\mathcal{P}(\Nats), \subseteq)$ is an $\omega$-CPO
+        \end{block}
+
+        \smallskip
+        \begin{block}{Exercise 2}
+        Can $\mathtt{isInfinite} : \mathcal{P}(\Nats) \to \{
+        \bot \leq \top \}$ be continuous ?
+        \end{block}
+\end{frame}
+
+\begin{frame}{ Continuity $\simeq$ Computability ?} 
+
+        \begin{align*}
+                \sem{\prog{x : = e}} & = \sigma \mapsto \sigma[\sem{\prog{e}}/\prog{x}] \\
+                \sem{\prog{p} \> {\blue ;} \> \prog{q}} & 
+                = \sem{\prog{q}} \comp \sem{\prog{p}} \\
+                \sem{\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> q}}
+                                                        & 
+                                                        = [\sem{\prog{p}},\sem{\prog{q}}] \comp
+                                                        \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
+                \\
+                \sem{\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} }
+                                                        & =\  \dots \dots
+        \end{align*}
+
+        \vfill
+        \begin{center}
+        \fbox{ Are all programs $\sem{\prog{p}}$ continuous ? }
+        \end{center}
+        \pause
+        Yes !! Just use \alert{\underline{program calculus}} `with
+        \alert{\underline{continuous}} functions'
+\end{frame}
+
+\begin{frame}{Fixpoints for while-loops}
+
+        \begin{definition}
+                An element $x \in X$ is a \alert{\underline{fixpoint}} of $f :
+                X \to X$ if $f(x) = x$
+        \end{definition}
+
+        A notion with applications in different fields
+        \begin{itemize}
+                \item economics (game theory)
+                \item dynamical systems (equilibrium points)
+                \item automata theory
+                \item essentially everywhere \dots
+        \end{itemize}
+
+        \pause
+        \smallskip
+        Here while-loops will be fixpoints
+\end{frame}
+
+\begin{frame}{Fixpoints for while-loops}
+
+        \begin{center}
+                \fbox{
+                       \dots\ but a fixpoint of which function ? 
+                }
+        \end{center}
+
+        \pause
+        \vfill
+        Recall our previous idea
+        \[
+                \sem{\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} }
+                                                         \> {=} \>
+                [\sem{\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} } \comp 
+                \sem{\prog{p}},\id] \comp
+                \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
+        \]
+        It translates to saying that $\sem{\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} }$ is
+        a fixpoint of 
+        \[
+               k \longmapsto 
+               [k \comp 
+               \sem{\prog{p}},\id] \comp
+               \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
+        \]
+\end{frame}
+
+\begin{frame}{The least fixpoint theorem}
+        
+        \begin{theorem}
+        Every continuous, monotone map $f : X \to X$ has
+        a least fixpoint
+        \[
+                \mathrm{lfp}\ f = \vee_{n \in \Nats}\, f^n(\bot)
+        \]
+        \end{theorem}
+
+        \begin{block}{Exercise}
+                Prove the theorem
+        \end{block}
+
+        \bigskip
+        \pause
+        And finally \dots
+\end{frame}
+
+\begin{frame}{Programs and a denotational semantics}
+        \begin{block}{\vspace*{-3.5ex}}
+        \begin{center}
+        $\prog{p} ::= \mathtt{x} := \mathtt{e} \mid
+	\mathtt{p \> {\blue ;} \> p} \mid
+	\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> p} \mid
+	\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}}$
+        \end{center}
+	\end{block}
+        \vspace{-0.5cm}
+        \begin{align*}
+                \sem{\prog{x : = e}} & = \sigma \mapsto \sigma[\sem{\prog{e}}/\prog{x}] \\[2pt]
+                \sem{\prog{p} \> {\blue ;} \> \prog{q}} & 
+                = \sem{\prog{q}} \comp \sem{\prog{p}} \\[5pt]
+                \sem{\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> q}}
+                                                        & 
+                                                        = [\sem{\prog{p}},\sem{\prog{q}}] \comp
+                                                        \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
+                                                        \\[5pt]
+                \sem{\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} }
+                                                        & \> {=} \> \mathrm{lfp}\ \Big (k \mapsto
+                [k \comp 
+                \sem{\prog{p}},\id] \comp
+                \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id} \Big )
+        \end{align*}
+\end{frame}
+
+\begin{frame}{The semantics at work}
+        Prove the following equivalences
+        \begin{itemize}
+                \item $\mathtt{{\blue while} \> b \> \{ p \} } \equiv
+                      \mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> skip}$
+                \item $\mathtt{{\blue while} \> b \> \{ p \} } \> {\blue ;} \> \mathtt{q} \equiv
+                      \mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue ;}  \> {\blue while} \> b \> \{ p \}
+                      \> {\blue else} \> q}$
+                \item $\mathtt{{\blue while} \> ff \> \{ p \} \> {\blue ;} \> q } \equiv \mathtt{q}$
+                \item $\mathtt{{\blue while} \> tt \> \{ p \} } \equiv
+                      \mathtt{{\blue while} \> tt \> \{ q \} }$
+
+        \end{itemize}
+
+\end{frame}
+
+\begin{frame}{The relation between big-step and denotational semantics}
+
+        \vfill
+        \begin{theorem}
+                For every $\prog{p}$ and $\sigma$ we
+                have 
+                $\pv{\prog{p}}{\sigma} \Downarrow \sigma' \text{ iff }
+                \sem{\prog{p}}(\sigma) = \sigma'$
+        \end{theorem}
+
+        \bigskip
+        \bigskip
+        \begin{corollary}
+                $\prog{p} \equiv \prog{q} \> \text{ iff } \>
+                \prog{p} \equiv_o \prog{q} \> \text{ iff } \>
+                \sem{\prog{p}} = \sem{\prog{q}}$
+        \end{corollary}
+\end{frame}
+
 \bibliographystyle{amsalpha}
 \bibliography{big_step}
 \end{document}
