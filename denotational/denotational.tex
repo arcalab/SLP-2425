@@ -666,6 +666,14 @@
 
         \end{itemize}
 
+        \pause
+        \smallskip
+        Prove the following implication
+        \[
+                \sem{\prog{p}} = \sem{\prog{q}} \Longrightarrow
+                \text{for all contexts } C. \,
+                \sem{C[\prog{p}]} = \sem{C[\prog{q}]}
+        \]
 \end{frame}
 
 \begin{frame}{The relation between big-step and denotational semantics}
@@ -681,10 +689,25 @@
         \bigskip
         \bigskip
         \begin{corollary}
-                $\prog{p} \equiv \prog{q} \> \text{ iff } \>
-                \prog{p} \equiv_o \prog{q} \> \text{ iff } \>
-                \sem{\prog{p}} = \sem{\prog{q}}$
+                $\prog{p} \equiv_o \prog{q} \> \text{ iff } \> \sem{\prog{p}} =
+                \sem{\prog{q}}$
         \end{corollary}
+
+        \bigskip
+        \bigskip
+        \begin{corollary}[Full abstraction]
+                $
+                %
+                \sem{\prog{p}} = \sem{\prog{q}} \> \text{ iff } \>
+                \forall C. \, \sem{C[\prog{p}]} = \sem{C[\prog{q}]} 
+                \> \text{ iff } \>
+                \forall C. \, C[\prog{p}] \equiv_o C[\prog{q}]
+                \> \text{ iff } \>
+                \prog{p} \equiv \prog{q}
+                %
+                $
+        \end{corollary}
+
 \end{frame}
 
 \bibliographystyle{amsalpha}
