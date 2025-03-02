@@ -81,9 +81,8 @@
 
 \frame[plain]{\titlepage}
 
-\section{Outline}
 
-\begin{frame}{Semantics for every season}
+\begin{frame}{Semantics for Every Season}
 
         \hspace*{+5pt}\makebox[\linewidth][c]{%
         \begin{tabular}{ l l }
@@ -99,9 +98,8 @@
 
 \section{Motivation}
 
-\begin{frame}{Compiler correctness and contextual equivalence}
-        We adopted the following notion of
-        \alert{\underline{equivalence}}         
+\begin{frame}{Compiler Correctness and Contextual Equivalence}
+        Adopted a natural notion of \alert{\underline{equivalence}}         
         \begin{flalign*}
                 \text{ $\mathtt{p} \equiv_o \mathtt{q}$ iff $\Big ($for
                 every $\sigma$. }
@@ -111,23 +109,23 @@
         \end{flalign*}
 
         \pause
-        Compilers adopt the \alert{\underline{stronger}} version
+        \medskip
+        Compilers adopt a \alert{\underline{stronger}} version
         \begin{flalign*}
                 \text{ $\mathtt{p} \equiv \mathtt{q}$ iff }
                 \Big ( \text{for
                 every context $C$. }
-                C[\mathtt{p}] \equiv_o C[\mathtt{q}]
+                C[\mathtt{p}] \, \equiv_o C[\mathtt{q}]
                 \Big )
         \end{flalign*}
 
         \pause
         \bigskip
-        \medskip
         \centering
-        \fbox{ Why is that ? }
+        \fbox{ Why ? }
 \end{frame}
 
-\begin{frame}{Contextual equivalence}
+\begin{frame}{Contextual Equivalence}
 
         \begin{block}{Contexts}
                 $C ::= [-] \mid C \wedge \prog{b} \mid \prog{b} \wedge C \mid \neg C$
@@ -136,15 +134,17 @@
         \bigskip
         \begin{block}{Exercise}
                 Prove the equivalence $\prog{b_1} \equiv_o \prog{b_2} 
-                \Longleftrightarrow \prog{b_1} \equiv \prog{b_2}$
+                \text{ iff } \prog{b_1} \equiv \prog{b_2}$
         \end{block}
 
         \pause
-        \vfill
-        Homework: repeat the exercise now for arithmetic expressions
+        \bigskip
+        \begin{block}{Exercise}
+        Repeat the previous exercise now for arithmetic expressions
+        \end{block}
 \end{frame}
 
-\begin{frame}{Contextual equivalence}
+\begin{frame}{Contextual Equivalence}
 
         \begin{block}{Contexts}
                 $C ::= [-] \mid C \> \prog{\blue ;} \> \prog{p} 
@@ -155,20 +155,23 @@
                 \mid \dots$
         \end{block} 
 
-        \vfill
         \pause
+        \bigskip
+        \bigskip
         \centering
-        \fbox{Can we still prove $\prog{p} \equiv_o \prog{q} \Longleftrightarrow
+        \fbox{Can one still prove $\prog{p} \equiv_o \prog{q} \text{ iff }
         \prog{p} \equiv \prog{q}$ ?}
+
 \end{frame}
 
-\begin{frame}{Next challenge: programs as part of a mathematical theory}
+\begin{frame}{Next Challenge: Programs as part of a Mathematical Theory}
         
         \begin{center}
         \fbox{Programming language} \hspace{0.5cm} \scalebox{1.5}{${\hookrightarrow}$} 
         \hspace{0.5cm} \fbox{Mathematical theory}
         \end{center}
 
+        \medskip
         The latter include \emph{e.g.}
         \begin{itemize}
                 \item functions (recall program calculus)
@@ -181,7 +184,7 @@
 
 \section{My first denotational semantics}
 
-\begin{frame}{Boolean terms and their denotational semantics}
+\begin{frame}{Boolean Terms and their Denotational Semantics}
 
         \begin{block}{\vspace*{-3.5ex}}
         \[
@@ -189,10 +192,11 @@
         \]
         \end{block} 
 
+        \bigskip
         Terms interpreted as \alert{\underline{functions}}
         $\sem{\prog{b}} : State \to 2$
 
-        Term operations interpreted via the \alert{\underline{boolean algebra}} $2$
+        Term operations interpreted via the \alert{\underline{boolean algebra}} $2$ 
         \bigskip
         \begin{align*}
                 \sem{\prog{x}}(\sigma) & = \sigma (\prog{x}) \\
@@ -202,11 +206,9 @@
         \end{align*}
 \end{frame}
 
-\begin{frame}{The relation between big-step and denotational semantics}
+\begin{frame}{Big-step meets Denotational \dots }
 
         \begin{theorem}
-                For every term $\prog{b}$ and memory $\sigma$ we
-                have 
                 $\pv{\prog{b}}{\sigma} \Downarrow v \text{ iff }
                 \sem{\prog{b}}(\sigma) = v$
         \end{theorem}
@@ -224,9 +226,9 @@
         \end{corollary}
 \end{frame}
 
-\begin{frame}{Profits!}
+\begin{frame}{Profits !}
         
-        We can now reduce checking for equivalence to \dots
+        We can now reduce checking equivalence to your favorites \dots
         \begin{center}
                 \fbox{
                         \alert{\underline{Program calculus}} and \alert{\underline{Boolean algebra}}
@@ -236,6 +238,7 @@
         \pause
         \begin{example}
         \small{
+        \vspace{-0.2cm}
         \begin{align*}
                 \sem{\prog{b_1} \wedge \prog{b_2}} & =
                 (\wedge) \comp \pv{\sem{\prog{b_1}}}{\sem{\prog{b_2}}}
@@ -264,21 +267,21 @@
 
 
 \begin{frame}{Exercises}
-        \begin{enumerate}
-                \item Show that $\prog{b} \wedge \prog{b} \equiv \prog{b}$ via the
-                        denotational semantics
-                \item Define a denotational semantics for arithmetic
-                        expressions $\prog{e}$
-                \item Prove that $\sem{\prog{e_1} + \prog{e_2}} =
-                        \sem{\prog{e_2} + \prog{e_1}}$
-                \item Prove the equivalence $\pv{\prog{e}}{\sigma} \Downarrow v
-                        \text{ iff } \sem{\prog{e}}(\sigma) = v$
-        \end{enumerate}
+                Show $\prog{b} \wedge \prog{b} \equiv \prog{b}$ (via the
+                denotational semantics)
+ 
+                Define a denotational semantics for arithmetic expressions 
+
+                Show $\prog{e_1} + \prog{e_2} \equiv \prog{e_2} + \prog{e_1}$
+                (via your denotational semantics)
+
+                Prove the equivalence $\pv{\prog{e}}{\sigma} \Downarrow v
+                \text{ iff } \sem{\prog{e}}(\sigma) = v$
 \end{frame}
 
 \section{Denotational semantics for a while-language}
 
-\begin{frame}{Key takeaways}
+\begin{frame}{Key Takeaways}
         Programs interpreted as \alert{\underline{functions}}
         $\sem{\prog{p}} : State_\bot \to State_\bot$
 
@@ -288,16 +291,17 @@
         Sequential composition is \alert{\underline{function composition}}
 \end{frame}
 
-\begin{frame}{Programs and their denotational semantics}
+\begin{frame}{Programs and their Denotational Semantics}
+
         \begin{block}{\vspace*{-3.5ex}}
         \begin{center}
         $\prog{p} ::= \mathtt{x} := \mathtt{e} \mid
 	\mathtt{p \> {\blue ;} \> p} \mid
 	\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> p} \mid
 	\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}}$
-\end{center}
+        \end{center}
 	\end{block}
-
+        \vspace{-0.5cm}
         \begin{align*}
                 \sem{\prog{x : = e}} & = \sigma \mapsto \sigma[\sem{\prog{e}}/\prog{x}] \\
                 \sem{\prog{p} \> {\blue ;} \> \prog{q}} & 
@@ -308,18 +312,16 @@
                                                         \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
                 \\
                 \sem{\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} }
-                                                        & =\  \dots \dots
+                                                        & =\  \dots
         \end{align*}
 \end{frame}
 
-\begin{frame}{The relation between big-step and denotational semantics}
+\begin{frame}{Big-step and Denotational Semantics}
 
         \alert{\underline{Danger, Will Robinson}}: no while-loops yet \dots
 
-        \vfill
+        \medskip
         \begin{theorem}
-                For every $\prog{p}$ and $\sigma$ we
-                have 
                 $\pv{\prog{p}}{\sigma} \Downarrow \sigma' \text{ iff }
                 \sem{\prog{p}}(\sigma) = \sigma'$
         \end{theorem}
@@ -329,7 +331,6 @@
         \end{proof}
 
         \bigskip
-        \bigskip
         \begin{corollary}
                 $\prog{p} \equiv \prog{q} \> \text{ iff } \>
                 \prog{p} \equiv_o \prog{q} \> \text{ iff } \>
@@ -337,9 +338,9 @@
         \end{corollary}
 \end{frame}
 
-\begin{frame}{Profits!}
+\begin{frame}{Profits !}
 
-        Recall when we had to prove the two equivalences
+        Recall when we had to prove
         \begin{itemize}
                 \item $\mathtt{(p \> {\blue ;} \> q) \> {\blue ;} \> r} \equiv
                         \mathtt{p \> {\blue ;} \> (q \> {\blue ;} \> r)}$
@@ -354,7 +355,7 @@
         Show the same via the \alert{\underline{denotational semantics}}
 \end{frame}
 
-\begin{frame}{Programs and a (tentative) denotational semantics}
+\begin{frame}{Programs and a Tentative Denotational Semantics}
         \begin{block}{\vspace*{-3.5ex}}
         \begin{center}
         $\prog{p} ::= \mathtt{x} := \mathtt{e} \mid
@@ -391,7 +392,7 @@
 
 \section{Domain theory}
 
-\begin{frame}{Partially ordered set}
+\begin{frame}{Partially Ordered Set}
 
         \begin{definition}[Poset]
                 A set with a reflexive, anti-symmetric, and transitive
@@ -401,22 +402,23 @@
         \begin{examples}
                 \begin{itemize}
                         \item $(\Nats, \text{ the usual order $\leq$ on natural numbers})$
-                        \item $(\Reals, \text{ the usual order $\leq$ on the real numbers})$
+                        \item $(\Reals, \text{ the usual order $\leq$ on real numbers})$
                         \item $(X, \> \> =)$ \small{(for any set $X$)}
+                        \item $(\Pow X, \subseteq)$ \small{(for any set $X$)}
                 \end{itemize}
         \end{examples}
 
         \pause
-        \vfill
+        \smallskip
         In our context $x \leq y$ reads as
         \begin{center}
                 \fbox{
-                        $y$ \alert{\underline{more informative}} than $x$
+                        $x$ \alert{\underline{less informative}} than $y$
                 }
         \end{center}
 \end{frame}
 
-\begin{frame}{New posets from old ones}
+\begin{frame}{New Posets from Old Ones}
 
         \begin{block}{Addition of a bottom element}
                 If $(X, \leq_X)$ is a poset then $(X_\bot, \leq)$ is
@@ -436,8 +438,8 @@
         \end{example}
 \end{frame}
 
-\begin{frame}{Data aggregation}
-        We will often wish to collect an increasing \alert{\underline{seq. of information}}
+\begin{frame}{Data Aggregation}
+        We wish to collect a \alert{\underline{chain of information}}
         \[
                 x_1 \leq x_2 \leq x_3 \leq \dots
         \]
@@ -446,19 +448,19 @@
         \pause
         \bigskip
         This element should be \alert{\underline{more informative}}
-        than any $x_j$ ($j \in \Nats$), \ie\
+        than any $x_j$ ($j \in \Nats$) \ie\
         \[
                 x_j \leq \vee_{i \in \Nats}\, x_i
         \]
-        and contain \alert{\underline{no more information}} than the one
-        in the chain, \ie\
+        \dots\ and contain \alert{\underline{no more information}} than the chain
+        \ie\
         \[
                 (\forall j \in \Nats. \, x_j \leq y) \Longrightarrow
                 \vee_{i \in \Nats}\, x_i \leq y
         \]
 \end{frame}
 
-\begin{frame}{Posets + Data aggregation}
+\begin{frame}{Posets + Data Aggregation}
 
         \begin{definition}[$\omega$-CPO]
                 A poset with data aggregation as previously described
@@ -470,6 +472,7 @@
                                 $\Nats \cup \{ \infty \}$ is
                         \item $\Reals$ is \underline{not} an $\omega$-CPO but
                                 $\Reals \cup \{ \infty \}$ and $[0,1]$ are
+                        \item $(\Pow X, \subseteq)$ is an $\omega$-CPO for any set $X$
                 \end{itemize}
         \end{examples}
 
@@ -481,14 +484,14 @@
 \end{frame}
 
 \begin{frame}{Maps between $\omega$-CPOs}
-        We wish them to represent some form of
+        We wish that maps represent some form of
         \alert{\underline{computability}} \dots
 
-        \dots\ and thus we cannot allow all maps
+        \dots\ and thus any old map will not do
 
         \pause
         \bigskip
-        We enforce instead the following laws
+        We will therefore enforce the following laws
         \begin{align*}
                 f(\vee_n\, x_n) & = \vee_{n}\, f(x_n) & \text{(continuity)}
                 \\
@@ -504,37 +507,36 @@
         }
         \end{center}
 
-        \vfill
-        Suppose $x \in X$ is given by a chain of \alert{\underline{finite}} approximations
+        \medskip
+        Let $x \in X$ be given by a chain of \alert{\underline{finite}} approximations
         \[
-                x_1 \leq x_2 \leq x_3 \dots
+                x_1 \leq x_2 \leq x_3 \, \dots
         \]
         \dots\ then deduce that
         \begin{align*}
-                p(\vee_{n \in \Nats}\, x_n) = \top & \Longleftrightarrow \vee_{n \in \Nats}\, p(x_n) = \top
+                p(\vee_{n}\, x_n) = \top & \Longleftrightarrow \vee_{n}\, p(x_n) = \top
                 \\
-                                                   & \Longleftrightarrow \exists n \in \Nats.\, p(x_n) = \top
+                                                   & \Longleftrightarrow \exists n.\, p(x_n) = \top
         \end{align*}
         \pause
-        \ie\ that $p$ \alert{\underline{terminates}} with $\mathtt{tt}$ for $x$
-        iff $p$ can evaluate a \alert{\underline{finite}} approximation of $x$ to
-        $\mathtt{tt}$
+        \ie\ $p$ \alert{\underline{terminates}} with $\top$ (true) for
+        $x$ iff $p$ can evaluate a \alert{\underline{finite}} approximation of
+        $x$ to $\top$
 \end{frame}
 
-\begin{frame}{ Continuity $\simeq$ Computability ?}
+\begin{frame}{Continuity $\simeq$ Computability ?}
         
-        \begin{block}{Exercise 1}
-                Show that $(\mathcal{P}(\Nats), \subseteq)$ is an $\omega$-CPO
+        \begin{block}{Exercise}
+                Show that $(\Pow \Nats, \subseteq)$ is an $\omega$-CPO
         \end{block}
 
-        \smallskip
-        \begin{block}{Exercise 2}
-        Can $\mathtt{isInfinite} : \mathcal{P}(\Nats) \to \{
-        \bot \leq \top \}$ be continuous ?
+        \begin{block}{Exercise}
+                Is $\mathtt{isInfinite} : \mathcal{P}(\Nats) \to \{
+                \bot \leq \top \}$ continuous ?
         \end{block}
 \end{frame}
 
-\begin{frame}{ Continuity $\simeq$ Computability ?} 
+\begin{frame}{Continuity $\simeq$ Computability ?} 
 
         \begin{align*}
                 \sem{\prog{x : = e}} & = \sigma \mapsto \sigma[\sem{\prog{e}}/\prog{x}] \\
@@ -551,21 +553,23 @@
 
         \vfill
         \begin{center}
-        \fbox{ Are all programs $\sem{\prog{p}}$ continuous ? }
+        \fbox{ Are all maps $\sem{\prog{p}}$ continuous ? }
         \end{center}
         \pause
-        Yes !! Just use \alert{\underline{program calculus}} `with
-        \alert{\underline{continuous}} functions'
+        \begin{center}
+        Yes, just use \alert{\underline{program calculus}} `with
+        \alert{\underline{continuous}} maps'
+        \end{center}
 \end{frame}
 
-\begin{frame}{Fixpoints for while-loops}
+\begin{frame}{Fixpoints for While-loops}
 
         \begin{definition}
-                An element $x \in X$ is a \alert{\underline{fixpoint}} of $f :
+                $x \in X$ is a \alert{\underline{fixpoint}} of $f :
                 X \to X$ if $f(x) = x$
         \end{definition}
 
-        A notion with applications in different fields
+        A notion with powerful applications in diverse fields
         \begin{itemize}
                 \item economics (game theory)
                 \item dynamical systems (equilibrium points)
@@ -574,21 +578,21 @@
         \end{itemize}
 
         \pause
-        \smallskip
-        Here while-loops will be fixpoints
+        \bigskip
+        While-loops will be fixpoints in our semantics
 \end{frame}
 
-\begin{frame}{Fixpoints for while-loops}
+\begin{frame}{Fixpoints for While-loops}
 
         \begin{center}
                 \fbox{
-                       \dots\ but a fixpoint of which function ? 
+                       \dots\ a fixpoint of which function ? 
                 }
         \end{center}
 
         \pause
-        \vfill
-        Recall our previous idea
+        \bigskip
+        Recall our previous approach
         \[
                 \sem{\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} }
                                                          \> {=} \>
@@ -596,8 +600,8 @@
                 \sem{\prog{p}},\id] \comp
                 \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
         \]
-        It translates to saying that $\sem{\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} }$ is
-        a fixpoint of 
+        It states that $\sem{\mathtt{{\blue while} \> b \> {\blue do} \> \{ \>
+        p \> \}} }$ is a fixpoint of 
         \[
                k \longmapsto 
                [k \comp 
@@ -606,11 +610,11 @@
         \]
 \end{frame}
 
-\begin{frame}{The least fixpoint theorem}
+\begin{frame}{The Least Fixpoint Theorem}
         
         \begin{theorem}
         Every continuous, monotone map $f : X \to X$ has
-        a least fixpoint
+        a \alert{\underline{least fixpoint}}
         \[
                 \mathrm{lfp}\ f = \vee_{n \in \Nats}\, f^n(\bot)
         \]
@@ -652,13 +656,16 @@
         \end{align*}
 \end{frame}
 
-\begin{frame}{The semantics at work}
+\begin{frame}{The semantics at Work}
         Prove the following equivalences
         \begin{itemize}
                 \item $\mathtt{{\blue while} \> b \> \{ p \} } \equiv
-                      \mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> skip}$
+                        \mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue ;} \>
+                        \mathtt{{\blue while} \> b \> \{ p \} } 
+                        \> {\blue else} \> skip}$
                 \item $\mathtt{{\blue while} \> b \> \{ p \} } \> {\blue ;} \> \mathtt{q} \equiv
                       \mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue ;}  \> {\blue while} \> b \> \{ p \}
+                      \> {\blue ;} \> q
                       \> {\blue else} \> q}$
                 \item $\mathtt{{\blue while} \> ff \> \{ p \} \> {\blue ;} \> q } \equiv \mathtt{q}$
                 \item $\mathtt{{\blue while} \> tt \> \{ p \} } \equiv
@@ -678,30 +685,27 @@
 
 \begin{frame}{The relation between big-step and denotational semantics}
 
-        \vfill
         \begin{theorem}
-                For every $\prog{p}$ and $\sigma$ we
-                have 
                 $\pv{\prog{p}}{\sigma} \Downarrow \sigma' \text{ iff }
                 \sem{\prog{p}}(\sigma) = \sigma'$
         \end{theorem}
 
-        \bigskip
+        \begin{block}{Proof}
+                Yet again \, \dots \, \alert{\underline{induction}}
+        \end{block}
+
         \bigskip
         \begin{corollary}
                 $\prog{p} \equiv_o \prog{q} \> \text{ iff } \> \sem{\prog{p}} =
                 \sem{\prog{q}}$
         \end{corollary}
 
-        \bigskip
-        \bigskip
-        \begin{corollary}[Full abstraction]
+        \smallskip
+        \begin{corollary}[Holy grail]
                 $
                 %
                 \sem{\prog{p}} = \sem{\prog{q}} \> \text{ iff } \>
                 \forall C. \, \sem{C[\prog{p}]} = \sem{C[\prog{q}]} 
-                \> \text{ iff } \>
-                \forall C. \, C[\prog{p}] \equiv_o C[\prog{q}]
                 \> \text{ iff } \>
                 \prog{p} \equiv \prog{q}
                 %
@@ -710,7 +714,26 @@
 
 \end{frame}
 
+\section{Conclusions}
+
+\begin{frame}{Conclusions}
+        We (\alert{\underline{very}} briefly) studied denotational semantics
+
+        It typically requires more investment than operational counterparts
+
+        \dots \, but this usually pays off
+
+        Numerous extensions to emerging programming languages
+
+        \dots \, quantum, probabilistic, hybrid, stochastic \dots
+
+        \vfill
+        Further details in \eg\ \cite[Chapter 2]{reynolds98} and \cite[Chapter
+        5]{winskel93}.
+\end{frame}
+
 \bibliographystyle{amsalpha}
-\bibliography{big_step}
+\bibliography{denotational}
+
 \end{document}
 

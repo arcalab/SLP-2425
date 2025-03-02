@@ -24,6 +24,7 @@ Learning outcomes:
   | 18 feb. 2025 | Implementation of a while-language and its big-step semantics ([code](./big_step/MyLang.hs)) |
   | 24 feb. 2025 | Introduction to denotational semantics ([slides](./denotational/denotational.pdf)) |
   | 25 feb. 2025 | Exercises  |
+  | 03 mar. 2025 | A very brief introduction to domain theory and fixpoints ([slides](./denotational/denotational.pdf))  |
 
 
 # Assessment
