@@ -151,7 +151,7 @@
         \end{center}
 \end{frame}
 
-\section{Axiomatic Semantics}
+\section{Key Points}
 
 \begin{frame}{Key Points}
 
@@ -196,12 +196,68 @@
         \bigskip
         Question rooted on what a program means {\small (recall our lectures)}
 
-        \dots \, and of course on the choice of a logic for properties
+        \dots \, and of course on the \alert{\underline{choice of a logic}} for properties
 
         \pause
         \bigskip
         Right choice often not obvious \, \dots
 \end{frame}
+
+\begin{frame}{The Choice}
+        
+        Often varies depending on the problem at hand
+
+        \dots \, but typically the case that $\Phi$ corresponds to a subset
+        \[
+                \sem{\Phi} \subseteq \mathrm{State}_\bot
+        \]
+        {\small (`the elements of $\mathrm{State}_\bot$ at which $\Phi$ holds')}
+
+        \pause
+        \bigskip
+        Scientists typically fix on the well-established \alert{\underline{first-order-logic}}
+
+        \dots \, which however brings its own set of problems
+
+\end{frame}
+
+\begin{frame}{Meaning of Hoare Triples}
+        \[
+                \{ \Phi \} \, \prog{p} \, \{ \Psi \} \qquad \text{ means } \qquad 
+                \Big ( \, x \in \sem{\Phi} \Longrightarrow \sem{\prog{p}}(x) \in \sem{\Psi} \, \Big )
+        \]
+
+        \pause
+        \bigskip
+        \bigskip
+        Remarkably note the following equivalence
+        \[
+                \Big ( \, x \in \sem{\Phi} \Longrightarrow \sem{\prog{p}}(x) \in \sem{\Psi} \, \Big )
+                \quad
+                \text{ iff }
+                \quad 
+                \sem{\Phi} \subseteq \sem{\prog{p}}^{-1}(\sem{\psi})
+        \]
+        It is at the root of a rich theory of
+        \begin{center}
+                \fbox{
+                        `backward transformations' known as \alert{\underline{predicate transformers}}
+                }
+        \end{center}
+\end{frame}
+
+\begin{frame}{Liberals vs. Conservatives}
+
+        In the sequel we will consider only \alert{\underline{liberal conditions}}
+
+        \dots \, \ie\ every proposition $\Phi$ will have $\bot \in \sem{\Phi}$
+
+        \bigskip
+        Entails that we are working only with \alert{\underline{partial correctness}}
+
+        \dots \, \ie\ no proposition enforces termination
+\end{frame}
+
 \bibliographystyle{amsalpha}
 \bibliography{axiomatic}
 
