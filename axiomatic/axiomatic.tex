@@ -1,0 +1,209 @@
+\documentclass{beamer}
+\usepackage{etex} % fixes new-dimension error
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usetheme{metropolis}
+\metroset{block=fill}
+%\usetheme{Boadilla}
+
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.4\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertsection
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.1\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\makeatother
+\setbeamertemplate{navigation symbols}{}
+%----------------------------------------------------------------------------
+\usepackage{graphicx,amsmath}
+\usepackage{stmaryrd} % cf. interleave
+\usepackage{booktabs}
+\usepackage{amscd}
+\usepackage{multicol}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{alltt}
+\usepackage{proof}
+\usepackage{listings}
+\usepackage[all]{xy}
+\input{macros}
+%------ using pstricks (rnode etc) ------------------------------------------
+\usepackage{pstricks,pst-node,pst-text,pst-3d}
+
+% ------ using color ---------------------------------------------------------
+\newrgbcolor{goldenrod}{.80392 .60784 .11373}
+\newrgbcolor{darkgoldenrod}{.5451 .39608 .03137}
+\newrgbcolor{brown}{.15 .15 .15}
+\newrgbcolor{darkolivegreen}{.33333 .41961 .18431}
+\def\gold#1{{\goldenrod #1}}
+\def\dgold#1{{\alert{#1}}}
+\def\dkb#1{{\blue #1}}
+\def\tdkb#1{\textbf{\darkblue #1}}
+\def\gre#1{{\darkolivegreen #1}}
+\def\gry#1{{\gray #1}}
+\def\rdb#1{{\red #1}}
+%----------------------------------------------------------------------------
+
+\AtBeginSection[]
+{
+    \begin{frame}
+        \frametitle{Table of Contents}
+        \tableofcontents[currentsection]
+    \end{frame}
+}
+
+\author[Renato Neves]{Renato Neves}
+
+% logos of institutions
+\titlegraphic{
+  \begin{textblock*}{5cm}(6.5cm,7.4cm)
+     \includegraphics[scale=0.06]{images/uminho.png}\hspace*{.85cm}~%
+  \end{textblock*}
+  \begin{textblock*}{5cm}(9.2cm,7.45cm)
+    \includegraphics[scale=0.50]{images/haslab.pdf}
+  \end{textblock*}
+}
+
+% No date
+\date{}
+
+\begin{document}
+
+\title{Axiomatic Semantics}
+
+\frame[plain]{\titlepage}
+
+
+\begin{frame}{Semantics for Every Season}
+
+        \makebox[\linewidth][c]{%
+        \begin{tabular}{ l l }
+        Operational semantics & How a program operates
+        \\
+        Denotational semantics & What a program is 
+        \\
+        \alert{\underline{Axiomatic semantics}} 
+                               & Which logical properties it satisfies
+        \end{tabular}
+        }
+
+\end{frame}
+
+\section{Motivation}
+
+\begin{frame}{A Brief Warm-up} 
+
+        Solve the following exercises via your favorite semantics  
+        \smallskip
+        \begin{itemize}
+                \item Calculate the output of $\prog{ x := 1 \> {\blue ;} \> x
+                        := 2}$
+                %
+                \\[15pt]
+                %
+                \item Show that the following program outputs a state with
+                $\prog{x} \geq 2$
+                \begin{center}
+                        $\prog{{\blue if} \> \> x = 1 \> \> {\blue then } \> \>
+                        x := 2 \> \> {\blue else} \> \> x := 3}$
+                %
+                \\[15pt]
+                %
+                \end{center}
+                %
+                \item Show that the following program is the factorial
+                function
+                \begin{center}
+                        $\prog{{\blue while} \> x > 0 \> \{ y := x \times y
+                        \> {\blue ;} \> x := x - 1 \} }$
+                \end{center}
+        \end{itemize} 
+
+        \pause
+        \bigskip
+        \textbf{Hard ?}
+\end{frame}
+
+\begin{frame}{The Right Tools}
+
+        Two last exercises were about \alert{\underline{post-conditions}} \dots
+
+        not exactly about determining output \dots
+
+        nor about program equivalence
+        
+        \pause
+        \bigskip
+        \bigskip
+        \begin{center}
+                \fbox{
+                        Do we have the \alert{\underline{right semantics}}
+                        for solving them ?
+                }
+        \end{center}
+\end{frame}
+
+\section{Axiomatic Semantics}
+
+\begin{frame}{Key Points}
+
+        Focussed on \alert{\underline{output properties}} and less on outputs
+        themselves
+
+        Centred around a \alert{\underline{logic}} 
+        {\small (for reasoning about these
+        properties)}
+
+        Semantic rules are thus more \alert{\underline{logic oriented}}
+
+        \bigskip
+        \pause
+        Good for \alert{\underline{program correctness}} 
+        {\small (recall `algorithms and complexity')}
+\end{frame}
+
+\begin{frame}{Hoare Triples}
+
+        Axiomatic semantics essentially about (dis)proving
+        \[
+                \{ \Phi \} \, \prog{p} \, \{ \Psi \}
+        \]
+        "If $\Phi$ holds at the input then $\Psi$ holds at the output"
+
+        \bigskip
+        \begin{block}{Examples}
+                \begin{itemize}
+                        \item $\{ \prog{tt} \} \, \prog{p} \, \{ \prog{x \geq 2} \}$
+                        \item $\{ \prog{x =n \wedge y = 1} \} \, \prog{p} \, \{ \prog{y = n!} \}$
+                        \item \dots
+                \end{itemize}
+        \end{block}
+\end{frame}
+
+\begin{frame}{Meaning of Hoare Triples}
+
+        Can we state \alert{\underline{mathematically}} what a Hoare triple really means ?
+
+        \pause
+        \bigskip
+        Question rooted on what a program means {\small (recall our lectures)}
+
+        \dots \, and of course on the choice of a logic for properties
+
+        \pause
+        \bigskip
+        Right choice often not obvious \, \dots
+\end{frame}
+\bibliographystyle{amsalpha}
+\bibliography{axiomatic}
+
+\end{document}
+
