@@ -321,14 +321,7 @@
                 \prog{\neg b} \wedge \mathrm{wp} \, (\prog{q}, \Phi)
                 \\[5pt]
                 \mathrm{wp} \, ({\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} }, \Phi)
-                & = \bigwedge_{n \in \Nats} \Psi_n
-        \end{align*}
-        \pause
-        \vspace{-0.5cm}
-        \begin{align*}
-                \Psi_0 & = \prog{tt} \\
-                \Psi_{n+1} & = \neg \prog{b} \wedge \Phi \, \vee \, \prog{b} \wedge 
-                \mathrm{wp} \, (\prog{p}, \Psi_n)
+                & = \, \dots 
         \end{align*}
 \end{frame}
 
@@ -348,6 +341,32 @@
                         x:= y \> {\blue ;} \> y := aux}, \> \prog{ x = b \wedge y = a })$
         \end{itemize}
 \end{frame}
+
+\begin{frame}{The Semantics}
+        \begin{align*}
+                \mathrm{wp}\,(\prog{x : = e}, \Phi) & = \Phi[\prog{e}/\prog{x}] \\[5pt]
+                %
+                \mathrm{wp}\,(\prog{p} \> {\blue ;} \> \prog{q}, \Phi) & 
+                = \mathrm{wp} \, (\prog{q}, \mathrm{wp} \, (\prog{p}, \Phi))  \\[5pt]
+                %
+                \mathrm{wp}\,({\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> q}}, \Phi)
+                & 
+                =
+                \prog{b} \wedge \mathrm{wp}\, (\prog{p},\Phi) \, \vee \,
+                \prog{\neg b} \wedge \mathrm{wp} \, (\prog{q}, \Phi)
+                \\[5pt]
+                \mathrm{wp} \, ({\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} }, \Phi)
+                & = \bigwedge_{n \in \Nats} \Psi_n
+        \end{align*}
+        \pause
+        \vspace{-0.5cm}
+        \begin{align*}
+                \Psi_0 & = \prog{tt} \\
+                \Psi_{n+1} & = \neg \prog{b} \wedge \Phi \, \vee \, \prog{b} \wedge 
+                \mathrm{wp} \, (\prog{p}, \Psi_n)
+        \end{align*}
+\end{frame}
+
 
 \section{Hoare Calculus}
 
