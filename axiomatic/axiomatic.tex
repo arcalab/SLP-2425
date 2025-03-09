@@ -250,12 +250,33 @@
 
         In the sequel we will consider only \alert{\underline{liberal conditions}}
 
-        \dots \, \ie\ every proposition $\Phi$ will have $\bot \in \sem{\Phi}$
+        \dots \, \ie\ every predicate $\Phi$ will have $\bot \in \sem{\Phi}$
 
         \bigskip
         Entails that we are working only with \alert{\underline{partial correctness}}
 
-        \dots \, \ie\ no proposition enforces termination
+        \dots \, \ie\ no predicate enforces termination
+\end{frame}
+
+\begin{frame}{Exercises}
+
+        Argue informally whether the triples below hold
+        \\[7pt]
+        \begin{itemize}
+                \item $\{ \prog{tt} \} \> \> \prog{{\blue while} \> \> tt \> \> skip} \> \> \{ \prog{ff} \}$
+                        \\[7pt]
+                \item $\{ \prog{tt} \} \> \> \prog{{\blue if} \>  b \> {\blue then} \> \> 
+                        x:=2 \> \> {\blue else} \> \> x:= 3} \> \> \{ \prog{x \geq 2} \}$
+                        \\[7pt]
+                \item $\{ \prog{x = a \wedge y = b} \} \> \>
+                        \prog{x:= y \> {\blue ;} \> y := x} \> \> \{ \prog{ x = b \wedge y = a }\}$
+                        \\[7pt]
+                \item $\{ \prog{x = a \wedge y = b} \} \> \>
+                        \prog{x:= aux \> {\blue ;} \> 
+                        x:= y \> {\blue ;} \> y := aux} \> \> \{ \prog{ x = b \wedge y = a }\}$
+                        \\[7pt]
+                \item $\{ \prog{x =n \wedge y = 1} \} \> \> \prog{fact} \> \> \{ \prog{y = n!} \}$
+        \end{itemize}
 \end{frame}
 
 \bibliographystyle{amsalpha}
