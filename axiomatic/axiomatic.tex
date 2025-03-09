@@ -279,6 +279,78 @@
         \end{itemize}
 \end{frame}
 
+\section{Weakest Precondition Semantics}
+
+\begin{frame}{What and Why}
+
+        Focus is on deriving the \alert{\underline{weakest}} condition $\Phi$ such that
+        \[
+                \{ \Phi \} \> \prog{p} \> \{ \Psi \}   \hspace{1cm}
+                \Big ( \> \text{iff } \sem{\Phi} \subseteq \sem{\prog{p}}^{-1}(\sem{\Psi}) \> \Big )
+        \]
+        \pause
+        $\Phi$ `weaker' (\ie\ less restrictive) than $\Phi'$ means $\sem{\Phi} \supseteq \sem{\Phi'}$
+
+        \pause
+        \bigskip
+        \bigskip
+        \begin{minipage}[0.3\textheight]{\textwidth}
+                \begin{columns}[c]
+                \begin{column}{0.7\textwidth}
+                        To \alert{\underline{understand}} a program amounts to knowing the weakest
+                        precondition that ensures a given postcondition
+                \end{column}
+                \begin{column}{0.22\textwidth}
+                        \includegraphics[scale=1.1]{images/Dijkstra.jpg}
+                \end{column}
+                \end{columns}
+       \end{minipage}
+\end{frame}
+
+\begin{frame}{The Semantics}
+        \begin{align*}
+                \mathrm{wp}\,(\prog{x : = e}, \Phi) & = \Phi[\prog{e}/\prog{x}] \\[5pt]
+                %
+                \mathrm{wp}\,(\prog{p} \> {\blue ;} \> \prog{q}, \Phi) & 
+                = \mathrm{wp} \, (\prog{q}, \mathrm{wp} \, (\prog{p}, \Phi))  \\[5pt]
+                %
+                \mathrm{wp}\,({\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> q}}, \Phi)
+                & 
+                =
+                \prog{b} \wedge \mathrm{wp}\, (\prog{p},\Phi) \, \vee \,
+                \prog{\neg b} \wedge \mathrm{wp} \, (\prog{q}, \Phi)
+                \\[5pt]
+                \mathrm{wp} \, ({\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} }, \Phi)
+                & = \bigwedge_{n \in \Nats} \Psi_n
+        \end{align*}
+        \pause
+        \vspace{-0.5cm}
+        \begin{align*}
+                \Psi_0 & = \prog{tt} \\
+                \Psi_{n+1} & = \neg \prog{b} \wedge \Phi \, \vee \, \prog{b} \wedge 
+                \mathrm{wp} \, (\prog{p}, \Psi_n)
+        \end{align*}
+\end{frame}
+
+\begin{frame}{Exercises}
+        
+        \alert{\underline{Calculate}} the weakest preconditions w.r.t. the following pairs
+        \\[7pt]
+        \begin{itemize}
+                \item $(\prog{x := y}, \>  \prog{x} \geq 1)$
+                        \\[7pt]
+                \item $(\prog{{\blue if} \>  b \> {\blue then} \> \> 
+                        x:=2 \> \> {\blue else} \> \> x:= 3}, \> \prog{x \geq 2})$
+                        \\[7pt]
+                \item $(\prog{x:= y \> {\blue ;} \> y := x}, \> \prog{ x = b \wedge y = a })$
+                        \\[7pt]
+                \item $(\prog{x:= aux \> {\blue ;} \> 
+                        x:= y \> {\blue ;} \> y := aux}, \> \prog{ x = b \wedge y = a })$
+        \end{itemize}
+\end{frame}
+
+\section{Hoare Calculus}
+
 \bibliographystyle{amsalpha}
 \bibliography{axiomatic}
 
