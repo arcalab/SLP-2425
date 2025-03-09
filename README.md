@@ -25,6 +25,7 @@ Learning outcomes:
   | 24 feb. 2025 | Introduction to denotational semantics ([slides](./denotational/denotational.pdf)) |
   | 25 feb. 2025 | Exercises  |
   | 03 mar. 2025 | A very brief introduction to domain theory and fixpoints ([slides](./denotational/denotational.pdf))  |
+  | 10 mar. 2025 | Introduction to axiomatic semantics ([slides](./axiomatic/axiomatic.pdf))  |
 
 
 # Assessment
