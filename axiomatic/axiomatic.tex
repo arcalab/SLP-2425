@@ -367,6 +367,40 @@
         \end{align*}
 \end{frame}
 
+\begin{frame}{Unfolding While-loops}
+        \begin{align*}
+         & \, \mathrm{wp} \, ({\mathtt{{\blue while} \> b \> {\blue do} \> \{ \> p \> \}} }, \Phi)
+         %
+         \\
+         %
+         & = \Psi_0
+         & {\scriptsize \text{(trivial)}^\ast }
+         %
+         \\
+         %
+         & \, \wedge \neg \prog{b} \wedge \Phi \, \vee \, \prog{b} \wedge \mathrm{wp} \, (\prog{p},\Psi_0)
+         & {\scriptsize \text{(\alert{\underline{terminates}} with $\Phi$ 
+         \alert{\underline{or iterates once}} and then \alert{\underline{$^\ast$}})}^{\ast \ast} }
+         %
+         \\
+         %
+         & \, \wedge \neg \prog{b} \wedge \Phi \, \vee \, \prog{b} \wedge \mathrm{wp} \, (\prog{p},\Psi_1)
+         & {\scriptsize \text{(\alert{\underline{terminates}} 
+                         with $\Phi$  \alert{\underline{or iterates once}} 
+         and then \alert{\underline{$^{\ast \ast}$}})} }
+         %
+         \\
+         %
+         & \, \wedge \, \dots
+        \end{align*}
+        
+        \pause
+        \alert{\underline{Infinitary}} formula tracks when the loop terminates
+
+        \dots\ in which case it enforces $\Phi$
+
+        Each conjunct $\Psi_{n+1}$ tracks up to $n$ iterations
+\end{frame}
 
 \section{Hoare Calculus}
 
