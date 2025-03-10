@@ -272,7 +272,7 @@
                         \prog{x:= y \> {\blue ;} \> y := x} \> \> \{ \prog{ x = b \wedge y = a }\}$
                         \\[7pt]
                 \item $\{ \prog{x = a \wedge y = b} \} \> \>
-                        \prog{x:= aux \> {\blue ;} \> 
+                        \prog{aux := x \> {\blue ;} \> 
                         x:= y \> {\blue ;} \> y := aux} \> \> \{ \prog{ x = b \wedge y = a }\}$
                         \\[7pt]
                 \item $\{ \prog{x =n \wedge y = 1} \} \> \> \prog{fact} \> \> \{ \prog{y = n!} \}$
@@ -312,7 +312,7 @@
                 \mathrm{wp}\,(\prog{x : = e}, \Phi) & = \Phi[\prog{e}/\prog{x}] \\[5pt]
                 %
                 \mathrm{wp}\,(\prog{p} \> {\blue ;} \> \prog{q}, \Phi) & 
-                = \mathrm{wp} \, (\prog{q}, \mathrm{wp} \, (\prog{p}, \Phi))  \\[5pt]
+                = \mathrm{wp} \, (\prog{p}, \mathrm{wp} \, (\prog{q}, \Phi))  \\[5pt]
                 %
                 \mathrm{wp}\,({\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> q}}, \Phi)
                 & 
@@ -337,7 +337,7 @@
                         \\[7pt]
                 \item $(\prog{x:= y \> {\blue ;} \> y := x}, \> \prog{ x = b \wedge y = a })$
                         \\[7pt]
-                \item $(\prog{x:= aux \> {\blue ;} \> 
+                \item $(\prog{ aux := x {\blue ;} \> 
                         x:= y \> {\blue ;} \> y := aux}, \> \prog{ x = b \wedge y = a })$
         \end{itemize}
 \end{frame}
@@ -347,7 +347,7 @@
                 \mathrm{wp}\,(\prog{x : = e}, \Phi) & = \Phi[\prog{e}/\prog{x}] \\[5pt]
                 %
                 \mathrm{wp}\,(\prog{p} \> {\blue ;} \> \prog{q}, \Phi) & 
-                = \mathrm{wp} \, (\prog{q}, \mathrm{wp} \, (\prog{p}, \Phi))  \\[5pt]
+                = \mathrm{wp} \, (\prog{p}, \mathrm{wp} \, (\prog{q}, \Phi))  \\[5pt]
                 %
                 \mathrm{wp}\,({\mathtt{{\blue if} \> b \> {\blue then} \> p \> {\blue else} \> q}}, \Phi)
                 & 
@@ -402,6 +402,152 @@
         Each conjunct $\Psi_{n+1}$ tracks up to $n$ iterations
 \end{frame}
 
+\begin{frame}{Unfolding While-loops (The Case of Divergence) }
+        \begin{align*}
+         & \, \mathrm{wp} \, ({\mathtt{{\blue while} \> \prog{tt} \> {\blue do} \> \{ \> p \> \}} }, \Phi)
+         %
+         \\
+         %
+         & = \Psi_0 \qquad ( = \prog{tt} )
+         & % 
+         %
+         \\
+         %
+         & \, \wedge \neg \prog{tt} \wedge \Phi \, \vee \, \prog{tt} \wedge \mathrm{wp} \, (\prog{p},\prog{tt})
+         \qquad ( = \prog{ tt} )
+         & % 
+         %
+         \\
+         %
+         & \, \wedge \neg \prog{tt} \wedge \Phi \, \vee \, \prog{tt} \wedge \mathrm{wp} \, (\prog{p},\prog{tt})
+         \qquad ( = \prog{ tt } )
+         &
+         %
+         \\
+         %
+         & \, \wedge \, \dots
+         %
+         \\
+         & \, =  \prog{tt}
+        \end{align*}
+\end{frame}
+
+\begin{frame}{Exercises}
+
+        Prove that the following equations hold
+        \\[10pt]
+        \begin{itemize}
+                \item $\mathrm{wp} \, (\prog{p}, \prog{tt}) = \prog{tt}$
+                \\[10pt]
+                \item $\mathrm{wp} \, (\prog{p}, \Phi \wedge \Psi )
+                = \mathrm{wp} \, (\prog{p}, \Phi) \wedge 
+                \mathrm{wp} \, (\prog{p}, \Psi )$
+                \\[10pt]
+                \item $\mathrm{wp} \, (\prog{p}, \bigwedge_{i \in I} \Phi_i )
+                = \bigwedge_{i \in I} \mathrm{wp} \, (\prog{p}, \Phi_i)$
+        \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Pre-condition and Denotational Semantics}
+
+        \begin{theorem}
+                $\sem{\mathrm{wp} \, (\prog{p}, \Phi)} = \sem{\prog{p}}^{-1}(\sem{\Phi})$
+        \end{theorem}
+
+        \begin{proof}
+                By \alert{\underline{induction}}. Case of while-loops
+                proved neatly via domain theory
+        \end{proof}
+
+        \bigskip
+        \begin{corollary}
+                $\sem{\prog{p}} =
+                \sem{\prog{q}} \Longrightarrow \forall \Phi. \, \mathrm{wp} \, (\prog{p}, \Phi)
+                \equiv \mathrm{wp} \, (\prog{q}, \Phi)$
+        \end{corollary}
+\end{frame}
+
+\begin{frame}{Expressivity Matters}
+
+Is it true that $\Big ( \forall \Phi. \, \mathrm{wp}(\prog{p}, \Phi)
+\equiv \mathrm{wp} \,(\prog{q}, \Phi) \Big ) \Longrightarrow \sem{\prog{p}} =
+\sem{\prog{q}}$ ? 
+
+\pause
+\bigskip
+Well \dots
+\vspace{-0.3cm}
+\begin{align*}
+        & \, \forall \Phi. \, \mathrm{wp} \, (\prog{p}, \Phi) \equiv \mathrm{wp} \, (\prog{q}, \Phi)
+        \\
+        & \Longrightarrow 
+        \forall \Phi. \, \sem{\mathrm{wp} \, (\prog{p}, \Phi)} = \sem{\mathrm{wp} \, (\prog{q}, \Phi)}
+        \\
+        & \Longrightarrow 
+        \forall \Phi. \, \sem{\prog{p}}^{-1}(\sem{\Phi}) = \sem{\prog{q}}^{-1}(\sem{\Phi}) 
+        &
+        \\
+        & \alert{\Longrightarrow} 
+        \sem{\prog{p}} = \sem{\prog{q}} 
+\end{align*}
+\pause
+\vspace{-0.5cm}
+\begin{block}{A counter-example (the simplest grammar of propositions) }
+        \[
+                \prog{b} :: = \prog{tt} \mid \prog{\neg b} \mid \prog{b \vee b}
+                \mid \bigwedge \prog{b}
+        \]
+        Calculate all possible interpretations $\sem{\prog{b}}$
+\end{block}
+\end{frame}
+
+\begin{frame}{From Weakest Pre-conditions to Hoare Triples}
+
+        We wish to prove the validity of Hoare triples
+
+        \dots \, like in `algorithms and complexity'
+
+        \bigskip
+        For this we use a simple calculus from the semantics
+
+        \dots \, with merely one rule
+        \[
+                \infer{\vdash \{ \Phi \} \, \prog{p} \, \{ \Psi \}}
+                { \vdash \Phi \rightarrow \mathrm{wp} \, (\prog{p}, \Psi) }
+        \]
+\end{frame}
+
+\begin{frame}{Soundness}
+
+        Is our calculus correct ?
+
+        \dots \, \ie\  $\vdash \{ \Phi \} \, \prog{p} \, \{ \Psi \} \Longrightarrow
+        \sem{\Phi} \subseteq \sem{\prog{p}}^{-1}(\sem{\Psi})$
+
+        \pause
+        \bigskip
+        \bigskip
+        Yes, and the proof is easy !!
+\end{frame}
+
+\begin{frame}{Completeness}
+
+        Is our calculus complete ?
+
+        \dots \, \ie\  $\sem{\Phi} \subseteq \sem{\prog{p}}^{-1}(\sem{\Psi}) \Longrightarrow
+        \> 
+        \vdash \{ \Phi \} \, \prog{p} \, \{ \Psi \}$
+
+        \pause
+        \bigskip
+        \bigskip
+        It depends on whether the logic is complete
+
+        \dots \, \ie\ $\sem{\Phi_1} \subseteq \sem{\Phi_2} \Longrightarrow \> \vdash \Phi_1 \rightarrow \Phi_2$
+        for all formulae $\Phi_1, \Phi_2$
+
+\end{frame}
 \section{Hoare Calculus}
 
 \bibliographystyle{amsalpha}
