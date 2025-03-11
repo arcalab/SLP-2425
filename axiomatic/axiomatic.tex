@@ -527,8 +527,7 @@ Well \dots
 
         \pause
         \bigskip
-        \bigskip
-        Yes, and the proof is easy !!
+        Yes, and the proof is super easy !!
 \end{frame}
 
 \begin{frame}{Completeness}
@@ -541,15 +540,85 @@ Well \dots
 
         \pause
         \bigskip
-        \bigskip
-        It depends on whether the logic is complete
+        Well, it depends on whether the logic is complete
 
         \dots \, \ie\ $\sem{\Phi_1} \subseteq \sem{\Phi_2} \Longrightarrow \> \vdash \Phi_1 \rightarrow \Phi_2$
         for all formulae $\Phi_1, \Phi_2$
 
 \end{frame}
+
 \section{Hoare Calculus}
 
+\begin{frame}{Motivation}
+
+        Let us now try to establish
+        \[
+                \vdash \{ \prog{x =n \wedge y = 1} \} \> \> \prog{fact} \> \>
+                \{ \prog{y = n!} \}
+        \]
+        ${\small \Big ( \prog{fact} = \prog{{\blue while} \> x > 0 \> \{ y :=
+        x \times y \> {\blue ;} \> x := x - 1 \} } \Big )}$
+
+        \pause
+        \bigskip
+        \bigskip
+        \textbf{Still hard ? }
+
+        The calculus is for obtaining \alert{\underline{weakest preconditions}}
+
+        \dots \, and less about proving Hoare triples
+
+        \dots \, besides infinite conjunctions are hard !
+\end{frame}
+
+\begin{frame}{Back to Old Friends}
+        \[
+                \infer{ \vdash \{ \Phi \} \> \prog{skip} \> \{ \Phi \} }{}
+                \hspace{2.5cm}
+                \infer{ \vdash \{ \Phi[\prog{e}/\prog{x}] \} \> \prog{ x : = e } \>
+                \{ \Phi \} }{}
+        \]
+        \\[5pt]
+        \[
+                \infer { \vdash \{ \Phi \} \> \prog{p \> {\blue ;} \> q} \> \{ \Xi \} }{
+                        \vdash \{ \Phi \} \> \prog{p} \> \{ \Psi \}
+                        \qquad
+                        \vdash \{ \Psi \} \> \prog{q} \> \{ \Xi \}
+                }
+                \hspace{1cm}
+                \infer{
+                        \vdash \{ \Phi \} \> \prog{{\blue while}} \> \prog{b} \>
+                        \prog{p} \> 
+                        \{ \neg \prog{b} \wedge \Phi \}
+                }{
+                        \vdash
+                        \{ \Phi \wedge \prog{b} \} \> \prog{p} \> \{ \Phi \}
+                }
+        \]
+        \\[5pt]
+        \[
+                \infer {
+                        \vdash \{ \Phi \} \> \prog{{\blue if} \> b}
+                        \> \prog{{\blue then}} \>
+                        \prog{p} \> \prog{{\blue else}} \> \prog{q}
+                        \> \{ \Psi \}
+                }{
+                        \vdash \{ \prog{b} \wedge \Phi \} \> \prog{p} \> \{ \Psi \}
+                        \qquad
+                        \vdash \{ \prog{\neg b} \wedge \Phi \} \> \prog{q} \> \{ \Psi \}
+                }
+        \]
+        \\[5pt]
+        \[
+                \infer{ \vdash \{ \Phi \} \> \prog{p} \> \{ \Psi \} }{
+                        \vdash \Phi \rightarrow \Psi
+                        \quad
+                        \vdash \{ \Psi \} \> \prog{p} \> \{ \Xi \}
+                        \quad
+                        \vdash \Xi \rightarrow \Omega
+                }
+        \]
+\end{frame}
 \bibliographystyle{amsalpha}
 \bibliography{axiomatic}
 
