@@ -492,8 +492,8 @@ Well \dots
         \sem{\prog{p}} = \sem{\prog{q}} 
 \end{align*}
 \pause
-\vspace{-0.5cm}
-\begin{block}{A counter-example (the simplest grammar of propositions) }
+\vspace{-0.7cm}
+\begin{block}{Counter-example (the simplest grammar of propositions) }
         \[
                 \prog{b} :: = \prog{tt} \mid \prog{\neg b} \mid \prog{b \vee b}
                 \mid \bigwedge \prog{b}
@@ -506,19 +506,19 @@ Well \dots
 
         We wish to prove the validity of Hoare triples
 
-        \dots \, like in `algorithms and complexity'
+        \dots \, just like in `algorithms and complexity'
 
         \bigskip
-        For this we use a simple calculus from the semantics
+        We use a calculus from the precondition semantics
 
-        \dots \, with merely one rule
+        \dots \, with  \alert{\underline{merely one}} rule
         \[
                 \infer{\vdash \{ \Phi \} \, \prog{p} \, \{ \Psi \}}
                 { \vdash \Phi \rightarrow \mathrm{wp} \, (\prog{p}, \Psi) }
         \]
 \end{frame}
 
-\begin{frame}{Soundness}
+\begin{frame}{The Quest for Soundness}
 
         Is our calculus correct ?
 
@@ -527,10 +527,15 @@ Well \dots
 
         \pause
         \bigskip
-        Yes, and the proof is super easy !!
+        \bigskip
+        \begin{center}
+        \fbox{
+                \alert{\underline{Yes}} and moreover the proof is super easy !!
+        }
+        \end{center}
 \end{frame}
 
-\begin{frame}{Completeness}
+\begin{frame}{The Quest for Completeness}
 
         Is our calculus complete ?
 
@@ -540,18 +545,25 @@ Well \dots
 
         \pause
         \bigskip
-        Well, it depends on whether the logic is complete
-
-        \dots \, \ie\ $\sem{\Phi_1} \subseteq \sem{\Phi_2} \Longrightarrow \> \vdash \Phi_1 \rightarrow \Phi_2$
-        for all formulae $\Phi_1, \Phi_2$
-
+        \bigskip
+        \begin{center}
+                \fbox{
+                        \alert{\underline{It depends}} on whether the logic is complete
+                        \dots
+                }
+        \end{center}
+        \begin{center}
+                $\Big (\text{\dots\ \ie\ }
+                \sem{\Phi_1} \subseteq \sem{\Phi_2} \Longrightarrow \> \vdash
+                \Phi_1 \rightarrow \Phi_2 \Big )$
+        \end{center}
 \end{frame}
 
 \section{Hoare Calculus}
 
 \begin{frame}{Motivation}
 
-        Let us now try to establish
+        Let us try to establish
         \[
                 \vdash \{ \prog{x =n \wedge y = 1} \} \> \> \prog{fact} \> \>
                 \{ \prog{y = n!} \}
@@ -562,62 +574,207 @@ Well \dots
         \pause
         \bigskip
         \bigskip
-        \textbf{Still hard ? }
+        \textbf{Hard ?}
 
-        The calculus is for obtaining \alert{\underline{weakest preconditions}}
+        The calculus is strictly based on obtaining \alert{\underline{weakest preconditions}}
 
-        \dots \, and less about proving Hoare triples
+        \dots \, which renders it hard to use in practice
 
-        \dots \, besides infinite conjunctions are hard !
 \end{frame}
 
 \begin{frame}{Back to Old Friends}
         \[
-                \infer{ \vdash \{ \Phi \} \> \prog{skip} \> \{ \Phi \} }{}
+                \infer{ \vdash_H \{ \Phi \} \> \prog{skip} \> \{ \Phi \} }{}
                 \hspace{2.5cm}
-                \infer{ \vdash \{ \Phi[\prog{e}/\prog{x}] \} \> \prog{ x : = e } \>
+                \infer{ \vdash_H \{ \Phi[\prog{e}/\prog{x}] \} \> \prog{ x : = e } \>
                 \{ \Phi \} }{}
         \]
-        \\[5pt]
+        \\[1pt]
         \[
-                \infer { \vdash \{ \Phi \} \> \prog{p \> {\blue ;} \> q} \> \{ \Xi \} }{
-                        \vdash \{ \Phi \} \> \prog{p} \> \{ \Psi \}
+                \infer { \vdash_H \{ \Phi \} \> \prog{p \> {\blue ;} \> q} \> \{ \Xi \} }{
+                        \vdash_H \{ \Phi \} \> \prog{p} \> \{ \Psi \}
                         \qquad
-                        \vdash \{ \Psi \} \> \prog{q} \> \{ \Xi \}
+                        \vdash_H \{ \Psi \} \> \prog{q} \> \{ \Xi \}
                 }
                 \hspace{1cm}
                 \infer{
-                        \vdash \{ \Phi \} \> \prog{{\blue while}} \> \prog{b} \>
+                        \vdash_H \{ \Phi \} \> \prog{{\blue while}} \> \prog{b} \>
                         \prog{p} \> 
                         \{ \neg \prog{b} \wedge \Phi \}
                 }{
-                        \vdash
+                        \vdash_H
                         \{ \Phi \wedge \prog{b} \} \> \prog{p} \> \{ \Phi \}
                 }
         \]
-        \\[5pt]
+        \\[1pt]
         \[
                 \infer {
-                        \vdash \{ \Phi \} \> \prog{{\blue if} \> b}
+                        \vdash_H \{ \Phi \} \> \prog{{\blue if} \> b}
                         \> \prog{{\blue then}} \>
                         \prog{p} \> \prog{{\blue else}} \> \prog{q}
                         \> \{ \Psi \}
                 }{
-                        \vdash \{ \prog{b} \wedge \Phi \} \> \prog{p} \> \{ \Psi \}
+                        \vdash_H \{ \prog{b} \wedge \Phi \} \> \prog{p} \> \{ \Psi \}
                         \qquad
-                        \vdash \{ \prog{\neg b} \wedge \Phi \} \> \prog{q} \> \{ \Psi \}
+                        \vdash_H \{ \prog{\neg b} \wedge \Phi \} \> \prog{q} \> \{ \Psi \}
                 }
         \]
-        \\[5pt]
+        \\[1pt]
         \[
-                \infer{ \vdash \{ \Phi \} \> \prog{p} \> \{ \Psi \} }{
+                \infer{ \vdash_H \{ \Phi \} \> \prog{p} \> \{ \Psi \} }{
                         \vdash \Phi \rightarrow \Psi
                         \quad
-                        \vdash \{ \Psi \} \> \prog{p} \> \{ \Xi \}
+                        \vdash_H \{ \Psi \} \> \prog{p} \> \{ \Xi \}
                         \quad
                         \vdash \Xi \rightarrow \Omega
                 }
         \]
+\end{frame}
+
+\begin{frame}{No Such Thing as a Free Lunch}
+
+        Let us try now to establish
+        \[
+                \vdash_H \{ \prog{x = n \geq 0 \wedge y = 1} \} \> \> \prog{fact} \> \>
+                \{ \prog{y = n!} \}
+        \]
+        ${\small \Big ( \prog{fact} = \prog{{\blue while} \> x > 0 \> \{ y :=
+        x \times y \> {\blue ;} \> x := x - 1 \} } \Big )}$
+
+        \pause
+        \medskip
+        \textbf{Much easier} 
+
+        \dots\, but only if we a find a \alert{\underline{suitable invariant}}
+
+        \eg\ $\prog{y} \times \prog{x}! = \prog{n}! \wedge \prog{x} \geq 0$
+
+        \pause
+        \bigskip
+        \begin{center}
+                \fbox{ Finding suitable invariants is now the hard part }
+        \end{center}
+\end{frame}
+
+\begin{frame}{Hoare Calculus and its Correctness} 
+
+        \begin{theorem}[Soundness]
+                $\vdash_H \{ \Phi \} \, \prog{p} \, \{ \Psi \}
+                \Longrightarrow
+                \sem{\Phi} \subseteq \sem{\prog{p}}^{-1}(\sem{\Psi})$
+        \end{theorem}
+
+        \begin{proof}
+                By \alert{\underline{induction}} on $\vdash_H$. Case of
+                while-loops proved neatly via domain theory
+        \end{proof}
+
+\end{frame}
+
+\begin{frame}{Hoare Calculus and its Relative Completeness}
+
+        \begin{lemma}
+                $\vdash_H \{ \mathrm{wp} \, (\prog{p}, \Phi) \} \>
+                \prog{p} \> \{ \Phi \} $
+        \end{lemma}
+
+        \begin{proof}
+                \alert{\underline{Induction}} on the structure of programs.
+        \end{proof}
+
+        \medskip
+        \begin{corollary}
+                $\vdash \{ \Phi \} \> \prog{p} \> \{ \Psi \}
+                \Longrightarrow \> \vdash_H \{ \Phi \} \> \prog{p} \> \{ \Psi \}$
+        \end{corollary}
+
+\end{frame}
+
+\begin{frame}{Hoare Calculus and its Relative Completeness}
+        \begin{theorem}[Relative Completeness]
+        If underlying logic is complete
+        \[
+                \sem{\Phi} \subseteq \sem{\prog{p}}^{-1} (\sem{\Psi})
+                \> \> \Longrightarrow \> \>
+                \vdash_H \{ \Phi \} \> \prog{p} \> \{ \Psi \}
+        \]
+        \end{theorem}
+
+        \begin{proof}
+                Uses (relative) completeness of weakest preconditions and previous corollary
+        \end{proof}
+
+        \medskip
+        \begin{corollary}
+                $\sem{\prog{p}} = \sem{\prog{q}}
+                \>  \Longrightarrow  \> 
+                \Big ( \vdash_H \{ \Phi \} \> \prog{p} \>  \{ \Psi \} \text{ iff }
+                \vdash_H \{ \Phi \} \> \prog{q} \> \{ \Psi \} \Big )$
+        \end{corollary}
+\end{frame}
+
+\section{Conclusions}
+
+\begin{frame}{Conclusions}
+
+        Briefly studied axiomatic semantics
+
+        Suitable for \alert{\underline{program correctness}}
+
+        \dots\, more deeply, for studying programs from a \alert{\underline{logical}} 
+        perspective
+
+        \bigskip
+        \pause
+        Hints at profound connections between programming and logic
+
+        \dots \, one has much to learn from the other
+\end{frame}
+
+\begin{frame}{Conclusions (Choosing a Logic)}
+
+        Did not fix any logic
+
+        \dots \, although assumed strong constructs (infinite conjunctions)
+
+        Typical choice is \alert{\underline{first-order logic}}
+
+        \dots \, absence of infinite conjunctions circumvented by universal
+        quantification
+\end{frame}
+
+\begin{frame}{Conclusions (Choosing a Logic)}
+
+        Computer states involve numbers
+
+        \dots \, and thus one typically uses \alert{\underline{FOL + natural
+        numbers arithmetic}}
+
+        \bigskip
+        \pause
+        But \alert{\underline{G\"odel's incompleteness theorem}} asserts that
+
+        \bigskip 
+        \begin{minipage}[0.3\textheight]{\textwidth}
+                \begin{columns}[c]
+                \begin{column}{0.7\textwidth}
+                       Natural numbers arithmetic is incomplete 
+                \end{column}
+                \begin{column}{0.22\textwidth}
+                        \includegraphics[scale=0.07]{images/godel.jpg}
+                \end{column}
+                \end{columns}
+       \end{minipage}
+
+       \pause
+       \begin{center}
+               \fbox{Which logic would you choose ?}
+       \end{center}
+\end{frame}
+
+\begin{frame}{Further Reading}
+        Further details in \cite[Chapter 3]{reynolds98} and \cite[Chapter
+        6 and 7]{winskel93}
 \end{frame}
 \bibliographystyle{amsalpha}
 \bibliography{axiomatic}
