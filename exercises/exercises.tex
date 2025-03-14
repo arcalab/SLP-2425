@@ -423,8 +423,38 @@ symbols $\prog{p} \equiv_o \prog{q}$) if the equivalence below holds.
                       \mathtt{\blue{ if} \> b \> \blue{ then} \> p \> \blue{ ;} \> r \> 
                       \blue{ else} \> q \> \blue{ ;} \> r}$ 
         \end{itemize}
-
 \end{problem}
+
+Recall now our second notion of program equivalence (the one that compilers
+tacitly use). It is usually referred to as \emph{contextual equivalence} and
+recurs to the following grammar of `contexts'.
+\[              
+                C ::= [-] \mid C \> \prog{ \blue{;}} \> \prog{p} 
+                \mid 
+                \prog{p} \> \prog{ \blue{;}} \> C 
+                \mid 
+                \mathtt{\blue{ if} \> b \> \blue{ then} \>} C \mathtt{\> \blue{ else} \> p} 
+                \mid
+                \mathtt{\blue{ if} \> b \> \blue{ then} \>} \prog{p} \mathtt{\> \blue{ else} \> C} 
+                \mid
+                \mathtt{\blue{ while} \> b \> \blue{ do} \> \{ \>} C \mathtt{\> \}}
+\]
+Two programs $\prog{p}$ and $\prog{q}$ will be contextually equivalent (in
+symbols $\prog{p} \equiv \prog{q}$) if the equivalence below holds.
+\[
+               \pv{C[\prog{p}]}{\sigma} \Downarrow \sigma'
+               \text{ iff } \pv{C[\prog{q}]}{\sigma} \Downarrow \sigma'
+               \hspace{1cm} (\text{for all states } \sigma,\sigma' \text{ and contexts } C)
+\]
+\begin{problem}
+        The natural question then arises of whether the equivalence below holds
+        \[
+                \prog{p} \equiv \prog{q} \text{ iff } \prog{p} \equiv_o \prog{q} 
+        \]
+        The left-to-right direction is clear, but what about the inverse direction?
+        Can you prove it? Where do you get stuck?
+\end{problem}
+
 \section{Denotational Semantics}
 
 \section{Axiomatic Semantics}
