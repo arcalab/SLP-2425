@@ -255,7 +255,7 @@ operational, denotational, and axiomatic semantics.
         \end{figure}
 
         \begin{problem}
-                Explain the meaning of the notation $\longrightarrow^\star$.
+                Thus explain the meaning of the notation $\longrightarrow^\star$.
         \end{problem}
 
         \begin{problem}
@@ -272,12 +272,159 @@ operational, denotational, and axiomatic semantics.
                         \> \> \prog{ \blue{else}}
                         \> \> \prog{ x := 3 }
                 \]
-                Also give an example of a program that generates an
+                Finally give an example of a program that generates an
                 \emph{infinite} sequence of transitions. Justify your choice
                 mathematically :-).
         \end{problem}
+
 \subsection{Big-step}
 
+We now lean over our big-step operational semantics. Recall that it abstracts
+away from all intermediate computational steps performed in the context of the
+small-step semantics. It is therefore better suited  for calculating outputs
+and for studying program equivalence (among other things).  The big-step
+semantics of our while-language is defined in
+Figure~\ref{fig:big}.
+
+\begin{problem}
+        Again in the lectures we did not see a big-step operational
+        semantics for the arithmetic expressions. Can you define one such
+        semantics now?
+\end{problem}
+
+
+        \begin{figure}[h]
+        \begin{minipage}{1\textwidth}
+        \begin{flalign*}
+                \infer[(\text{asg})]{
+                        \langle \mathtt{x := e}, \sigma \rangle \Downarrow 
+                        \sigma[\mathtt{v} / \mathtt{x}]
+                }{
+                       \langle \mathtt{e}, \sigma \rangle \Downarrow \mathtt{v}
+                } 
+                \hspace{2cm}
+                \infer[(\text{seq})]{
+                        \langle \mathtt{p \> \blue{ ;} \> q}, \sigma \rangle \Downarrow \sigma''
+                }{
+                        \langle \mathtt{p}, \sigma \rangle \Downarrow \sigma' \qquad
+                        \langle \mathtt{q}, \sigma' \rangle \Downarrow \sigma'' 
+                }
+        \end{flalign*}
+        %%
+        \\[-30pt]
+        %%
+        \begin{flalign*}
+                \infer[(\text{if$_1$})]{
+                        \langle \mathtt{\blue{ if} \> b \> \blue{ then} \> \> p \> \blue{ else} \> q}, 
+                        \sigma \rangle \Downarrow \sigma'
+                }{
+                        \langle \mathtt{b}, \sigma \rangle \Downarrow \mathtt{tt} \qquad
+                        \langle \mathtt{p}, \sigma \rangle \Downarrow \sigma'
+                } 
+                %
+                \hspace{2cm} 
+                %
+                \infer[(\text{if$_2$})]{
+                        \langle \mathtt{\blue{ if} \> b \> \blue{ then} \> \> p \> \blue{ else} \> q}, 
+                        \sigma \rangle \Downarrow \sigma'
+                }{
+                        \langle \mathtt{b}, \sigma \rangle \Downarrow \mathtt{ff} \qquad
+                        \langle \mathtt{q}, \sigma \rangle \Downarrow \sigma'
+                } 
+        \end{flalign*}
+        %%
+        \\[-30pt]
+        %%
+        \begin{flalign*}
+                \infer[(\text{wh$_1$})]{
+                        \langle \mathtt{\blue{ while} \> b \> \blue{ do} \> \{ \> p \> \}}, \sigma \rangle
+                        \Downarrow \sigma''
+                }{
+                        \langle \mathtt{b}, \sigma \rangle \Downarrow \mathtt{tt} \qquad
+                        \langle \mathtt{p}, \sigma \rangle \Downarrow \sigma' \qquad
+                        \langle \mathtt{\blue{ while} \> b \> \blue{ do} \> \{ \> p \> \}}, \sigma'
+                        \rangle \Downarrow \sigma'' 
+                }
+        \end{flalign*}
+        %%
+        \\[-30pt]
+        %%
+        \begin{flalign*}
+                \infer[(\text{wh$_2$})]{
+                        \langle \mathtt{\blue{ while} \> b \> \blue{ do} \> \{ \> p \> \}}, \sigma \rangle
+                        \Downarrow \sigma
+                }{
+                        \langle \mathtt{b}, \sigma \rangle \Downarrow \mathtt{ff}
+                }
+        \end{flalign*}
+        \end{minipage}
+        \caption{A big-step operational semantics for the while-language}
+        \label{fig:big}
+        \end{figure}
+
+\begin{problem}
+Calculate via the semantics in Figure~\ref{fig:big} the outputs of the two
+programs below.
+                \[
+                        \prog{ x := 1} \> \blue{;} \> \prog{x := 2}
+                        %
+                        \hspace{3cm}
+                        %
+                        \prog{ \blue{if} } 
+                        \> \> \prog{tt} \> \> \prog{ \blue{then}} \> \>
+                        \prog{ x := 1} \> \blue{;} \> \prog{x := 2}
+                        \> \> \prog{ \blue{else}}
+                        \> \> \prog{ x := 3 }
+                \]
+Reflect on the differences between calculating the outputs of these two
+programs w.r.t. the small-step and big-step semantics.
+\end{problem} 
+
+Now that we have two different complementary semantics for our while-language
+(small-step and big-step) it is useful to prove that they `agree' with each
+other, or more formally that the equivalence below holds
+       \[
+                \pv{\prog{p}}{\sigma} \longrightarrow^\star \sigma'
+                \text{ iff } \pv{\prog{p}}{\sigma} \Downarrow \sigma'
+       \]
+for every program $\prog{p}$ and states $\sigma,\sigma'$.  Here we will prove
+just one side of the equivalence.
+\begin{problem}
+       Consider programs $\prog{p}$ and $\prog{p'}$ and states
+       $\sigma,\sigma',\sigma''$. Prove by induction (over the depth of
+       derivation trees) the following implication.
+       \[
+               \pv{\prog{p}}{\sigma} \longrightarrow \pv{\prog{p'}}{\sigma'}
+               \Downarrow \sigma'' \text{ implies } \pv{\prog{p}}{\sigma} \Downarrow \sigma''
+       \]
+       Then use this last result to prove the implication below.
+       \[
+                \pv{\prog{p}}{\sigma} \longrightarrow^\star \sigma'
+                \text{ implies } \pv{\prog{p}}{\sigma} \Downarrow \sigma'
+       \]
+       Are you able to prove the converse implication?
+\end{problem}
+
+Right, let us now recall the following (tentative) notion of program of
+equivalence: two programs $\prog{p}$ and $\prog{q}$ will be equivalent (in
+symbols $\prog{p} \equiv_o \prog{q}$) if the equivalence below holds.
+       \[
+                \pv{\prog{p}}{\sigma} \Downarrow \sigma'
+                \text{ iff } \pv{\prog{q}}{\sigma} \Downarrow \sigma'
+                \hspace{1cm} (\text{for all states } \sigma,\sigma')
+       \]
+\begin{problem}
+        Prove the two equivalences propounded below.
+        \begin{itemize}
+                \item $\mathtt{(p \> \blue{ ;} \> q) \> {\blue ;} \> r} \equiv_o
+                        \mathtt{p \> \blue{ ;} \> (q \> {\blue ;} \> r)}$
+                \item $\mathtt{(\blue{ if} \> b \> \blue{ then} \> p \> \blue{ else} \> q) 
+                      \> \blue{ ;} \> \prog{r}} \equiv_o 
+                      \mathtt{\blue{ if} \> b \> \blue{ then} \> p \> \blue{ ;} \> r \> 
+                      \blue{ else} \> q \> \blue{ ;} \> r}$ 
+        \end{itemize}
+
+\end{problem}
 \section{Denotational Semantics}
 
 \section{Axiomatic Semantics}
