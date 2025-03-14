@@ -8,6 +8,8 @@
 \usepackage{amsfonts}
 \usepackage{amsthm}
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
 \usepackage{proof}
 \usepackage{braket}
 \usepackage{graphicx}
@@ -456,6 +458,96 @@ symbols $\prog{p} \equiv \prog{q}$) if the equivalence below holds.
 \end{problem}
 
 \section{Denotational Semantics}
+
+Ok, we now focus on the denotational semantics of the previous lectures.
+Recall that not only it helped us solve the previous problem, it also allowed
+us to `import' knowledge from other mathematical theories (\eg\ `program
+calculus'). 
+
+A main challenge of this semantics was the interpretation of while-loops which
+required us to touch on the surface of Domain theory and fixed-points. We start
+from this end, in particular with the notion of a poset.
+\begin{problem}
+        Consider a set $\mathrm{State}$ of states. Show that it is a partially
+        ordered set (poset) when it comes equipped with equality as the partial
+        order.  Show as well that the pair $(\Pow (X),\subseteq)$ (for a given
+        set $X$) is a partial order.
+
+        Next, recall that given a poset $(X, \leq_X)$ we were able to define a
+        new poset $(X_\bot, \leq)$. Thus prove that the latter is indeed a
+        poset.  Finally given two sets $X$ and $Y$ prove that the set $[X,Y]$
+        of maps between $X$ and $Y$ is a poset whenever $Y$ is a poset.
+\end{problem}
+
+Let us now go beyond posets and shift our attention to $\omega$-CPOs. We start
+by revisiting the previous problem from the latter's perspective.
+
+\begin{problem}
+        Consider a set $\mathrm{State}$ of states. Show that it is an
+        $\omega$-CPO when it comes equipped with equality as the partial order.
+        Show as well that the pair $(\Pow (X),\subseteq)$ (for a given set $X$)
+        is an $\omega$-CPO.
+
+        Next, recall that given an $\omega$-CPO $(X, \leq_X)$ we were able to
+        define a new $\omega$-CPO $(X_\bot, \leq)$. Thus prove that the latter
+        is indeed an $\omega$-CPO.  Finally given two sets $X$ and $Y$ prove
+        that the set $[X,Y]$ of maps between $X$ and $Y$ is a $\omega$-CPO
+        whenever $Y$ is an $\omega$-CPO.
+\end{problem}
+
+Another key notion for defining the interpretation of while-loops was that of a
+\emph{continuous} map $f : X \to Y$ (between $\omega$-CPOs $X$ and $Y$). Just
+to recall, a map $f$ is called continuous if it satisfies the following
+conditions.
+\begin{flalign*}
+        x_1 \leq x_2 & \text{ entails } f(x_1) \leq f(x_2) \qquad (\text{for all $x_1,x_2 \in X$ })
+        \\
+        f(\vee_n x_n) & = \vee_n f(x_n) \qquad 
+        (\text{for every monotone sequence $(x_n)_{n \in \Nats}$}) 
+\end{flalign*}
+
+\begin{problem}
+        Prove that the composition $g \comp f : X \to Z$ of continuous maps
+        $f : X \to Y$ and $g : Y \to Z$ is continuous.
+\end{problem}
+
+These last three problems contain some of the necessary ingredients to
+interpret while-loops as fixpoints. Another ingredient is Kleene's fixpoint
+theorem which tells us how to build (the least) fixpoint of a continuous map $f
+: X \to X$ on an $\omega$-CPO $X$ with a bottom element. The fixpoint (denoted
+by $\mathrm{lfp}\, f$) is explicitly built as,
+\[
+        \mathrm{lfp}\, f = \vee_{n \in \Nats}\, f^n(\bot)
+\]
+\begin{problem}
+        Show that $\mathrm{lfp}\, f$ is indeed the least fixpoint of $f$.
+\end{problem}
+
+Finally after some work we obtained the denotational semantics detailed in
+Figure~\ref{fig:denot}.
+
+        \begin{figure}[h]
+        \begin{minipage}{1\textwidth}
+        \begin{flalign*}
+                \sem{\prog{x : = e}} & = \sigma \mapsto \sigma[\sem{\prog{e}}/\prog{x}] \\[2pt]
+                \sem{\prog{p} \> \blue{ ;} \> \prog{q}} & 
+                = \sem{\prog{q}} \comp \sem{\prog{p}} \\[5pt]
+                \sem{\mathtt{\blue{ if} \> b \> \blue{ then} \> p \> \blue{ else} \> q}}
+                                                        & 
+                                                        = [\sem{\prog{p}},\sem{\prog{q}}] \comp
+                                                        \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
+                                                        \\[5pt]
+                \sem{\mathtt{\blue{ while} \> b \> \blue{ do } \> \{ \> p \> \}} }
+                                                        & \> {=} \> \mathrm{lfp}\ \Big (k \mapsto
+                [k \comp 
+                \sem{\prog{p}},\id] \comp
+                \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id} \Big )
+        \end{flalign*}
+        \end{minipage}
+        \caption{A denotational semantics for the while-language}
+        \label{fig:denot}
+        \end{figure}
+
 
 \section{Axiomatic Semantics}
 
