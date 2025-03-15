@@ -526,29 +526,303 @@ by $\mathrm{lfp}\, f$) is explicitly built as,
 Finally after some work we obtained the denotational semantics detailed in
 Figure~\ref{fig:denot}.
 
-        \begin{figure}[h]
-        \begin{minipage}{1\textwidth}
-        \begin{flalign*}
-                \sem{\prog{x : = e}} & = \sigma \mapsto \sigma[\sem{\prog{e}}/\prog{x}] \\[2pt]
-                \sem{\prog{p} \> \blue{ ;} \> \prog{q}} & 
-                = \sem{\prog{q}} \comp \sem{\prog{p}} \\[5pt]
-                \sem{\mathtt{\blue{ if} \> b \> \blue{ then} \> p \> \blue{ else} \> q}}
-                                                        & 
-                                                        = [\sem{\prog{p}},\sem{\prog{q}}] \comp
-                                                        \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
-                                                        \\[5pt]
-                \sem{\mathtt{\blue{ while} \> b \> \blue{ do } \> \{ \> p \> \}} }
-                                                        & \> {=} \> \mathrm{lfp}\ \Big (k \mapsto
-                [k \comp 
-                \sem{\prog{p}},\id] \comp
-                \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id} \Big )
-        \end{flalign*}
-        \end{minipage}
-        \caption{A denotational semantics for the while-language}
-        \label{fig:denot}
-        \end{figure}
+\begin{figure}[h]
+\begin{minipage}{1\textwidth}
+\begin{flalign*}
+        \sem{\prog{x : = e}} & = \sigma \mapsto \sigma[\sem{\prog{e}}/\prog{x}] \\[2pt]
+        \sem{\prog{p} \> \blue{ ;} \> \prog{q}} & 
+        = \sem{\prog{q}} \comp \sem{\prog{p}} \\[5pt]
+        \sem{\mathtt{\blue{ if} \> b \> \blue{ then} \> p \> \blue{ else} \> q}}
+                                                & 
+                                                = [\sem{\prog{p}},\sem{\prog{q}}] \comp
+                                                \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id}
+                                                \\[5pt]
+        \sem{\mathtt{\blue{ while} \> b \> \blue{ do } \> \{ \> p \> \}} }
+                                                & \> {=} \> \mathrm{lfp}\ \Big (k \mapsto
+        [k \comp 
+        \sem{\prog{p}},\id] \comp
+        \mathrm{dist} \comp \pv{\sem{\prog{b}}}{\id} \Big )
+\end{flalign*}
+\end{minipage}
+\caption{A denotational semantics for the while-language.}
+\label{fig:denot}
+\end{figure}
 
+We now have three different complementary semantics for our while-language
+(small-step, big-step, and denotational). It is therefore useful to prove that they all
+`agree' with each other. Technically we achieve this by proving the equivalence below 
+       \[
+              \pv{\prog{p}}{\sigma} \Downarrow \sigma' \text{ iff }
+              \sem{\prog{p}}(\sigma) = \sigma' 
+      \]
+for every program $\prog{p}$ and states $\sigma,\sigma'$.  Here we will prove
+just one side of the equivalence.
+\begin{problem}
+       Consider programs $\prog{p}$ and $\prog{p'}$ and states
+       $\sigma,\sigma'$. Prove by induction (over the depth of
+       derivation trees) the following implication.
+       \[
+               \pv{\prog{p}}{\sigma}
+               \Downarrow \sigma' \text{ implies } \sem{\prog{p}}(\sigma) = \sigma' 
+       \]
+       (Hint: Use the fixpoint equation).
+\end{problem}
+
+From the previous equivalence between the denotational and big-step semantics
+we can easily establish that for all programs $\prog{p}$ and $\prog{q}$ the
+following equivalence holds.
+\[
+        \prog{p} \equiv_o \prog{q} \text{ iff } \sem{\prog{p}} = \sem{\prog{q}}
+\]
+But we also wish to learn more about the notion of contextual equivalence
+($\equiv$), in particular we would like to know whether  $\prog{p} \equiv_o
+\prog{q}$ entails $\prog{p} \equiv \prog{q}$. Can denotational semantics help
+us in this quest?
+
+\begin{problem}
+        Consider two programs $\prog{p}$ and $\prog{q}$. Prove the following
+        implication.  
+        \[
+                \sem{\prog{p}} = \sem{\prog{q}} \text{ entails }
+                \Big ( \text{for all contexts } C. \,
+                \sem{C[\prog{p}]} = \sem{C[\prog{q}]} \Big )
+        \]
+\end{problem}
+
+Great, we established that contextual equivalence reduces to \emph{equality} of
+denotations! We can thus use our denotational semantics (and all mathematical
+theories it inherits, such as `program calculus') to prove equivalences used by
+programmers and compilers all the time.
+
+\begin{problem}
+        Prove via the denotational semantics that the following equivalences
+        indeed hold.
+        \begin{itemize}
+                \item $\mathtt{(p \> \blue{ ;} \> q) \> \blue{ ;} \> r} \equiv
+                        \mathtt{p \> \blue{ ;} \> (q \> \blue{ ;} \> r)}$
+                \item $\mathtt{(\blue{if} \> b \> \blue{then} \> p \> \blue{else} \> q) 
+                      \> \blue{ ;} \> \prog{r}} \equiv 
+                      \mathtt{\blue{ if} \> b \> \blue{then} \> p \> \blue{ ;} \> r \> 
+                      \blue {else} \> q \> \blue {;} \> r}$ 
+              \item $\mathtt{\blue {while} \> b \> \{ p \} } \equiv
+                        \mathtt{\blue{if} \> b \> \blue{then} \> p \> {\blue ;} \>
+                        \mathtt{\blue{ while} \> b \> \{ p \} } 
+                        \> \blue{ else} \> skip}$
+                \item $\mathtt{\blue{ while} \> b \> \{ p \} } \> \blue{ ;} \> \mathtt{q} \equiv
+                      \mathtt{\blue{if} \> b \> \blue{ then} \> p \> \blue{ ;}  \> \blue{ while} \> b \> \{ p \}
+                      \> \blue{ ;} \> q
+                      \> \blue{ else} \> q}$
+                \item $\mathtt{\blue{ while} \> ff \> \{ p \} \> \blue{ ;} \> q } \equiv \mathtt{q}$
+                \item $\mathtt{\blue{ while} \> tt \> \{ p \} } \equiv
+                      \mathtt{\blue{ while} \> tt \> \{ q \} }$
+        \end{itemize}
+        Reflect on the differences between performing this exercise with the
+        denotational, small-step, or big-step semantics.
+\end{problem}
+
+\begin{problem}
+        Consider the program $\mathtt{\blue{ while} \> tt \> \{ p \} }$ and a
+        state $\sigma$. Can you prove that there is no state $\sigma'$ such
+        that $\mathtt{\blue{ while} \> tt \> \{ p \} } \Downarrow \sigma'$?
+        This can be a bit hard to prove, because it is usually cumbersome to
+        prove \emph{non-existence} of things. Perhaps the denotational
+        semantics can help us in this quest. What do you think?
+\end{problem}
 
 \section{Axiomatic Semantics}
 
+Finally we lean over our axiomatic semantics, which as you know has a more
+logical nature and it is therefore better suited to study \eg\ program
+correctness.  This style of semantics puts the notion of proposition (\ie\
+condition) at center stage, which of course raises the question of which logic
+to choose for writing and reasoning about such propositions.  We started by
+observing that one does not actually need to choose a logic right from the
+outset, but rather one makes basic assumptions about whatever logic is chosen.
+One of these assumptions is that every proposition $\Phi$ will correspond to a
+subset $\sem{\Phi} \subseteq \mathrm{State}_\bot$. From this we worked out what
+a Hoare triple should mean mathematically, \emph{viz.}
+\[
+         \{ \Phi \} \, \prog{p} \, \{ \Psi \} \qquad \text{ means } \qquad 
+         \Big (\forall x \in \mathrm{State}_\bot. \> x \in \sem{\Phi} 
+         \text{ entails } \sem{\prog{p}}(x) \in \sem{\Psi} \, \Big )
+\]
+
+\begin{problem}
+        Argue informally whether the following Hoare triples hold.
+        \begin{itemize}
+                \item $\{ \prog{tt} \} \> \> \prog{\blue{ while} \> \> tt \> \> skip} \> \> \{ \prog{ff} \}$
+                \item $\{ \prog{tt} \} \> \> \prog{\blue{ if} \>  b \> \blue{ then} \> \> 
+                        x:=2 \> \> \blue{ else} \> \> x:= 3} \> \> \{ \prog{x \geq 2} \}$
+                \item $\{ \prog{x = a \wedge y = b} \} \> \>
+                        \prog{x:= y \> \blue{ ;} \> y := x} \> \> \{ \prog{ x = b \wedge y = a }\}$
+                \item $\{ \prog{x = a \wedge y = b} \} \> \>
+                        \prog{aux := x \> \blue{ ;} \> 
+                        x:= y \> \blue{ ;} \> y := aux} \> \> \{ \prog{ x = b \wedge y = a }\}$
+        \end{itemize}
+\end{problem}
+
+We then continued exploring the mathematical meaning of Hoare triples, and
+among other things we made the following observation.
+\[
+         \Big (\forall x \in \mathrm{State}_\bot. \> x \in \sem{\Phi} 
+         \text{ entails } \sem{\prog{p}}(x) \in \sem{\Psi} \, \Big )
+         \> \text{ iff } \>
+         \sem{\Phi} \subseteq \sem{\prog{p}}^{-1}(\sem{\Psi})
+\]
+This suggests not only we study the validity of Hoare triples from the point of
+view of inverse images, but also that it is informative to calculate
+$\sem{\prog{p}}^{-1}(\sem{\Psi})$ (\ie\ the intrepretation of the weakest
+pre-condition w.r.t. the post-condition $\Psi$). Of course it would be a hassle
+to calculate pre-images of some set directly. The weakest pre-condition
+semantics we saw circumvents this problem, among other things. It is detailed
+in Figure~\ref{fig:ax1}.
+
+\begin{figure}[h]
+\begin{minipage}{1\textwidth}
+\begin{flalign*}
+                \mathrm{wp}\,(\prog{x : = e}, \Phi) & = \Phi[\prog{e}/\prog{x}]
+                \\[5pt]
+                %
+                \mathrm{wp}\,(\prog{p} \> \blue{ ;} \> \prog{q}, \Phi) & 
+                = \mathrm{wp} \, (\prog{p}, \mathrm{wp} \, (\prog{q}, \Phi))  
+                \\[5pt]
+                %
+                \mathrm{wp}\,({\mathtt{\blue{ if} \> b \> \blue{ then} \> p \> \blue{ else} \> q}}, \Phi)
+                & 
+                =
+                \prog{b} \wedge \mathrm{wp}\, (\prog{p},\Phi) \, \vee \,
+                \prog{\neg b} \wedge \mathrm{wp} \, (\prog{q}, \Phi)
+                \\[5pt]
+                \mathrm{wp} \, ({\mathtt{\blue{ while} \> b \> \blue{ do} \> \{ \> p \> \}} }, \Phi)
+                & = \bigwedge_{n \in \Nats} \Psi_n
+                \\[10pt]
+        \Psi_0 & = \prog{tt} \\
+        \Psi_{n+1} & = \neg \prog{b} \wedge \Phi \, \vee \, \prog{b} \wedge 
+        \mathrm{wp} \, (\prog{p}, \Psi_n)
+\end{flalign*}
+\end{minipage}
+\caption{A weakest pre-condition semantics for the while-language.}
+\label{fig:ax1}
+\end{figure}
+
+\begin{problem}
+ Calculate the weakest pre-conditions w.r.t. the following pairs.
+ \begin{itemize}
+         \item $(\prog{x := y}, \>  \prog{x} \geq 1)$
+         \item $(\prog{\blue{ if} \>  b \> \blue{ then} \> \> 
+                 x:=2 \> \> \blue{ else} \> \> x:= 3}, \> \prog{x \geq 2})$
+         \item $(\prog{x:= y \> \blue{ ;} \> y := x}, \> \prog{ x = b \wedge y = a })$
+         \item $(\prog{ aux := x \blue{ ;} \> 
+                 x:= y \> \blue{ ;} \> y := aux}, \> \prog{ x = b \wedge y = a })$
+ \end{itemize}
+\end{problem}
+
+\begin{problem}
+  Prove that $\mathrm{wp} \, (\prog{p}, \prog{tt}) = \prog{tt}$ for every
+  program $\prog{p}$.
+\end{problem}
+
+Following our traditions, we should connect this new semantics to the previous
+ones. And indeed we saw in the lectures that the following equation holds for
+every program $\prog{p}$ and condition $\Phi$.
+\[
+        \sem{\mathrm{wp} \, (\prog{p}, \Phi)} = \sem{\prog{p}}^{-1}(\sem{\Phi})
+\]
+which connects us to denotational semantics.  As mentioned in the lectures, the
+respective proof can be neatly established via Domain theory. Unfortunately
+the techniques involved are a bit more advanced than the ones addressed in the
+lectures :-(.
+
+\begin{problem}
+    Resort to the denotational semantics to prove the following equivalences.
+    \begin{itemize}
+                \item $\mathrm{wp} \, (\prog{p}, \prog{tt}) \equiv \prog{tt}$
+                \item $\mathrm{wp} \, (\prog{p}, \Phi \wedge \Psi )
+                \equiv \mathrm{wp} \, (\prog{p}, \Phi) \wedge 
+                \mathrm{wp} \, (\prog{p}, \Psi )$
+   \end{itemize}
+   Reflect on the differences between showing the first equivalence in this problem and your
+   solution to the previous problem.
+\end{problem}
+
+Next, we saw how to generate a calculus from this pre-condition semantics for
+showing the validity of Hoare triples. This calculus is prominently simple: in
+fact it only contains one rule, \emph{viz.}
+\[
+                \infer{\vdash \{ \Phi \} \, \prog{p} \, \{ \Psi \}}
+                { \vdash \Phi \rightarrow \mathrm{wp} \, (\prog{p}, \Psi) }
+\]
+
+\begin{problem}
+        Prove that this calculus is sound (\ie\ correct) and relatively complete.
+\end{problem}
+
+Later on we observed that although the calculus is interesting it is a bit `too
+rigid' to prove the validity of Hoare triples: indeed the fact that it is
+strictly based on weakest pre-conditions and infinite conjunction makes less
+amenable to practical uses. This brings us back to old friends, namely the
+Hoare calculus that you saw in `algorithms and complexity' and which is detailed
+in Figure~\ref{fig:Hoare}.
+
+\begin{figure}[h]
+\begin{minipage}{1\textwidth}
+\begin{flalign*}
+                \infer{ \vdash_H \{ \Phi \} \> \prog{skip} \> \{ \Phi \} }{}
+                \hspace{2.5cm}
+                \infer{ \vdash_H \{ \Phi[\prog{e}/\prog{x}] \} \> \prog{ x : = e } \>
+                \{ \Phi \} }{}
+\end{flalign*}
+\begin{flalign*}
+                \infer { \vdash_H \{ \Phi \} \> \prog{p \> \blue{ ;} \> q} \> \{ \Xi \} }{
+                        \vdash_H \{ \Phi \} \> \prog{p} \> \{ \Psi \}
+                        \qquad
+                        \vdash_H \{ \Psi \} \> \prog{q} \> \{ \Xi \}
+                }
+                \hspace{2.5cm}
+                \infer{
+                        \vdash_H \{ \Phi \} \> \prog{\blue{ while}} \> \prog{b} \>
+                        \{ \> \prog{p} \> \} \> 
+                        \{ \neg \prog{b} \wedge \Phi \}
+                }{
+                        \vdash_H
+                        \{ \Phi \wedge \prog{b} \} \>  \prog{p}  \> \{ \Phi \}
+                }
+\end{flalign*}
+\begin{flalign*}
+                \infer {
+                        \vdash_H \{ \Phi \} \> \prog{\blue{ if} \> b}
+                        \> \prog{\blue{ then}} \>
+                        \prog{p} \> \prog{\blue{ else}} \> \prog{q}
+                        \> \{ \Psi \}
+                }{
+                        \vdash_H \{ \prog{b} \wedge \Phi \} \> \prog{p} \> \{ \Psi \}
+                        \qquad
+                        \vdash_H \{ \prog{\neg b} \wedge \Phi \} \> \prog{q} \> \{ \Psi \}
+                }
+\end{flalign*}
+\begin{flalign*}
+                \infer{ \vdash_H \{ \Phi \} \> \prog{p} \> \{ \Psi \} }{
+                        \vdash \Phi \rightarrow \Psi
+                        \quad
+                        \vdash_H \{ \Psi \} \> \prog{p} \> \{ \Xi \}
+                        \quad
+                        \vdash \Xi \rightarrow \Omega
+                }
+\end{flalign*}
+\end{minipage}
+\caption{Hoare calculus for our while-language.}
+\label{fig:Hoare}
+\end{figure}
+
+\begin{problem}
+        Prove by induction (on the depth of derivation trees) that the Hoare
+        calculus is sound (correct), \ie\ that the following implication holds
+        for every program $\prog{p}$ and conditions $\Phi, \Psi$.
+        \[
+                \vdash_H \{ \Phi \} \, \prog{p} \, \{ \Psi \}
+                \text{ entails }
+                \sem{\Phi} \subseteq \sem{\prog{p}}^{-1}(\sem{\Psi})
+        \]
+        You can skip the case of while-loops for it is much harder than the other ones..
+\end{problem}
 \end{document}
