@@ -706,6 +706,7 @@ in Figure~\ref{fig:ax1}.
 \end{figure}
 
 \begin{problem}
+        \label{prob:weakest}
  Calculate the weakest pre-conditions w.r.t. the following pairs.
  \begin{itemize}
          \item $(\prog{x := y}, \>  \prog{x} \geq 1)$
@@ -772,6 +773,7 @@ in Figure~\ref{fig:Hoare}.
                 \infer{ \vdash_H \{ \Phi[\prog{e}/\prog{x}] \} \> \prog{ x : = e } \>
                 \{ \Phi \} }{}
 \end{flalign*}
+\\[-30pt]
 \begin{flalign*}
                 \infer { \vdash_H \{ \Phi \} \> \prog{p \> \blue{ ;} \> q} \> \{ \Xi \} }{
                         \vdash_H \{ \Phi \} \> \prog{p} \> \{ \Psi \}
@@ -788,6 +790,7 @@ in Figure~\ref{fig:Hoare}.
                         \{ \Phi \wedge \prog{b} \} \>  \prog{p}  \> \{ \Phi \}
                 }
 \end{flalign*}
+\\[-30pt]
 \begin{flalign*}
                 \infer {
                         \vdash_H \{ \Phi \} \> \prog{\blue{ if} \> b}
@@ -800,6 +803,7 @@ in Figure~\ref{fig:Hoare}.
                         \vdash_H \{ \prog{\neg b} \wedge \Phi \} \> \prog{q} \> \{ \Psi \}
                 }
 \end{flalign*}
+\\[-30pt]
 \begin{flalign*}
                 \infer{ \vdash_H \{ \Phi \} \> \prog{p} \> \{ \Psi \} }{
                         \vdash \Phi \rightarrow \Psi
@@ -815,6 +819,23 @@ in Figure~\ref{fig:Hoare}.
 \end{figure}
 
 \begin{problem}
+        Recall Problem~\eqref{prob:weakest} where we derived weakest
+        pre-conditions for different pairs. Show now via Hoare calculus that
+        these weakest pre-conditions together with the respective pairs form
+        valid Hoare triples.
+
+        Try now to establish
+        \[
+                \vdash_H \{ \prog{x = n \geq 0 \wedge y = 1} \} \> \> \prog{fact} \> \>
+                \{ \prog{y = n!} \}
+        \]
+        ${\small \Big ( \prog{fact} = \prog{\blue{while} \> x > 0 \> \{ y :=
+        x \times y \> {\blue ;} \> x := x - 1 \} } \Big )}$
+
+        Reflect on the differences between trying to prove the valid of Hoare triples
+        w.r.t. the weakest pre-condition and Hoare calculi.
+\end{problem}
+\begin{problem}
         Prove by induction (on the depth of derivation trees) that the Hoare
         calculus is sound (correct), \ie\ that the following implication holds
         for every program $\prog{p}$ and conditions $\Phi, \Psi$.
@@ -825,4 +846,15 @@ in Figure~\ref{fig:Hoare}.
         \]
         You can skip the case of while-loops for it is much harder than the other ones..
 \end{problem}
+
+Another thing we saw in the lectures is that for every program $\prog{p}$ and
+condition $\Phi$ we were able to prove $\vdash_H \{ \mathrm{wp} \, (\prog{p},
+\Phi) \} \> \prog{p} \> \{ \Psi \}$.
+
+\begin{problem}
+        Use this last result to prove the relative completeness of the Hoare calculus
+        from the relative completeness of the weakest pre-condition calculus.
+\end{problem}
 \end{document}
+
+
