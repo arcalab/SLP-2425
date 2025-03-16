@@ -28,7 +28,7 @@ Learning outcomes:
   | 04 mar. 2025 | Carnival |
   | 10 mar. 2025 | Introduction to axiomatic semantics ([slides](./axiomatic/axiomatic.pdf)) |
   | 11 mar. 2025 | Weakest pre-condition semantics ([slides](./axiomatic/axiomatic.pdf)) |
-  | 17 mar. 2025 | Hoare calculus. Soundness and Completeness. ([slides](./axiomatic/axiomatic.pdf)) |
+  | 17 mar. 2025 | Hoare calculus. Soundness and Completeness ([slides](./axiomatic/axiomatic.pdf)) |
   | 18 mar. 2025 | Revisions ([handout](./exercises/exercises.pdf)) |
   | 24 mar. 2025 | Test  |
   | 25 mar. 2025 | NA  |
