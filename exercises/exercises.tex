@@ -263,7 +263,7 @@ far: namely operational, denotational, and axiomatic semantics.
                 }
         \end{flalign*}
         \end{minipage}
-        \caption{Small-step operational semantics for the while-language.}
+        \caption{A small-step operational semantics for the while-language.}
         \label{fig:small2}
         \end{figure}
 
@@ -367,7 +367,7 @@ Figure~\ref{fig:big}.
                 }
         \end{flalign*}
         \end{minipage}
-        \caption{Big-step operational semantics for the while-language.}
+        \caption{A big-step operational semantics for the while-language.}
         \label{fig:big}
         \end{figure}
 \begin{problem}
@@ -672,24 +672,27 @@ and compilers all the time.
 
 \section{Axiomatic Semantics}
 
-Finally we lean over our axiomatic semantics, which as you know has a more
-logical nature and it is therefore better suited to study \eg\ program
-correctness.  This style of semantics puts the notion of proposition (\ie\
-condition) at center stage, which of course raises the question of which logic
-to choose for writing and reasoning about such propositions.  We started by
-observing that one does not actually need to choose a logic right from the
-outset, but rather one makes basic assumptions about whatever logic is chosen.
-One of these assumptions is that every proposition $\Phi$ will correspond to a
-subset $\sem{\Phi} \subseteq \mathrm{State}_\bot$. From this we worked out what
-a Hoare triple should mean mathematically, \emph{viz.}
+Finally we lean over axiomatic semantics, which as you know has a more logical
+nature and it is therefore better suited to study \emph{program correctness},
+among other things.  This style of semantics puts the notion of proposition
+(\ie\ condition) at center stage, which of course raises the question of which
+logic to choose for writing and reasoning about such propositions.  We observed
+that one does not actually need to choose a logic right from the outset, but
+rather one makes basic assumptions about whatever logic is chosen.  One of
+these assumptions is that every proposition $\Phi$ will correspond to a set
+$\sem{\Phi} \subseteq \mathrm{State}_\bot$ (of elements that satisfy this
+proposition). From this we worked out what a Hoare triple ought to mean
+mathematically, \emph{viz.}
 \[
          \{ \Phi \} \, \prog{p} \, \{ \Psi \} \qquad \text{ means } \qquad 
          \Big (\forall x \in \mathrm{State}_\bot. \> x \in \sem{\Phi} 
          \text{ entails } \sem{\prog{p}}(x) \in \sem{\Psi} \, \Big )
 \]
+Note that we are recurring to the previous denotational semantics to give a
+meaning to Hoare triples.
 
 \begin{problem}
-        Argue informally whether the following Hoare triples hold.
+        Argue \emph{informally} whether the following Hoare triples hold.
         \begin{itemize}
                 \item $\{ \prog{tt} \} \> \> \prog{\blue{ while} \> \> tt \> \> skip} \> \> \{ \prog{ff} \}$
                 \item $\{ \prog{tt} \} \> \> \prog{\blue{ if} \>  b \> \blue{ then} \> \> 
@@ -702,21 +705,28 @@ a Hoare triple should mean mathematically, \emph{viz.}
         \end{itemize}
 \end{problem}
 
-We then continued exploring the mathematical meaning of Hoare triples, and
-among other things we made the following observation.
+We continued exploring the mathematical meaning of Hoare triples, and
+among other things made the following observation.
 \[
          \Big (\forall x \in \mathrm{State}_\bot. \> x \in \sem{\Phi} 
          \text{ entails } \sem{\prog{p}}(x) \in \sem{\Psi} \, \Big )
          \> \text{ iff } \>
          \sem{\Phi} \subseteq \sem{\prog{p}}^{-1}(\sem{\Psi})
 \]
-This suggests not only we study the validity of Hoare triples from the point of
-view of inverse images, but also that it is informative to calculate
-$\sem{\prog{p}}^{-1}(\sem{\Psi})$ (\ie\ the intrepretation of the weakest
-pre-condition w.r.t. the post-condition $\Psi$). Of course it would be a hassle
-to calculate pre-images of some set directly. The weakest pre-condition
-semantics we saw circumvents this problem, among other things. It is detailed
-in Figure~\ref{fig:ax1}.
+Although apparently vapid it is in fact quite profound. It suggests that we
+study the validity of Hoare triples from the point of view of \emph{inverse
+images}, via the denotational semantics, but also that the set
+$\sem{\prog{p}}^{-1}(\sem{\Psi})$ has a prominent rôle in this context. Indeed
+the latter turns out to correspond precisely to the \emph{weakest
+pre-condition} w.r.t. a program $\prog{p}$ and a post-condition $\Psi$.  
+
+As E. Dijkstra asserted it is quite informative to determine the weakest
+pre-condition related to a program $\prog{p}$ and a post-condition $\Psi$.
+However it would be a hassle to calculate inverse images of some set directly.
+The weakest pre-condition semantics we saw in the lectures circumvents this
+problem (among other things). It is detailed in Figure~\ref{fig:ax1} (note our
+assumption about the logic having \emph{infinite} conjunctions, negation, and
+disjunctions).
 
 \begin{figure}[h]
 \begin{minipage}{1\textwidth}
@@ -746,6 +756,7 @@ in Figure~\ref{fig:ax1}.
 \label{fig:ax1}
 \end{figure}
 
+Let us try this new semantics with a series of very simple examples.
 \begin{problem}
         \label{prob:weakest}
  Calculate the weakest pre-conditions w.r.t. the following pairs.
@@ -757,37 +768,42 @@ in Figure~\ref{fig:ax1}.
          \item $(\prog{ aux := x \blue{ ;} \> 
                  x:= y \> \blue{ ;} \> y := aux}, \> \prog{ x = b \wedge y = a })$
  \end{itemize}
+ Go to your old material about `algorithms and complexity' and check whether you can
+ prove the weakest pre-conditions of other pairs.
 \end{problem}
 
 \begin{problem}
-  Prove that $\mathrm{wp} \, (\prog{p}, \prog{tt}) = \prog{tt}$ for every
+        \label{prob:tt}
+  Prove that $\mathrm{wp} \, (\prog{p}, \prog{tt}) \equiv \prog{tt}$ for every
   program $\prog{p}$.
 \end{problem}
 
-Following our traditions, we should connect this new semantics to the previous
-ones. And indeed we saw in the lectures that the following equation holds for
+Right, following our traditions we should connect this new semantics to the
+previous ones (\ie\ we should be able to prove that they all `agree' with each
+other). And indeed we saw in the lectures that the following equation holds for
 every program $\prog{p}$ and condition $\Phi$.
-\[
+\begin{align}
+        \label{eq:wp}
         \sem{\mathrm{wp} \, (\prog{p}, \Phi)} = \sem{\prog{p}}^{-1}(\sem{\Phi})
-\]
-which connects us to denotational semantics.  As mentioned in the lectures, the
-respective proof can be neatly established via Domain theory. Unfortunately
-the techniques involved are a bit more advanced than the ones addressed in the
-lectures :-(.
+\end{align}
+As mentioned in the lectures, the respective proof can be neatly established
+via Domain theory. Unfortunately the techniques involved are a bit more
+advanced than the ones addressed in the lectures :-(.
 
 \begin{problem}
-    Resort to the denotational semantics to prove the following equivalences.
+        Resort to Equation~\eqref{eq:wp} to prove the following equivalences.
     \begin{itemize}
                 \item $\mathrm{wp} \, (\prog{p}, \prog{tt}) \equiv \prog{tt}$
                 \item $\mathrm{wp} \, (\prog{p}, \Phi \wedge \Psi )
                 \equiv \mathrm{wp} \, (\prog{p}, \Phi) \wedge 
                 \mathrm{wp} \, (\prog{p}, \Psi )$
    \end{itemize}
-   Reflect on the differences between showing the first equivalence in this problem and your
-   solution to the previous problem.
+   What are differences between showing the first equivalence in this problem
+   and in Problem~\eqref{prob:tt}? Can you prove the second equivalence without
+   recurring to Equation~\eqref{eq:wp}?
 \end{problem}
 
-Next, we saw how to generate a calculus from this pre-condition semantics for
+We also saw how to generate a calculus from this pre-condition semantics for
 showing the validity of Hoare triples. This calculus is prominently simple: in
 fact it only contains one rule, \emph{viz.}
 \[
@@ -796,15 +812,17 @@ fact it only contains one rule, \emph{viz.}
 \]
 
 \begin{problem}
-        Prove that this calculus is sound (\ie\ correct) and relatively complete.
+        Prove that the calculus is sound (\ie\ correct) and relatively complete
+        (\ie\ we can prove that every valid Hoare triple is valid if the underlying
+        logic is complete).
 \end{problem}
 
-Later on we observed that although the calculus is interesting it is a bit `too
+Later on we observed that although interesting the calculus is a bit `too
 rigid' to prove the validity of Hoare triples: indeed the fact that it is
-strictly based on weakest pre-conditions and infinite conjunction makes less
-amenable to practical uses. This brings us back to old friends, namely the
-Hoare calculus that you saw in `algorithms and complexity' and which is detailed
-in Figure~\ref{fig:Hoare}.
+strictly based on weakest pre-conditions and infinite conjunctions makes it
+less amenable to practical uses. This brings us back to old friends, namely the
+Hoare calculus that you saw in `algorithms and complexity' and which is now
+detailed in Figure~\ref{fig:Hoare}.
 
 \begin{figure}[h]
 \begin{minipage}{1\textwidth}
@@ -863,34 +881,37 @@ in Figure~\ref{fig:Hoare}.
         Recall Problem~\eqref{prob:weakest} where we derived weakest
         pre-conditions for different pairs. Show now via Hoare calculus that
         these weakest pre-conditions together with the respective pairs form
-        valid Hoare triples.
-
-        Try now to establish
+        valid Hoare triples.  Try then to establish the validity of the
+        following Hoare triple.
         \[
-                \vdash_H \{ \prog{x = n \geq 0 \wedge y = 1} \} \> \> \prog{fact} \> \>
+                 \{ \prog{x = n \geq 0 \wedge y = 1} \} \> \> \prog{fact} \> \>
                 \{ \prog{y = n!} \}
         \]
-        ${\small \Big ( \prog{fact} = \prog{\blue{while} \> x > 0 \> \{ y :=
-        x \times y \> {\blue ;} \> x := x - 1 \} } \Big )}$
-
+        ${\small \prog{fact} = \prog{\blue{while} \> x > 0 \> \{ y :=
+        x \times y \> {\blue ;} \> x := x - 1 \} } }$.
         Reflect on the differences between trying to prove the valid of Hoare triples
-        w.r.t. the weakest pre-condition and Hoare calculi.
+        w.r.t. weakest pre-condition calculus and Hoare calculus.
 \end{problem}
+
+Well now that we have our old friend back, it makes sense to prove that it is
+correct, a fact that we were not able to formulate much less prove in
+`algorithms and complexity'.
 \begin{problem}
         Prove by induction (on the depth of derivation trees) that the Hoare
-        calculus is sound (correct), \ie\ that the following implication holds
-        for every program $\prog{p}$ and conditions $\Phi, \Psi$.
-        \[
+        calculus is sound, \ie\ that the following implication holds for every
+        program $\prog{p}$ and conditions $\Phi$ and $\Psi$.  \[
                 \vdash_H \{ \Phi \} \, \prog{p} \, \{ \Psi \}
                 \text{ entails }
                 \sem{\Phi} \subseteq \sem{\prog{p}}^{-1}(\sem{\Psi})
         \]
-        You can skip the case of while-loops for it is much harder than the other ones..
+        You can skip the case of while-loops, for it is much harder to prove
+        than the other cases. Note however that it can be neatly proved via
+        Domain theory.
 \end{problem}
 
-Another thing we saw in the lectures is that for every program $\prog{p}$ and
-condition $\Phi$ we were able to prove $\vdash_H \{ \mathrm{wp} \, (\prog{p},
-\Phi) \} \> \prog{p} \> \{ \Psi \}$.
+Finally another thing we saw in the lectures is that for every program
+$\prog{p}$ and condition $\Phi$ we were able to prove $\vdash_H \{ \mathrm{wp}
+\, (\prog{p}, \Phi) \} \> \prog{p} \> \{ \Psi \}$.
 
 \begin{problem}
         Use this last result to prove the relative completeness of the Hoare calculus
