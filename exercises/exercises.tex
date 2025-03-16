@@ -30,7 +30,7 @@
 %%
 
 %% config
-\date{}
+\date{Winter 2024/25}
 \linespread{1.15}
 \newcommand{\blue}[1]{\textcolor{blue}{#1}}
 \input{macros}
@@ -39,7 +39,7 @@
 \begin{document}
 
 \allowdisplaybreaks[2]
-\title{\large{Semantics of Programming Languages 2024/25}
+\title{\large{Semantics of Programming Languages}
         \\ \large{University of Minho} 
 }
 
@@ -47,23 +47,22 @@
 (\href{mailto:nevrenato@di.uminho.pt}{nevrenato@di.uminho.pt})}
 \maketitle
 
-\section{Summary}
-
-This document presents a list of exercises to help you prepare for the test.
-It addresses the three styles of semantics that we have studied so far: namely
-operational, denotational, and axiomatic semantics.
+\begin{abstract}
+This handout briefly summarises our previous lectures and presents related
+problems.  It addresses the three styles of semantics that we have studied so
+far: namely operational, denotational, and axiomatic semantics.
+\end{abstract}
 
 \section{Operational Semantics}
 
-\subsection{Small-step}
         We started our lectures with the following very simple propositional
         language.
         \[
                 \prog{b} ::= \prog{x} \mid \prog{b} \wedge \prog{b} \mid \neg \prog{b}
         \]
-        Recall that $\prog{x}$ denotes a variable (from a given stock of
-        variables).  Next we established the (small-step) operational semantics
-        detailed in Figure~\ref{fig:small1}.
+        (recall that $\prog{x}$ denotes a variable from a given stock of
+        variables).  We established a corresponding (small-step)
+        operational semantics, which is detailed in Figure~\ref{fig:small1}.
         %
         \begin{figure}[h]
         \begin{minipage}{1\textwidth}
@@ -130,29 +129,39 @@ operational, denotational, and axiomatic semantics.
         \label{fig:small1}
         \end{figure}
 
+        Observe the `short-circuit' evaluation mechanism present in Rule~(and$_1$), an
+        apparent feature in the small-step semantics that becomes somewhat invisible in
+        all other semantics that we studied.
         \begin{problem}
-                It makes sense to add an implication construct $\prog{b}
-                \Rightarrow \prog{b}$ to the simple language. Which semantic
+                It makes sense to add an `implication construct' $\prog{b}
+                \Rightarrow \prog{b}$ to the simple language. Describe which semantic
                 rules would you add to Figure~\ref{fig:small1} in order to
-                cover this new construct?
+                cover this new operation.
         \end{problem}
 
-        In the lectures we have also defined the `complexity function'         
+        One observation from the lectures is that our small-step operational
+        semantics is able to describe all computational steps performed by a
+        program until it reaches an output. The semantics thus provides an
+        interesting abstraction level for talking about `program complexity'.
+        In order to drive this point home, in the lectures we defined a
+        `complexity function'
         \begin{align*}
                 \mathrm{compl}(\prog{x}) & = 1  \\
                 \mathrm{compl}(\prog{\neg b}) & = \mathrm{compl}(\prog{b}) \\
                 \mathrm{compl}(\prog{b}_1 \wedge \prog{b}_2) & =
                 \mathrm{compl}(\prog{b}_1) + \mathrm{compl}(\prog{b}_2)
         \end{align*}
-        In a nutshell, it provides an upper bound to the number of steps a
-        proposition needs to be fully evaluated.
+        which intends to present an upper bound to the number of required steps
+        for a proposition to be fully evaluated. Of course we still need to
+        formally relate it to the small-step semantics and such is the topic of
+        the following problem.
 
         \begin{problem}
                 Show by induction (on the syntactic structure of propositions)
                 that $\mathrm{compl}(\prog{b}) \geq 1$ for every $\prog{b}$.
                 Next, show by induction (over the depth of derivation trees)
                 that the implication below holds for all propositions
-                $\prog{b}$ and $\prog{b'}$.
+                $\prog{b}$ and $\prog{b'}$ and any memory $\sigma$.
                 \[
                         \text{ If }\pv{\prog{b}}{\sigma} \longrightarrow
                         \pv{\prog{b'}}{\sigma}
@@ -160,8 +169,9 @@ operational, denotational, and axiomatic semantics.
                 \]
         \end{problem}
 
-        Let us consider now the grammars of arithmetic expressions and while-programs 
-        that were studied throughout the lectures. They were defined as follows.
+        Next, recall the grammars of arithmetic expressions and while-programs
+        that were studied throughout the lectures: they were defined as
+        follows
         \[
                 \prog{e} ::=  \mathtt{n}  \mid \mathtt{e \cdot e}
                 \mid  \mathtt{x}  \mid \mathtt{e + e}
@@ -172,9 +182,10 @@ operational, denotational, and axiomatic semantics.
         	\mathtt{\blue{if} \> b \> \blue{then} \> p \> \blue{else} \> p} \mid
         	\mathtt{\blue{while} \> b \> \blue{do} \> \{ \> p \> \}}
         \]
+        where $\mathtt{n}$ is any natural number.
         \begin{problem}
                 Remarkably in the lectures we did not see a small-step
-                operational semantics for the arithmetic expressions. Can you
+                operational semantics for arithmetic expressions. Can you
                 define one such semantics now?
         \end{problem}
 
@@ -185,9 +196,9 @@ operational, denotational, and axiomatic semantics.
         \begin{flalign*}
                 \infer[(\text{asg})]{
                         \langle \mathtt{x := e}, \sigma \rangle \longrightarrow
-                        \sigma[v / \mathtt{x}]
+                        \sigma[\mathtt{v} / \mathtt{x}]
                 }{
-                       \langle \mathtt{e}, \sigma \rangle \longrightarrow^\star v
+                        \langle \mathtt{e}, \sigma \rangle \longrightarrow^\star \mathtt{v}
                 } \hspace{2cm}
                 \infer[(\text{seq$_1$})]{
                         \langle \mathtt{p \> \blue{;} \> q}, \sigma \rangle \longrightarrow 
@@ -252,7 +263,7 @@ operational, denotational, and axiomatic semantics.
                 }
         \end{flalign*}
         \end{minipage}
-        \caption{Small-step operational semantics for the while-language}
+        \caption{Small-step operational semantics for the while-language.}
         \label{fig:small2}
         \end{figure}
 
@@ -260,40 +271,36 @@ operational, denotational, and axiomatic semantics.
                 Thus explain the meaning of the notation $\longrightarrow^\star$.
         \end{problem}
 
+        Great, now that we have a semantics (and that we understand it) we can
+        use it to derive the chain of transitions that is generated by a
+        program until it reaches an output. This is particularly useful for
+        \emph{debugging} and for studying non-terminating behaviours, among
+        other things.
         \begin{problem}
+                \label{prob:out}
                 Calculate via the semantics in Figure~\ref{fig:small2} the
-                chains of transitions that arise from the two programs below.
-                \[
-                        \prog{ x := 1} \> \blue{;} \> \prog{x := 2}
-                        %
-                        \hspace{3cm}
-                        %
-                        \prog{ \blue{if} } 
-                        \> \> \prog{tt} \> \> \prog{ \blue{then}} \> \>
-                        \prog{ x := 1} \> \blue{;} \> \prog{x := 2}
-                        \> \> \prog{ \blue{else}}
-                        \> \> \prog{ x := 3 }
-                \]
-                Finally give an example of a program that generates an
-                \emph{infinite} sequence of transitions. Justify your choice
-                mathematically :-).
+                chains of transitions that arise from the following programs.
+                \begin{itemize}
+                        \item 
+                        $\prog{ x := 1} \> \blue{;} \> \prog{x := 2}$
+                \item                         $\prog{ \blue{if} } 
+                        \>  \prog{tt}  \> \prog{ \blue{then}}  \>
+                        (\prog{ x := 1} \> \blue{;} \> \prog{x := 2})
+                        \>  \prog{ \blue{else}}
+                        \> \> \prog{ x := 3 }$
+                \end{itemize}
+                Give an example of a program that generates an \emph{infinite}
+                sequence of transitions. Justify your choice mathematically
+                :-).
         \end{problem}
 
-\subsection{Big-step}
 
 We now lean over our big-step operational semantics. Recall that it abstracts
 away from all intermediate computational steps performed in the context of the
-small-step semantics. It is therefore better suited  for calculating outputs
-and for studying program equivalence (among other things).  The big-step
-semantics of our while-language is defined in
+small-step semantics. It is therefore better suited than the latter for
+calculating outputs and for studying program equivalence (among other things).
+The big-step semantics of our while-language is defined in
 Figure~\ref{fig:big}.
-
-\begin{problem}
-        Again in the lectures we did not see a big-step operational
-        semantics for the arithmetic expressions. Can you define one such
-        semantics now?
-\end{problem}
-
 
         \begin{figure}[h]
         \begin{minipage}{1\textwidth}
@@ -360,37 +367,48 @@ Figure~\ref{fig:big}.
                 }
         \end{flalign*}
         \end{minipage}
-        \caption{A big-step operational semantics for the while-language}
+        \caption{Big-step operational semantics for the while-language.}
         \label{fig:big}
         \end{figure}
+\begin{problem}
+        In the lectures we did not see a big-step operational semantics for
+        arithmetic expressions. Can you define one such semantics now?
+\end{problem}
+
+As already mentioned, the big-step semantics differs from the small-step
+counterpart in that it abstracts away from all intermediate computational
+steps. This renders output calculation conceptually different than the one
+performed in Problem~\eqref{prob:out}. Let us try to make such differences more
+evident and palpable with the following problem. 
 
 \begin{problem}
 Calculate via the semantics in Figure~\ref{fig:big} the outputs of the two
 programs below.
-                \[
-                        \prog{ x := 1} \> \blue{;} \> \prog{x := 2}
-                        %
-                        \hspace{3cm}
-                        %
-                        \prog{ \blue{if} } 
-                        \> \> \prog{tt} \> \> \prog{ \blue{then}} \> \>
-                        \prog{ x := 1} \> \blue{;} \> \prog{x := 2}
-                        \> \> \prog{ \blue{else}}
-                        \> \> \prog{ x := 3 }
-                \]
+                \begin{itemize}
+                        \item 
+                        $\prog{ x := 1} \> \blue{;} \> \prog{x := 2}$
+                \item                         $\prog{ \blue{if} } 
+                        \>  \prog{tt}  \> \prog{ \blue{then}}  \>
+                        (\prog{ x := 1} \> \blue{;} \> \prog{x := 2})
+                        \>  \prog{ \blue{else}}
+                        \> \> \prog{ x := 3 }$
+                \end{itemize}
 Reflect on the differences between calculating the outputs of these two
-programs w.r.t. the small-step and big-step semantics.
+programs with respect to the small-step semantics and big-step semantics.
+Finally check whether for every program $\prog{p}$ and memory $\sigma$ we
+always have $\pv{\prog{p}}{\sigma} \Downarrow \sigma'$ for some memory
+$\sigma'$.
 \end{problem} 
 
-Now that we have two different complementary semantics for our while-language
-(small-step and big-step) it is useful to prove that they `agree' with each
-other, or more formally that the equivalence below holds
+Right, now that we have two different, complementary semantics for our
+while-language (small-step and big-step semantics) it makes sense to prove that
+they `agree' with each other, more formally that the equivalence below holds
        \[
                 \pv{\prog{p}}{\sigma} \longrightarrow^\star \sigma'
                 \text{ iff } \pv{\prog{p}}{\sigma} \Downarrow \sigma'
        \]
-for every program $\prog{p}$ and states $\sigma,\sigma'$.  Here we will prove
-just one side of the equivalence.
+for every program $\prog{p}$ and every state $\sigma$ and $\sigma'$. We will
+focus on proving just the left-to-right direction of this equivalence.
 \begin{problem}
        Consider programs $\prog{p}$ and $\prog{p'}$ and states
        $\sigma,\sigma',\sigma''$. Prove by induction (over the depth of
@@ -404,19 +422,23 @@ just one side of the equivalence.
                 \pv{\prog{p}}{\sigma} \longrightarrow^\star \sigma'
                 \text{ implies } \pv{\prog{p}}{\sigma} \Downarrow \sigma'
        \]
-       Are you able to prove the converse implication?
 \end{problem}
 
-Right, let us now recall the following (tentative) notion of program of
-equivalence: two programs $\prog{p}$ and $\prog{q}$ will be equivalent (in
-symbols $\prog{p} \equiv_o \prog{q}$) if the equivalence below holds.
+So as mentioned before the big-step semantics provides an interesting
+abstraction level for reasoning about program equivalence.  In this regard, we
+started by considering the following tentative notion: two programs $\prog{p}$
+and $\prog{q}$ will be equivalent (in symbols $\prog{p} \equiv_o \prog{q}$) if
+the equivalence below holds.
        \[
                 \pv{\prog{p}}{\sigma} \Downarrow \sigma'
                 \text{ iff } \pv{\prog{q}}{\sigma} \Downarrow \sigma'
-                \hspace{1cm} (\text{for all states } \sigma,\sigma')
+                \hspace{2.5cm} (\text{for all states } \sigma,\sigma')
        \]
+Let us thus see if we can establish some interesting program equivalences.
 \begin{problem}
-        Prove the two equivalences propounded below.
+        The two equivalences propounded below are tacitly used by programmers
+        virtually all the time (even if only a few can prove them). Use the
+        big-step semantics to show that these equivalences are indeed correct.
         \begin{itemize}
                 \item $\mathtt{(p \> \blue{ ;} \> q) \> {\blue ;} \> r} \equiv_o
                         \mathtt{p \> \blue{ ;} \> (q \> {\blue ;} \> r)}$
@@ -427,9 +449,10 @@ symbols $\prog{p} \equiv_o \prog{q}$) if the equivalence below holds.
         \end{itemize}
 \end{problem}
 
-Recall now our second notion of program equivalence (the one that compilers
-tacitly use). It is usually referred to as \emph{contextual equivalence} and
-recurs to the following grammar of `contexts'.
+Next let us recall our second (and definite) notion  of program equivalence --
+the one that compilers typically adopt. As mentioned in lectures it is referred
+to as \emph{contextual equivalence} and recurs to the following grammar of
+`contexts'.
 \[              
                 C ::= [-] \mid C \> \prog{ \blue{;}} \> \prog{p} 
                 \mid 
@@ -446,63 +469,69 @@ symbols $\prog{p} \equiv \prog{q}$) if the equivalence below holds.
 \[
                \pv{C[\prog{p}]}{\sigma} \Downarrow \sigma'
                \text{ iff } \pv{C[\prog{q}]}{\sigma} \Downarrow \sigma'
-               \hspace{1cm} (\text{for all states } \sigma,\sigma' \text{ and contexts } C)
+               \hspace{2.5cm} (\text{for all states } \sigma,\sigma' \text{ and contexts } C)
 \]
 \begin{problem}
+        Reflect on why compilers use the notion of contextual equivalence and not the
+        previous one (\ie\ $\equiv_o$).
+\end{problem}
+\begin{problem}
+        \label{prob:equiv}
         The natural question then arises of whether the equivalence below holds
         \[
                 \prog{p} \equiv \prog{q} \text{ iff } \prog{p} \equiv_o \prog{q} 
         \]
-        The left-to-right direction is clear, but what about the inverse direction?
-        Can you prove it? Where do you get stuck?
+        for all programs $\prog{p}$ and $\prog{q}$.  The left-to-right
+        direction is clear, but what about the inverse direction?  Can you
+        prove it? Where do you get stuck?
 \end{problem}
 
 \section{Denotational Semantics}
 
-Ok, we now focus on the denotational semantics of the previous lectures.
-Recall that not only it helped us solve the previous problem, it also allowed
-us to `import' knowledge from other mathematical theories (\eg\ `program
-calculus'). 
+We now focus on the denotational semantics of the previous lectures.  Not only
+it helped us with Problem~\eqref{prob:equiv}, it also allowed us to `import'
+knowledge from other mathematical theories (\eg\ `program calculus'). 
 
 A main challenge of this semantics was the interpretation of while-loops which
-required us to touch on the surface of Domain theory and fixed-points. We start
-from this end, in particular with the notion of a poset.
+required us to touch (even if just barely) on the surface of Domain theory.  We
+start from this end, in particular with the notion of a partially ordered set
+(poset).
 \begin{problem}
-        Consider a set $\mathrm{State}$ of states. Show that it is a partially
-        ordered set (poset) when it comes equipped with equality as the partial
-        order.  Show as well that the pair $(\Pow (X),\subseteq)$ (for a given
-        set $X$) is a partial order.
+        Consider a set $\mathrm{State}$ of states. Show that it is a poset when
+        equipped with equality as the partial order. Assuming that $\Pow(-)$
+        denotes the \emph{powerset construct}, show that the pair $(\Pow
+        (X),\subseteq)$ (for any given set $X$) is a poset.
 
-        Next, recall that given a poset $(X, \leq_X)$ we were able to define a
-        new poset $(X_\bot, \leq)$. Thus prove that the latter is indeed a
+        Next recall that given any poset $(X, \leq_X)$ we were able to define a
+        new poset $(X_\bot, \leq)$. Prove that the latter is indeed a
         poset.  Finally given two sets $X$ and $Y$ prove that the set $[X,Y]$
         of maps between $X$ and $Y$ is a poset whenever $Y$ is a poset.
 \end{problem}
 
-Let us now go beyond posets and shift our attention to $\omega$-CPOs. We start
-by revisiting the previous problem from the latter's perspective.
+Let us now go beyond posets and shift our attention to $\omega$-CPOs (\ie\
+$\omega$-complete partially ordered sets). We start by revisiting the previous
+problem from the latter's perspective.
 
 \begin{problem}
         Consider a set $\mathrm{State}$ of states. Show that it is an
-        $\omega$-CPO when it comes equipped with equality as the partial order.
-        Show as well that the pair $(\Pow (X),\subseteq)$ (for a given set $X$)
-        is an $\omega$-CPO.
+        $\omega$-CPO when equipped with equality as the partial order.  Show as
+        well that the pair $(\Pow (X),\subseteq)$ (for any given set $X$) is an
+        $\omega$-CPO.
 
-        Next, recall that given an $\omega$-CPO $(X, \leq_X)$ we were able to
-        define a new $\omega$-CPO $(X_\bot, \leq)$. Thus prove that the latter
-        is indeed an $\omega$-CPO.  Finally given two sets $X$ and $Y$ prove
-        that the set $[X,Y]$ of maps between $X$ and $Y$ is a $\omega$-CPO
-        whenever $Y$ is an $\omega$-CPO.
+        Next, recall that given any $\omega$-CPO $(X, \leq_X)$ we were able to
+        define a new $\omega$-CPO $(X_\bot, \leq)$. Prove that the latter is
+        indeed an $\omega$-CPO.  Finally given two sets $X$ and $Y$ prove that
+        the set $[X,Y]$ of maps between $X$ and $Y$ is an $\omega$-CPO whenever
+        $Y$ is an $\omega$-CPO.
 \end{problem}
 
-Another key notion for defining the interpretation of while-loops was that of a
-\emph{continuous} map $f : X \to Y$ (between $\omega$-CPOs $X$ and $Y$). Just
-to recall, a map $f$ is called continuous if it satisfies the following
-conditions.
+Another key notion for defining the interpretation of while-loops is that of a
+\emph{continuous} map $f : X \to Y$ (between $\omega$-CPOs $X$ and $Y$). Recall
+that a map $f$ is called continuous if it satisfies the conditions below.
 \begin{flalign*}
-        x_1 \leq x_2 & \text{ entails } f(x_1) \leq f(x_2) \qquad (\text{for all $x_1,x_2 \in X$ })
+        x_1 \leq x_2  & \text{ entails } f(x_1) \leq f(x_2) \qquad (\text{for all $x_1,x_2 \in X$ })
         \\
-        f(\vee_n x_n) & = \vee_n f(x_n) \qquad 
+        f(\vee_{n \in \Nats} \, x_n) & = \vee_{n \in \Nats} \, f(x_n) \qquad \qquad \quad \> \, 
         (\text{for every monotone sequence $(x_n)_{n \in \Nats}$}) 
 \end{flalign*}
 
@@ -511,21 +540,20 @@ conditions.
         $f : X \to Y$ and $g : Y \to Z$ is continuous.
 \end{problem}
 
-These last three problems contain some of the necessary ingredients to
-interpret while-loops as fixpoints. Another ingredient is Kleene's fixpoint
-theorem which tells us how to build (the least) fixpoint of a continuous map $f
-: X \to X$ on an $\omega$-CPO $X$ with a bottom element. The fixpoint (denoted
-by $\mathrm{lfp}\, f$) is explicitly built as,
+These last three problems contain basic ingredients to interpret while-loops as
+fixpoints. Another basic ingredient is \emph{Kleene's fixpoint theorem} which
+tells how to build the least fixpoint of a continuous map $f : X \to X$ on an
+$\omega$-CPO $X$ with a bottom element ($\bot$). Recall that the fixpoint is
+denoted by $\mathrm{lfp}\, f$ and explicitly built as,
 \[
         \mathrm{lfp}\, f = \vee_{n \in \Nats}\, f^n(\bot)
 \]
 \begin{problem}
         Show that $\mathrm{lfp}\, f$ is indeed the least fixpoint of $f$.
 \end{problem}
-
-Finally after some work we obtained the denotational semantics detailed in
+Finally after some investments on Domain theory we were able to neatly establish
+the denotational semantics of our while-language, detailed in
 Figure~\ref{fig:denot}.
-
 \begin{figure}[h]
 \begin{minipage}{1\textwidth}
 \begin{flalign*}
@@ -548,15 +576,26 @@ Figure~\ref{fig:denot}.
 \label{fig:denot}
 \end{figure}
 
-We now have three different complementary semantics for our while-language
-(small-step, big-step, and denotational). It is therefore useful to prove that they all
-`agree' with each other. Technically we achieve this by proving the equivalence below 
-       \[
+\begin{problem}
+        Although used in the new semantics of our while-language
+        (Figure~\ref{fig:denot}) in the lectures we did not see a denotational
+        semantics for arithmetic expressions. Can you define one such semantics
+        now?
+\end{problem}
+
+Great! We now have three different, complementary semantics for our
+while-language (\emph{viz.} small-step, big-step, and denotational). It is therefore useful
+to prove that they all `agree' with each other. But in fact we just need to relate
+the new semantics with the big-step version, for we have already established a
+connection between the latter and the small-step semantics. Technically we
+achieve this desired connection by proving the equivalence below 
+      \begin{align}
+              \label{eq:equiv2}
               \pv{\prog{p}}{\sigma} \Downarrow \sigma' \text{ iff }
               \sem{\prog{p}}(\sigma) = \sigma' 
-      \]
-for every program $\prog{p}$ and states $\sigma,\sigma'$.  Here we will prove
-just one side of the equivalence.
+      \end{align}
+for every program $\prog{p}$ and states $\sigma,\sigma'$.  We will focus on
+proving just the left-to-right direction of this  equivalence.
 \begin{problem}
        Consider programs $\prog{p}$ and $\prog{p'}$ and states
        $\sigma,\sigma'$. Prove by induction (over the depth of
@@ -565,23 +604,24 @@ just one side of the equivalence.
                \pv{\prog{p}}{\sigma}
                \Downarrow \sigma' \text{ implies } \sem{\prog{p}}(\sigma) = \sigma' 
        \]
-       (Hint: Use the fixpoint equation).
+       (Hint: Use the fixpoint equation that you learned in lectures).
 \end{problem}
 
-From the previous equivalence between the denotational and big-step semantics
-we can easily establish that for all programs $\prog{p}$ and $\prog{q}$ the
+From Equivalence~\eqref{eq:equiv2} between the denotational and big-step semantics
+we easily establish that for all programs $\prog{p}$ and $\prog{q}$ the
 following equivalence holds.
 \[
         \prog{p} \equiv_o \prog{q} \text{ iff } \sem{\prog{p}} = \sem{\prog{q}}
 \]
-But we also wish to learn more about the notion of contextual equivalence
-($\equiv$), in particular we would like to know whether  $\prog{p} \equiv_o
-\prog{q}$ entails $\prog{p} \equiv \prog{q}$. Can denotational semantics help
-us in this quest?
+But we also want to learn more about the notion of contextual equivalence
+($\equiv$). Recall for example that in Problem~\eqref{prob:equiv} we were not
+able to show whether $\prog{p} \equiv_o \prog{q}$ entails $\prog{p} \equiv
+\prog{q}$. Can denotational semantics help us in this quest?
 
 \begin{problem}
-        Consider two programs $\prog{p}$ and $\prog{q}$. Prove the following
-        implication.  
+        Consider two programs $\prog{p}$ and $\prog{q}$. Prove via induction on
+        the syntactic structure of programs that the following implication
+        holds.  
         \[
                 \sem{\prog{p}} = \sem{\prog{q}} \text{ entails }
                 \Big ( \text{for all contexts } C. \,
@@ -589,14 +629,14 @@ us in this quest?
         \]
 \end{problem}
 
-Great, we established that contextual equivalence reduces to \emph{equality} of
-denotations! We can thus use our denotational semantics (and all mathematical
-theories it inherits, such as `program calculus') to prove equivalences used by
-programmers and compilers all the time.
+Perfect, we established that contextual equivalence (which quantifies over
+infinitely many contexts) reduces to simple \emph{equality} of denotations! We
+can thus use our denotational semantics (and all mathematical theories it
+inherits, such as `program calculus') to prove equivalences used by programmers
+and compilers all the time.
 
 \begin{problem}
-        Prove via the denotational semantics that the following equivalences
-        indeed hold.
+        Prove that the following equivalences indeed hold.
         \begin{itemize}
                 \item $\mathtt{(p \> \blue{ ;} \> q) \> \blue{ ;} \> r} \equiv
                         \mathtt{p \> \blue{ ;} \> (q \> \blue{ ;} \> r)}$
@@ -617,16 +657,17 @@ programmers and compilers all the time.
                       \mathtt{\blue{ while} \> tt \> \{ q \} }$
         \end{itemize}
         Reflect on the differences between performing this exercise with the
-        denotational, small-step, or big-step semantics.
+        denotational, small-step, and big-step semantics.
 \end{problem}
 
 \begin{problem}
-        Consider the program $\mathtt{\blue{ while} \> tt \> \{ p \} }$ and a
-        state $\sigma$. Can you prove that there is no state $\sigma'$ such
-        that $\mathtt{\blue{ while} \> tt \> \{ p \} } \Downarrow \sigma'$?
-        This can be a bit hard to prove, because it is usually cumbersome to
-        prove \emph{non-existence} of things. Perhaps the denotational
-        semantics can help us in this quest. What do you think?
+        Recall our big-step semantics and let us consider the program
+        $\mathtt{\blue{ while} \> tt \> \{ p \} }$ together with a state
+        $\sigma$. Although obvious, can you prove that there is no state
+        $\sigma'$ such that $\mathtt{\blue{ while} \> tt \> \{ p \} }
+        \Downarrow \sigma'$?  This can be problematic, because it is often
+        cumbersome to prove the \emph{non-existence} of things. However perhaps the
+        denotational semantics can help us in this quest.  What do you think?
 \end{problem}
 
 \section{Axiomatic Semantics}
