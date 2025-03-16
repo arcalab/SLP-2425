@@ -18,15 +18,20 @@ Learning outcomes:
   | ----------   |------------ |
   | 03 feb. 2025 | Introduction to the module and its logistics ([slides](./intro.pdf)) |
   | 04 feb. 2025 | NA |
-  | 10 feb. 2025 | First steps with the small-step semantics ([slides](./small_step/small_step.pdf)) |
+  | 10 feb. 2025 | Baby steps with small-step semantics ([slides](./small_step/small_step.pdf)) |
   | 11 feb. 2025 | Exercises |
-  | 17 feb. 2025 | Second steps with the big-step semantics ([slides](./big_step/big_step.pdf)) |
-  | 18 feb. 2025 | Implementation of a while-language and its big-step semantics ([code](./big_step/MyLang.hs)) |
+  | 17 feb. 2025 | Big steps with big-step semantics ([slides](./big_step/big_step.pdf)) |
+  | 18 feb. 2025 | Exercises. Implementation of a while-language and its big-step semantics ([code](./big_step/MyLang.hs)) |
   | 24 feb. 2025 | Introduction to denotational semantics ([slides](./denotational/denotational.pdf)) |
-  | 25 feb. 2025 | Exercises  |
-  | 03 mar. 2025 | A very brief introduction to domain theory and fixpoints ([slides](./denotational/denotational.pdf))  |
-  | 10 mar. 2025 | Introduction to axiomatic semantics ([slides](./axiomatic/axiomatic.pdf))  |
-
+  | 25 feb. 2025 | Exercises |
+  | 03 mar. 2025 | Domain theory and fixpoints ([slides](./denotational/denotational.pdf)) |
+  | 04 mar. 2025 | Carnival |
+  | 10 mar. 2025 | Introduction to axiomatic semantics ([slides](./axiomatic/axiomatic.pdf)) |
+  | 11 mar. 2025 | Weakest pre-condition semantics ([slides](./axiomatic/axiomatic.pdf)) |
+  | 17 mar. 2025 | Hoare calculus. Soundness and Completeness. ([slides](./axiomatic/axiomatic.pdf)) |
+  | 18 mar. 2025 | Revisions. ([handout](./exercises/exercises.pdf)) |
+  | 24 mar. 2025 | Test  |
+  | 25 mar. 2025 | NA  |
 
 # Assessment
 
