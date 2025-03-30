@@ -32,6 +32,8 @@ Learning outcomes:
   | 18 mar. 2025 | Revisions ([handout](./exercises/exercises.pdf)) |
   | 24 mar. 2025 | Test  |
   | 25 mar. 2025 | NA  |
+  | 30 mar. 2025 | Introduction to the simply-typed lambda-calculus ([slides](./lambda_calc/lambdaCalc.pdf))  |
+  | 31 mar. 2025 | Continuation of the previous lecture |
 
 # Assessment
 
