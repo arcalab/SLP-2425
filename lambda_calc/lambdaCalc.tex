@@ -470,7 +470,7 @@
                 (\scriptsize{\textbf{N.B.} all types omitted for simplicity})
         \end{center}
 \end{frame}
-\begin{slide}{Denotational Semantics and Program Equivalence Revisited}
+\begin{slide}{Denotational Semantics and Equivalence Revisited}
   Show that the following equations hold
   \begin{flalign*}
     \sem{x, y \vljud \pi_1 \pv{x,y}}\ & =\
@@ -495,6 +495,182 @@
 \end{slide}
 
 \section{Equational System}
+\begin{slide}{Logic to the Rescue ! }
+  Recall that the rules below are \alert{\underline{derivable}} from  our logical system
+
+  \begin{flalign*}
+      \infer[\text{(exchange)}]{\Gamma, \typeB, \typeA,\Delta \vljud \typeC}{
+      \Gamma, \typeA, \typeB,\Delta \vljud \typeC}
+      \hspace{2cm}
+      \infer[\text{(weakening)}]{\Gamma,\typeB \vljud \typeA}{\Gamma \vljud \typeA}
+  \end{flalign*}
+  \begin{flalign*}
+      \infer[\text{(cut elimination)}]{\Gamma\vljud \typeB}{
+      \Gamma, \typeA \vljud \typeB \qquad \Gamma \vljud \typeA}
+  \end{flalign*}
+\end{slide}
+
+\begin{slide}{Via the Programming Lens}
+  \begin{flalign*}
+      \infer[\text{(exch)}]{\Gamma, y: \typeB, x: \typeA,\Delta \vljud t: \typeC}{
+      \Gamma, x : \typeA, y : \typeB,\Delta \vljud t: \typeC}
+      \hspace{2cm}
+      \infer[\text{(weak)}]{\Gamma, x : \typeB \vljud t : \typeA}{\Gamma \vljud t : \typeA}
+  \end{flalign*}
+  \begin{flalign*}
+      \infer[\text{(cut elimination)}]{\Gamma\vljud \dots :\typeB}{
+      \Gamma, x: \typeA \vljud t: \typeB \qquad \Gamma \vljud s : \typeA}
+  \end{flalign*}
+  
+  \pause
+  \bigskip
+  \begin{center}
+  Filling up the dots will lead us to a fundamental concept
+  \end{center}
+  
+  \pause
+  \begin{center}
+  \fbox{
+          \alert{\underline{Substitution}}
+  }
+  \end{center} 
+\end{slide}
+
+\begin{frame}{Substitution}
+        \begin{block}{The essence}
+                Substitution of variables in a  $\lambda$-term $t$ by another
+                $\lambda$-term $s$
+        \end{block}
+
+        $t[s/x]$ reads \emph{"replace every occurrence of $x$ in $t$ by $s$"}
+
+        \pause
+        \bigskip
+        \begin{example}
+                \vspace{-0.5cm}
+                \begin{align*}
+                        \pv{x,x}[s/x] & = \pv{s,s}
+                        \\
+                        \pv{x,y}[s/x] & = \pv{s,y}
+                        \\
+                        \pv{y,z}[s/x] & = \pv{y,z}
+                \end{align*}
+                \vspace{-0.7cm}
+        \end{example}
+\end{frame}
+
+\begin{frame}{Substitution More Formally}
+
+        We define it by \alert{\underline{induction}}
+        \begin{align*}
+                x[s/y] & = 
+                \begin{cases}
+                        s & \text{if } x = y \\
+                        x & \text{otherwise}
+                \end{cases}
+                \\
+                \ast[s/y] & = \ast
+                \\
+                \pv{t_1,t_2}[s/y] & = \pv{t_1[s/y], t_2[s/y]}
+                \\
+                (t_1 \, t_2)[s/y] & = t_1[s/y] \> t_2[s/y]
+                \\
+                (\pi_1 t)[s/y] & = \pi_1 t[s/y] 
+                \\
+                (\pi_2 t)[s/y] & = \pi_2 t[s/y] 
+                \\
+                (\lambda x. \, t)[s/y] & = \, \dots
+        \end{align*}
+\end{frame}
+
+\begin{frame}{Variable Captures}
+
+        $\lambda x. \, y$ is a ``constant function" (given $x$ return $y$)
+
+        \pause
+        $(\lambda x. \, y)[z/y]$ is still a ``constant function" (given $x$ return $z$)
+
+        \pause
+        $(\lambda x. \, y) [x/y]$ is now the identity !?
+
+        \pause
+        \bigskip
+        \bigskip
+        \alert{\underline{The problem:}} variable $x$ "captured" by the construct "$\lambda x. \,$"
+
+        Somehow similar to \alert{\underline{variable shadowing}} in programming
+\end{frame}
+
+\begin{frame}{Substitution More Formally}
+        \begin{align*}
+                x[s/x] & = 
+                \begin{cases}
+                        s & \text{if } x = y \\
+                        x & \text{otherwise}
+                \end{cases}
+                \\
+                \ast[s/y] & = \ast
+                \\
+                \pv{t_1,t_2}[s/y] & = \pv{t_1[s/y], t_2[s/y]}
+                \\
+                (t_1 \, t_2)[s/y] & = t_1[s/y] \> t_2[s/y]
+                \\
+                (\pi_1 \, t)[s/y] & = \pi_1 \, t[s/y] 
+                \\
+                (\pi_2 \, t)[s/y] & = \pi_2 \, t[s/y] 
+                \\
+                (\lambda x. \, t)[s/y] & = 
+                        \lambda z. \, t[z/x][s/y]
+        \end{align*}
+
+        \begin{center}
+                (where $z$ is \alert{\underline{fresh}} (\emph{i.e.} new))
+        \end{center}
+\end{frame}
+
+\begin{frame}{Exercise}
+
+        \alert{\underline{Compute}} the following substitutions
+
+         \begin{align*}
+                & \ast[t/y][s/z] &  = \dots 
+                \\
+                & \pv{y,z}[t/y][s/z] & = \dots 
+                \\
+                & (\lambda x. \, x) [t/x]  & = \dots
+                \\
+                & (\lambda x. \, \pv{x,y})[z/y] & = \dots
+                \\
+                &  (\lambda x. \, \pv{x,y})[x/y] & = \dots
+        \end{align*}
+\end{frame}
+
+\begin{slide}{Via the Programming Lens}
+  \begin{flalign*}
+      \infer[\text{(exch)}]{\Gamma, y: \typeB, x: \typeA,\Delta \vljud t: \typeC}{
+      \Gamma, x : \typeA, y : \typeB,\Delta \vljud t: \typeC}
+      \hspace{2cm}
+      \infer[\text{(weak)}]{\Gamma, x : \typeB \vljud t : \typeA}{\Gamma \vljud t : \typeA}
+  \end{flalign*}
+  \begin{flalign*}
+      \infer[\text{(cut elimination)}]{\Gamma\vljud \dots :\typeB}{
+      \Gamma, x: \typeA \vljud t: \typeB \qquad \Gamma \vljud s : \typeA}
+  \end{flalign*}
+\end{slide}
+
+\begin{slide}{Via the Programming Lens}
+  \begin{flalign*}
+      \infer[\text{(exch)}]{\Gamma, y: \typeB, x: \typeA,\Delta \vljud t: \typeC}{
+      \Gamma, x : \typeA, y : \typeB,\Delta \vljud t: \typeC}
+      \hspace{2cm}
+      \infer[\text{(weak)}]{\Gamma, x : \typeB \vljud t : \typeA}{\Gamma \vljud t : \typeA}
+  \end{flalign*}
+  \begin{flalign*}
+          \infer[\text{(cut elimination)}]{\Gamma\vljud t[s/x] :\typeB}{
+      \Gamma, x: \typeA \vljud t: \typeB \qquad \Gamma \vljud s : \typeA}
+  \end{flalign*}
+\end{slide}
+
 
 \section{Disjunctive Types}
 \end{document}
