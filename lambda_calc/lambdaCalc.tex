@@ -143,38 +143,33 @@
 
 \begin{document}
 
-\title{Simply-typed $\lambda$-calculus}
+\title{Simply Typed Lambda-calculus}
 
 \frame[plain]{\titlepage}
 
-\section{The Basics} 
+\section{The Calculus} 
 
 \begin{frame}{Deductive Reasoning}
 
-  \begin{block}{The idea}
+  \begin{block}{The essence}
           Knowledge obtained via \alert{\underline{assumptions}} and
           \alert{\underline{logical rules}}
   \end{block}
 
-  
-  \begin{example}
-        If $P \rightarrow Q$ and $Q \rightarrow R$ then $P \rightarrow R$
-  \end{example}
-
   \pause
   \bigskip
-  Deductive reasoning has been studied since Aristotle 
+  Studied since Aristotle  \dots
 
   \dots \, long before the age of \alert{\underline{artificial}} computers
 
-  So what does it have to do with programming ?
+  What does it have to do with programming ?
 \end{frame}
 
 \begin{slide}{A Basic Deductive System}
   \begin{minipage}[0.3\textheight]{\textwidth}
   \begin{columns}[c]
   \begin{column}{0.5\textwidth}
-          $\typeA,\typeB \dots$ will denote \alert{\underline{propositions}}
+          $\typeA,\typeB \dots$ denote \alert{\underline{propositions}}
           and $\typeOne$ a proposition that always holds   
   \end{column}
   \begin{column}{0.45\textwidth}
@@ -184,20 +179,19 @@
   \end{columns}
   \end{minipage}
 
-  \vspace{0.2cm}
   If $\typeA$ and $\typeB$ are propositions then
   \begin{itemize}
-    \item $\typeA \times \typeB$ is a proposition -- it denotes the
+    \item $\typeA \times \typeB$ is a proposition -- 
         conjunction of $\typeA$ and $\typeB$
-    \item $\typeA \to \typeB$ is a proposition -- it tells that $\typeA$
-        implies $\typeB$
+    \item $\typeA \to \typeB$ is a proposition -- 
+            implication of $\typeB$ from $\typeA$
   \end{itemize}
   
 \end{slide}
 
 \begin{frame}{A Basic Deductive System}
   
-  $\Gamma$ will denote a list of propositions
+  $\Gamma$ denotes a \alert{\underline{list of propositions}} (often called context)
 
   $\Gamma \vljud \typeA$ reads \emph{``if the propositions in $\Gamma$ hold then  $\typeA$ also holds''}
 
@@ -226,27 +220,31 @@
  
 \end{frame}
 
-\begin{slide}{Building New Knowledge From Old}
-  The following rules are \alert{\underline{derivable}} from the previous system
+\begin{slide}{New Knowledge From Old}
+  The rules below are \alert{\underline{derivable}} from the previous system
 
   \begin{flalign*}
-      \infer[]{\Gamma, \typeB, \typeA,\Delta \vljud \typeC}{
+      \infer[\text{(exchange)}]{\Gamma, \typeB, \typeA,\Delta \vljud \typeC}{
       \Gamma, \typeA, \typeB,\Delta \vljud \typeC}
       \hspace{2cm}
-      \infer[]{\Gamma,\typeB \vljud \typeA}{\Gamma \vljud \typeA}
+      \infer[\text{(weakening)}]{\Gamma,\typeB \vljud \typeA}{\Gamma \vljud \typeA}
+  \end{flalign*}
+  \begin{flalign*}
+      \infer[\text{(cut elimination)}]{\Gamma\vljud \typeB}{
+      \Gamma, \typeA \vljud \typeB \qquad \Gamma \vljud \typeA}
   \end{flalign*}
 
-  Proof again by an appeal to your friend \dots\  \alert{\underline{induction}} :-)
-  \vfill
-  \begin{block}{Exercise}
+  Proofs (again) by an appeal to your old friend \dots\  \alert{\underline{induction}} :-)
+\end{slide}
+
+\begin{frame}{Exercises}
   Derive the following judgements
   \begin{itemize}
           \item $\typeA \to \typeB,\typeB \to \typeC \vljud \typeA \to \typeC$ 
           \item $\typeA \to \typeB,\typeA \to \typeC \vljud \typeA \to \typeB
                   \times \typeC$
   \end{itemize}        
-  \end{block}
-\end{slide}
+\end{frame}
 
 \begin{frame}[plain]
 
@@ -310,19 +308,20 @@
 \end{frame}
 
 \begin{slide}{Examples of $\lambda$-terms}
-  $x : \typeA \vljud x : \typeA$ (identity)
-  
-  \vspace{0.5cm}
-  $x : \typeA \vljud \langle x, x \rangle : \typeA \times \typeA$
-  (duplication)
-
-  \vspace{0.5cm}
-  $x : \alert{\typeA \times \typeB}
-  \vljud \langle \pi_2\ x , \pi_1\ x \rangle : \alert{ \typeB \times \typeA }$ (swap)
-
-  \vspace{0.5cm}
-  $f : \alert{\typeA \to \typeB}, g : \alert{\typeB \to \typeC} \vljud
-  \lambda x : \typeA . \> g (f \> x) : \alert{\typeA \to \typeC}$ (composition)
+  \begin{flalign*}
+          & x : \typeA \vljud x : \typeA && \text{(identity)}
+          \\[15pt]
+          & x : \typeA \vljud \langle x, x \rangle : \typeA \times \typeA
+          && \text{(duplication)} 
+          \\[15pt]
+          & x : \alert{\typeA \times \typeB}
+          \vljud \langle \pi_2\ x , \pi_1\ x \rangle : \alert{ \typeB \times \typeA }
+          && \text{(swap)}
+          \\[15pt]
+          & f : \alert{\typeA \to \typeB}, g : \alert{\typeB \to \typeC} \vljud
+          \lambda x : \typeA . \> g (f \> x) : \alert{\typeA \to \typeC}
+          && \text{(composition)}
+  \end{flalign*}
 \end{slide}
 
 \begin{frame}{Exercises}
@@ -343,9 +342,9 @@
     and subsequently build the corresponding program
 \end{frame}
 
-\section{A Simple Denotational Semantics}
+\section{Denotational Semantics}
 
-\begin{slide}{A Semantics for Simply-typed $\lambda$-calculus}
+\begin{slide}{A Semantics for Simply Typed $\lambda$-calculus}
   We wish to assign a \alert{\underline{mathematical meaning}} to $\lambda$-terms
   \begin{flalign*}
     \sem{-} \, : \lambda\text{-terms} \longrightarrow ...
@@ -443,18 +442,59 @@
 }
 \end{slide}
 
-\begin{slide}{Exercises}
+\begin{frame}{The Unravelling}
+        \begin{align*}
+                & \sem{x \vljud \pv{ \pi_2 \, x, \, \pi_1 \, x} } &  = \dots 
+                &
+                \\
+                & \sem{- \vljud \lambda x. \, \pv{ \pi_2 \, x, \, \pi_1 \, x} } & = \dots 
+                &
+                \\[10pt]
+                & \sem{f, g , x \vljud g \, f \, x} & = \dots
+                &
+                \\
+                & \sem{f, g \vljud \lambda x. \, g \, f \, x} & = \dots
+                &
+                \\[10pt]
+                & \sem{f, x \vljud \pv{f \, \pi_1 \, x, \, \pi_2 \, x} \, } & = \dots
+                &
+                \\
+                & \sem{f \vljud \lambda x. \, \pv{f \, \pi_1 \, x, \, \pi_2 \, x} \, } & = \dots
+                &
+                \\
+                & \sem{- \vljud \lambda f. \, \lambda x. \, \pv{f \, \pi_1 \,
+                x, \, \pi_2 \, x} \, } & = \dots &
+        \end{align*}
+        \vfill
+        \begin{center}
+                (\scriptsize{\textbf{N.B.} all types omitted for simplicity})
+        \end{center}
+\end{frame}
+\begin{slide}{Denotational Semantics and Program Equivalence Revisited}
   Show that the following equations hold
   \begin{flalign*}
-    \sem{x : \typeA, y : \typeB  \vljud \pi_1 \pv{x,y} : \typeA}\ & =\
-    \sem{x : \typeA, y : \typeB  \vljud x : \typeA} \\[5pt]
-    \sem{\Gamma  \vljud t: \typeA}\ & =\
-    \sem{\Gamma  \vljud \langle \pi_1\ t, \pi_2\ t \rangle : \typeA}
+    \sem{x, y \vljud \pi_1 \pv{x,y}}\ & =\
+    \sem{x , y \vljud x } \\[5pt]
+    \sem{\Gamma \vljud t}\ & =\
+    \sem{\Gamma \vljud \langle \pi_1\ t, \pi_2\ t \rangle }
     \\[5pt]
-    \sem{ x : \typeA \vljud (\lambda y. \, \pv{x,y})\>  x : \typeA \times \typeA }\,
+    \sem{ x \vljud (\lambda y. \, \pv{x,y})\>  \> x  }\,
                                     & =\
-                                    \sem{ x : \typeA \vljud \pv{x,x} : \typeA \times \typeA }
+                                    \sem{ x \vljud \pv{x,x}  }
   \end{flalign*}
+
+  \pause
+  Show that the (complicated) $\lambda$-term below is really just the identity
+  \begin{align*}
+    z \vljud \lambda x. \, \pv{\pi_2 \, x, \pi_1 \, x}\>
+    \Big (\lambda y. \, \pv{\pi_2 \, y, \pi_1 \, y} \> z \Big ) 
+  \end{align*}
+
+  \pause
+  \textbf{ Hard ? }
 \end{slide}
 
+\section{Equational System}
+
+\section{Disjunctive Types}
 \end{document}
