@@ -669,8 +669,60 @@
           \infer[\text{(cut elimination)}]{\Gamma\vljud t[s/x] :\typeB}{
       \Gamma, x: \typeA \vljud t: \typeB \qquad \Gamma \vljud s : \typeA}
   \end{flalign*}
+
+  \pause
+  \bigskip
+  \begin{center}
+          Substitution also fundamental in the study of
+          \alert{\underline{equivalence}} 
+  \end{center}
 \end{slide}
 
+\begin{frame}{An Equational System pt. I}
+        \begin{align*}
+                \pi_1 \pv{t,s} =_{\beta \eta} t
+                \hspace{1cm}
+                &
+                t =_{\beta \eta} \ast \hspace{2cm} (\text{if } t : 1) 
+                \hspace{1cm}
+                \\
+                \pi_2 \pv{t,s} =_{\beta \eta} s 
+                \hspace{1cm}
+                &
+                \lambda x. \, t \> s =_{\beta \eta} t[s/x] 
+                \\
+                \pv{ \pi_1 \, t, \pi_2 \, t } =_{\beta \eta} t
+                \hspace{1cm}
+                &
+                \lambda x. \, (t \, x) =_{\beta \eta} t
+        \end{align*}
+\end{frame}
 
+\begin{frame}{An Equational System pt. II}
+        \begin{align*}
+                t =_{\beta \eta} t
+                \hspace{2cm}
+                \infer{s =_{\beta \eta} t}{t =_{\beta \eta} s}
+                \hspace{2cm}
+                \infer{t =_{\beta \eta} u}
+                {
+                        t =_{\beta \eta} s \qquad
+                        s =_{\beta \eta} u
+                }
+        \end{align*}
+        \begin{align*}
+                \infer{
+                        \pi \Gamma \vljud t =_{\beta \eta}  s
+                }{
+                        \Gamma \vljud t =_{\beta \eta} s
+                }
+                \hspace{2cm}
+                \infer{
+                        u[t/x] =_{\beta \eta} u[s/x]
+                }{
+                        t =_{\beta \eta} s
+                }
+        \end{align*}
+\end{frame}
 \section{Disjunctive Types}
 \end{document}
