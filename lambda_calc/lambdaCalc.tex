@@ -710,6 +710,28 @@
                         s =_{\beta \eta} u
                 }
         \end{align*}
+        %
+        \begin{flalign*}
+          \infer{\pi_1 \, t =_{\beta \eta} \pi_1 \, s}{
+          t =_{\beta \eta} s} 
+        \hspace{1.5cm}
+          \infer{\pi_2 \, t =_{\beta \eta} \pi_2\, s}{
+          t =_{\beta \eta} s} 
+        \hspace{1.5cm}
+        \infer{ \pv{t,u} =_{\beta \eta} \pv{s, v} }{
+                          t =_{\beta \eta} s
+                          \qquad
+                          u =_{\beta \eta} v
+                  }
+        \end{flalign*}
+        %
+        \begin{flalign*}
+                \infer{ t \> u =_{\beta \eta} s \> v }{
+                          t =_{\beta \eta} s
+                          \qquad
+                          u =_{\beta \eta} v
+                  }
+        \end{flalign*}
         \begin{align*}
                 \infer{
                         \pi \Gamma \vljud t =_{\beta \eta}  s
@@ -718,11 +740,33 @@
                 }
                 \hspace{2cm}
                 \infer{
-                        u[t/x] =_{\beta \eta} u[s/x]
+                        u[t/x] =_{\beta \eta} v[s/x]
                 }{
-                        t =_{\beta \eta} s
+                        u =_{\beta \eta} v \qquad t =_{\beta \eta} s
                 }
         \end{align*}
 \end{frame}
+
+\begin{slide}{Equivalence Re-Revisited}
+  Show that the following equations hold
+  \begin{flalign*}
+    \pi_1 \pv{x,y}\ & =_{\beta \eta}
+    x  \\[5pt]
+    t\ & =_{\beta \eta} \
+    \langle \pi_1\ t, \pi_2\ t \rangle
+    \\[5pt]
+    (\lambda y. \, \pv{x,y})\>  \> x  \,
+       & =_{\beta \eta} \
+       \pv{x,x}
+  \end{flalign*}
+  \begin{flalign*}
+    \lambda x. \, \pv{\pi_2 \, x, \pi_1 \, x}\>
+    \Big (\lambda y. \, \pv{\pi_2 \, y, \pi_1 \, y} \> z \Big ) 
+       & =_{\beta \eta} z
+  \end{flalign*}
+
+\end{slide}
+
+
 \section{Disjunctive Types}
 \end{document}
