@@ -1,5 +1,4 @@
-# Introduction and objectives
-This course introduces formal semantics of programming languages. It starts
+# Introduction and objectives This course introduces formal semantics of programming languages. It starts
 with different semantic approaches (operational, denotational, and axiomatic)
 in the imperative setting. It then focusses on the semantics of functional
 languages, with lambda-calculus as the central core.
@@ -36,6 +35,7 @@ Learning outcomes:
   | 01 apr. 2025 | Continuation of the previous lecture ([slides](./lambda_calc/lambdaCalc.pdf)) |
   | 07 apr. 2025 | Equational system of simply-typed lambda-calculus ([slides](./lambda_calc/lambdaCalc.pdf)) |
   | 08 apr. 2025 | Continuation of the previous lecture ([slides](./lambda_calc/lambdaCalc.pdf)) |
+  | 22 apr. 2025 | Disjunctive types ([slides](./lambda_calc/lambdaCalc.pdf)) |
 
 
 # Assessment
