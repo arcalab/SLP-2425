@@ -731,6 +731,10 @@
                           \qquad
                           u =_{\beta \eta} v
                   }
+                \hspace{2cm}
+                \infer {\lambda x. \> t =_{\beta \eta} \lambda x. \> s}{
+                        t =_{\beta \eta} s
+                }
         \end{flalign*}
         \begin{align*}
                 \infer{
@@ -767,6 +771,376 @@
 
 \end{slide}
 
-
 \section{Disjunctive Types}
+
+\begin{frame}{Learning Programming from Logic}
+
+       If conjunction in logic corresponds to pairing in programming \dots what
+       does \alert{\underline{disjunction}} in logic correspond to ?
+
+\end{frame}
+
+\begin{slide}{Revisiting our Deductive System}
+  \begin{minipage}[0.3\textheight]{\textwidth}
+  \begin{columns}[c]
+  \begin{column}{0.5\textwidth}
+          $\typeA,\typeB \dots$ denote \alert{\underline{propositions}}
+          and $\typeOne$ a proposition that always holds   
+  \end{column}
+  \begin{column}{0.45\textwidth}
+        \includegraphics[scale=0.2]{images/gentzen.jpg}
+        \includegraphics[scale=0.16]{images/prawitz.jpg}
+  \end{column}
+  \end{columns}
+  \end{minipage}
+
+  If $\typeA$ and $\typeB$ are propositions then
+  \begin{itemize}
+    \item $\typeA \times \typeB$ is a proposition -- 
+        conjunction of $\typeA$ and $\typeB$
+    \item $\typeA \to \typeB$ is a proposition -- 
+            implication of $\typeB$ from $\typeA$
+    \item $\typeA + \typeB$ is a proposition --
+            \alert{\underline{disjunction}} of $\typeA$ and $\typeB$
+  \end{itemize}
+  
+\end{slide}
+
+\begin{frame}{Revisiting our Deductive System}
+  
+ \small{
+  \begin{flalign*}
+      \infer[(\rulename{ass})]{\Gamma \vljud \typeA}{\typeA \in \Gamma} \hspace{0.8cm}
+      \infer[(\rulename{trv})]{\Gamma \vljud  1}{}  \hspace{0.8cm}
+      \infer[(\rulename{\pi_1})]{\Gamma \vljud \typeA}{\Gamma \vljud \typeA \times \typeB} \hspace{0.8cm}
+      \infer[(\rulename{\pi_2})]{\Gamma \vljud \typeB}{\Gamma \vljud \typeA \times \typeB}
+  \end{flalign*}
+  \begin{flalign*}
+      \infer[(\rulename{prd})]{\Gamma \vljud \typeA \times \typeB}
+      {\Gamma \vljud \typeA \qquad \Gamma \vljud \typeB} \hspace{0.4cm}
+      \infer[(\rulename{cry})]{\Gamma \vljud \typeA \to \typeB}{\Gamma, \typeA \vljud  \typeB}
+      \hspace{0.4cm}
+      \infer[(\rulename{app})]{\Gamma \vljud \typeB}
+      {\Gamma \vljud  \typeA \to \typeB \quad
+        \Gamma \vljud  \typeA}
+  \end{flalign*}
+
+  \vspace{-0.4cm}
+
+  \noindent\dotfill{}
+
+  \vspace{-0.4cm}
+
+  \begin{flalign*}
+          \infer[(\rulename{inl})]{
+                \Gamma \vljud \typeA + \typeB
+          }{
+                \Gamma \vljud \typeA
+          }
+          \hspace{2cm}
+          \infer[(\rulename{inr})]{
+                \Gamma \vljud \typeA + \typeB
+          }{
+                \Gamma \vljud \typeB
+          }
+  \end{flalign*}
+  \begin{flalign*}
+          \infer[(\rulename{coprd})]{
+               \Gamma \vljud \typeC
+          }{
+            \Gamma \vljud \typeA + \typeB
+            \qquad
+            \Gamma,  \typeA \vljud \typeC
+            \qquad
+            \Gamma,  \typeB \vljud \typeC
+          }
+  \end{flalign*}
+  } 
+\end{frame}
+
+\begin{frame}{Conditionals Enter the Scene !}
+
+  \small{
+  \begin{flalign*}
+      \infer[(\rulename{ass})]{\Gamma \vljud x : \typeA}{x :
+        \typeA \in \Gamma} \hspace{1.2cm}
+      \infer[(\rulename{triv})]{\Gamma \vljud \ast : 1}{}  \hspace{1.2cm}
+      \infer[(\rulename{\pi_1})]{\Gamma \vljud \pi_1 \, t : \typeA }
+      {\Gamma \vljud t: \typeA \times \typeB}
+  \end{flalign*}
+  \begin{flalign*}
+     \infer[(\rulename{prd})]{\Gamma \vljud \langle t,s \rangle :
+        \typeA \times \typeB}
+      {\Gamma \vljud t: \typeA \qquad \Gamma \vljud s: \typeB} \hspace{1cm}
+      \infer[(\rulename{cry})]{\Gamma \vljud \lambda x : \typeA . \, t : \typeA
+        \to \typeB}
+      {\Gamma, x : \typeA \vljud t : \typeB}
+    \end{flalign*}
+   \begin{flalign*}
+      \infer[(\rulename{app})]{\Gamma \vljud t \, s : \typeB}
+      {\Gamma \vljud  t : \typeA \to \typeB \quad
+        \Gamma \vljud  s : \typeA}
+    \end{flalign*}
+
+  \vspace{-0.4cm}
+
+  \noindent\dotfill{}
+
+  \vspace{-0.4cm}
+  \begin{flalign*}
+          \infer[(\rulename{inl})]{
+                  \Gamma \vljud \inl_{\typeB} \> t : \typeA + \typeB
+          }{
+                \Gamma \vljud t: \typeA
+          }
+          \hspace{1.5cm}
+          \infer[(\rulename{inr})]{
+                  \Gamma \vljud \inr_{\typeA} \> t : \typeA + \typeB
+          }{
+                \Gamma \vljud t : \typeB
+          }
+  \end{flalign*}
+  \begin{flalign*}
+          \infer[(\rulename{coprd})]{
+          \Gamma \vljud \mathrm{case} \> t \> \mathrm{ of }
+          \> \inl(x) \Rightarrow s ; \inr(y) \Rightarrow u : \typeC
+          }{
+            \Gamma \vljud t: \typeA + \typeB
+            \qquad
+            \Gamma, \, x : \typeA \vljud s: \typeC
+            \qquad
+            \Gamma, \, y : \typeB \vljud u : \typeC
+          }
+  \end{flalign*}
+  } 
+\end{frame}
+
+\begin{frame}{Exercises}
+  Derive the following judgements
+  \begin{itemize}
+          \item $\typeA + \typeB \vljud \typeB + \typeA$ 
+          \item $\typeA \times (\typeB + \typeC) \vljud
+                \typeA \times \typeB + \typeA \times \typeC$
+          \item $\typeA \times \typeB + \typeA \times \typeC \vljud \typeA$
+          \item $\typeA \times \typeB + \typeA \times \typeC \vljud \typeB + \typeC$
+          \item $\typeA \times \typeB + \typeA \times \typeC \vljud
+                  \typeA \times (\typeB + \typeC)$
+  \end{itemize}        
+
+  Then build the corresponding programs
+\end{frame}
+\begin{slide}{Revisiting our Denotational Semantics}
+  Types $\typeA$ interpreted as \alert{\underline{sets}} $\sem{\typeA}$
+  \begin{flalign*}
+    \sem{1} & = \{ \star \} \\
+    \sem{\typeA \times \typeB} & = \sem{\typeA} \times \sem{\typeB} \\
+    \sem{\typeA \to \typeB} & = \sem{\typeB}^{\sem{\typeA}} 
+  \end{flalign*}
+
+  \vspace{-0.8cm}
+
+  \noindent\dotfill{}
+
+  \vspace{-1.2cm}
+
+  \begin{flalign*}
+   \sem{\typeA + \typeB} & = \sem{\typeA} + \sem{\typeB}
+ \end{flalign*}
+
+ Judgements $\Gamma \vljud t : \typeA$ interpreted as \alert{\underline{functions}}
+ \begin{flalign*}
+   \sem{\Gamma \vljud t : \typeA}\ : \sem{\Gamma}\ \longrightarrow \sem{\typeA}
+ \end{flalign*}
+
+\end{slide}
+\begin{slide}{Functions: Basic Facts}
+
+  There exist injection functions
+  \begin{flalign*}
+    i_1 : X \to X + Y \hspace{1cm} x \mapsto i_1(x) \\
+    i_2 : Y \to X + Y  \hspace{1cm} y \mapsto i_2(y)
+  \end{flalign*}
+
+  We can always `co-pair' two functions into
+  $f : A \to X$, $g : B \to X$
+  \begin{flalign*}
+          [f,g] : A + B \to X \hspace{1cm} 
+          [f,g](i_1(x)) = f (x), \quad
+          [f,g](i_2(y)) = g (y)
+  \end{flalign*}
+
+\end{slide}
+
+
+
+\begin{slide}{Revisiting our Denotational Semantics}
+\small{
+   \begin{flalign*}
+      \infer[]{\sem{\Gamma \vljud x_i : \typeA} = \pi_i}{x_i :
+        \typeA \in \Gamma} \hspace{1.2cm}
+      \infer[]{\sem{\Gamma \vljud \ast : 1}\ =\ !}{}  \hspace{1.2cm}
+      \infer[]{\sem{\Gamma \vljud \pi_1 t : \typeA} = \pi_1 \comp f }
+      {\sem{\Gamma \vljud t : \typeA \times \typeB} = f}
+  \end{flalign*}
+  \begin{flalign*}
+      \infer[]{\sem{\Gamma \vljud \langle t,s \rangle :
+        \typeA \times \typeB}\ = \pv{f,g}}
+    {\sem{\Gamma \vljud t: \typeA}\ = f \qquad \sem{\Gamma \vljud s: \typeB}\ = g}
+    \hspace{0.3cm}
+     \infer[]{\sem{\Gamma \vljud \lambda x : \typeA . \, t : \typeA
+        \to \typeB}\ = \lambda f}
+      {\sem{\Gamma, x : \typeA \vljud t : \typeB}\ = f}
+    \end{flalign*}
+   \begin{flalign*}
+      \infer[]{\sem{\Gamma \vljud t \, s : \typeB}\ = \mathrm{app} \comp \pv{f,g}}
+      {\sem{\Gamma \vljud  t : \typeA \to \typeB}\ = f \quad
+        \sem{\Gamma \vljud  s : \typeA}\ = g}
+    \end{flalign*}
+
+  \vspace{-0.4cm}
+
+  \noindent\dotfill{}
+
+  \vspace{-0.5cm}
+
+    \begin{flalign*}
+          \infer[]{
+                  \sem{\Gamma \vljud \inl_{\typeB} \> t : \typeA + \typeB}\ =
+                  i_1 \comp f
+          }{
+                  \sem{\Gamma \vljud t: \typeA}\ = f 
+          }
+          \hspace{1.5cm}
+          \infer[]{
+                  \sem{\Gamma \vljud \inr_{\typeA} \> t : \typeA + \typeB}\ =
+                  i_2 \comp f
+          }{
+                  \sem{\Gamma \vljud t : \typeB}\ = f
+          }
+  \end{flalign*}
+  \begin{flalign*}
+          \infer[]{
+          \sem{\Gamma \vljud \mathrm{case} \> t \> \mathrm{ of }
+          \> \inl(x) \Rightarrow s ; \inr(y) \Rightarrow u : \typeC}\
+          = [g,h] \comp \mathrm{dist} \comp \pv{\id,f}
+          }{
+            \sem{\Gamma \vljud t: \typeA + \typeB}\ = f
+            \qquad
+            \sem{\Gamma, \, x : \typeA \vljud s: \typeC}\ = g
+            \qquad
+            \sem{\Gamma, \, y : \typeB \vljud u : \typeC}\ = h
+          }
+  \end{flalign*}
+
+}
+\end{slide}
+
+\begin{frame}{Exercises}
+
+        {\small
+        \begin{flalign*}
+               \sem{ x \vljud
+                       \mathrm{case} \> x \>
+                       \mathrm{of} \> \inl(y) \Rightarrow \inr(y) ;
+               \inr(z) \Rightarrow \inl(z) }\ 
+               & =\ \dots
+               \\
+               \sem{ x \vljud
+                       \mathrm{case} \> x \>
+                       \mathrm{of} \> \inl(y) \Rightarrow \pi_1 \, y ;
+               \inr(z) \Rightarrow \pi_1 \, z }\ 
+               & =\ \dots
+               \\
+               \sem{ x \vljud
+                       \mathrm{case} \> x \>
+                       \mathrm{of} \> \inl(y) 
+                       \Rightarrow \pv{ \pi_1 \, y , \inl \, \pi_2 \, y} ;
+               \inr(z) \Rightarrow \pv{ \pi_1 \, z , \inl \, \pi_2 \, z}}\
+               & =\ \dots
+        \end{flalign*}
+        }
+\end{frame}
+\begin{frame}{Revisiting our Equational System}
+        \begin{align*}
+                \pi_1 \pv{t,s} =_{\beta \eta} t
+                \hspace{1cm}
+                &
+                t =_{\beta \eta} \ast \hspace{2cm} (\text{if } t : 1) 
+                \hspace{1cm}
+                \\
+                \pi_2 \pv{t,s} =_{\beta \eta} s 
+                \hspace{1cm}
+                &
+                \lambda x. \, t \> s =_{\beta \eta} t[s/x] 
+                \\
+                \pv{ \pi_1 \, t, \pi_2 \, t } =_{\beta \eta} t
+                \hspace{1cm}
+                &
+                \lambda x. \, (t \, x) =_{\beta \eta} t
+        \end{align*}
+
+        \vspace{-0.4cm}
+
+        \noindent\dotfill{}
+
+        \vspace{-0.8cm}
+
+        \begin{flalign*}
+                \mathrm{case} \> \inl \> t \> \mathrm{of} \>
+                \inl(x) \Rightarrow s;  \inr(y) \Rightarrow u
+                & =_{\beta \eta} s[t/x]
+                \\
+                \mathrm{case} \> \inr \> t \> \mathrm{of} \>
+                \inl(x) \Rightarrow s;  \inr(y) \Rightarrow u
+                & =_{\beta \eta} u[t/y]
+        \end{flalign*}
+        \vspace{-1.2cm}
+        \begin{flalign*}
+                \mathrm{case} \> x \> \mathrm{of} \>
+                \inl(y) \Rightarrow t[\inl(y)/x]; 
+                \inr(z) \Rightarrow t[\inr(z)/x]
+                & =_{\beta \eta} t
+        \end{flalign*}
+
+\end{frame}
+
+\begin{frame}{Exercises}
+
+        Show that
+        \begin{flalign*}
+                \Big (\lambda x. \, \mathrm{case} \> \mathrm{of} \>
+                \inl(y) \Rightarrow \inr (y) ;
+                \,
+                \inr(z) \Rightarrow \inl (z) \Big ) \> \inl(a)
+                =_{\beta \eta} \inr (a)
+                \\
+                \Big (\lambda x. \, \mathrm{case} \> \mathrm{of} \>
+                \inl(y) \Rightarrow \inr (y) ;
+                \,
+                \inr(z) \Rightarrow \inl (z) \Big ) \> \inr(a)
+                =_{\beta \eta} \inl (a)
+        \end{flalign*}
+
+        Prove the following implication
+        \begin{flalign*}
+                \begin{cases}
+                        (\lambda x. \, t) \> \inl (y) = (\lambda x. \, s) \> \inl (y)
+                        \\
+                        (\lambda x. \, t) \> \inr (y) = (\lambda x. \, s) \> \inr (y)
+                \end{cases}
+                \Longrightarrow
+                \lambda x. \, t = \lambda x. \, s
+        \end{flalign*}
+\end{frame}
+
+\begin{frame}[plain]
+
+        \begin{center}
+                What can logic teach us more about programming ?
+                \\
+                \pause
+                (and vice-versa)
+        \end{center}
+\end{frame}
+
 \end{document}
