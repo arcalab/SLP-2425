@@ -1108,13 +1108,13 @@
 
         Show that
         \begin{flalign*}
-                \Big (\lambda x. \, \mathrm{case} \> \mathrm{of} \>
+                \Big (\lambda x. \, \mathrm{case} \> x \> \mathrm{of} \>
                 \inl(y) \Rightarrow \inr (y) ;
                 \,
                 \inr(z) \Rightarrow \inl (z) \Big ) \> \inl(a)
                 =_{\beta \eta} \inr (a)
                 \\
-                \Big (\lambda x. \, \mathrm{case} \> \mathrm{of} \>
+                \Big (\lambda x. \, \mathrm{case} \> x \> \mathrm{of} \>
                 \inl(y) \Rightarrow \inr (y) ;
                 \,
                 \inr(z) \Rightarrow \inl (z) \Big ) \> \inr(a)
@@ -1124,12 +1124,14 @@
         Prove the following implication
         \begin{flalign*}
                 \begin{cases}
-                        (\lambda x. \, t) \> \inl (y) = (\lambda x. \, s) \> \inl (y)
+                        (\lambda x. \, t) \> \inl (y) =_{\beta \eta} 
+                        (\lambda x. \, s) \> \inl (y)
                         \\
-                        (\lambda x. \, t) \> \inr (y) = (\lambda x. \, s) \> \inr (y)
+                        (\lambda x. \, t) \> \inr (z) =_{\beta \eta}
+                        (\lambda x. \, s) \> \inr (z)
                 \end{cases}
                 \Longrightarrow
-                \lambda x. \, t = \lambda x. \, s
+                \lambda x. \, t =_{\beta \eta} \lambda x. \, s
         \end{flalign*}
 \end{frame}
 
@@ -1137,10 +1139,223 @@
 
         \begin{center}
                 What can logic teach us more about programming ?
-                \\
-                \pause
-                (and vice-versa)
         \end{center}
+
 \end{frame}
+
+\section{Beyond Cartesianism}
+
+\begin{frame}{Eager vs. Lazy}
+
+        \begin{block}{Lazy Evaluation (\emph{e.g.} Haskell)}
+                $\pi_2 \, \pv{\text{divergence}, 0} = 0$
+        \end{block}
+        
+        \bigskip
+        \begin{block}{Strict Evaluation (\emph{e.g.} Python)}
+                $\pi_2 \, \pv{\text{divergence}, 0} = \text{divergence}$
+        \end{block}
+        
+        \bigskip
+        \pause
+        Strict evaluation \alert{\underline{breaks product laws}}
+\end{frame}
+
+\begin{frame}{Quantum Computation: No-cloning and Entanglement}
+
+        Forbidden to write down $\pv{x,x}$
+
+        \bigskip
+        \pause
+        Certainly false that $\pv{\pi_1 \, x, \pi_2 \, x} = x$
+
+
+        \bigskip
+        \pause
+        Last case also holds in \alert{\underline{probabilistic}} programming
+\end{frame}
+
+\begin{frame}{Beyond Cartesianism}
+
+        \caixa{
+                \begin{center}
+                        Cartesian structures thus often non-adequate 
+                \end{center}
+        }
+
+        \bigskip
+        We will explore a \alert{\underline{more general}} approach
+\end{frame}
+
+\begin{frame}{Linear $\lambda$-calculus}
+
+        Controlled use of \alert{\underline{resources}}
+        (no duplication, no discarding)
+
+        \bigskip
+        Product laws need not hold
+
+        \bigskip
+        Broader range of applications than `Cartesian $\lambda$-calculus'
+\end{frame}
+
+\begin{slide}{A Linear Deductive System}
+  \begin{minipage}[1\textheight]{\textwidth}
+  \begin{columns}[c]
+  \begin{column}{0.75\textwidth}
+          $\typeA,\typeB \dots$ denote propositions
+          and $\typeI$ a trivial one 
+  \end{column}
+  \begin{column}{0.18\textwidth}
+        \includegraphics[scale=0.3]{images/girard.jpg}
+  \end{column}
+  \end{columns}
+  \end{minipage}
+
+  \vspace{-0.5cm}
+  If $\typeA$ and $\typeB$ are propositions then
+  \begin{itemize}
+    \item $\typeA \otimes \typeB$ is a proposition -- 
+        `linear conjunction' of $\typeA$ and $\typeB$
+    \item $\typeA \multimap \typeB$ is a proposition -- 
+            `linear implication' of $\typeB$ from $\typeA$
+  \end{itemize}
+  
+\end{slide}
+
+\begin{frame}{A Linear Deductive System}
+  
+  $\Gamma,\Delta \dots$ denote lists of propositions
+
+  \small{
+  \begin{flalign*}
+      \infer[(\rulename{ass})]{\typeA \vljud \typeA}{} \hspace{2cm}
+      \infer[(\rulename{trv})]{(-) \vljud  \typeI}{}  \hspace{2cm}
+      \infer[(\rulename{dsc})]{\Gamma,\Delta \vljud \typeA}{
+              \Gamma \vljud \typeI \qquad
+              \Delta \vljud \typeA
+      }
+  \end{flalign*}
+  \begin{flalign*}
+      \infer[(\rulename{prd})]{\Gamma,\Delta \vljud \typeA \otimes \typeB}
+      {\Gamma \vljud \typeA \qquad \Delta \vljud \typeB} \hspace{2cm}
+      \infer[(\rulename{prj})]{
+              \Gamma, \Delta \vljud \typeC
+      }{
+              \Gamma \vljud \typeA \otimes \typeB
+              \qquad
+              \Delta, \typeA, \typeB \vljud \typeC
+      }
+  \end{flalign*}
+  \begin{flalign*}
+      \infer[(\rulename{cry})]{\Gamma \vljud \typeA \multimap \typeB}
+      {
+        \Gamma, \typeA \vljud  \typeB
+      }
+      \hspace{2cm}
+      \infer[(\rulename{app})]{\Gamma,\Delta \vljud \typeB}
+      {\Gamma \vljud  \typeA \multimap \typeB \quad
+        \Delta \vljud  \typeA}
+  \end{flalign*}
+        } 
+  
+
+\end{frame}
+
+\begin{frame}{Linear $\lambda$-calculus}
+  
+  \small{
+  \begin{flalign*}
+          \hspace{-0.2cm}
+      \infer[]{x : \typeA \vljud x : \typeA}{} \hspace{2cm}
+      \infer[]{(-) \vljud  \ast : \typeI}{}  \hspace{2cm}
+      \infer{\Gamma,\Delta \vljud t \text{ to } \ast.\  \, s: \typeA}{
+              \Gamma \vljud t : \typeI \qquad
+              \Delta \vljud s : \typeA
+      }
+  \end{flalign*}
+  \begin{flalign*}
+  \hspace{-0.2cm}
+      \infer[]{\Gamma,\Delta \vljud t \otimes s : \typeA \otimes \typeB}
+      {\Gamma \vljud t : \typeA \qquad \Delta \vljud s: \typeB} \hspace{2cm}
+      \infer{
+              \Gamma, \Delta \vljud 
+              \text{pm } t \text{ to } x \otimes y.\, s: \typeC
+      }{
+              \Gamma \vljud t : \typeA \otimes \typeB
+              \qquad
+              \Delta, x: \typeA, y: \typeB \vljud s: \typeC
+      }
+  \end{flalign*}
+  \begin{flalign*}
+      \hspace{-0.2cm}
+      \infer[]{\Gamma \vljud \lambda x : \typeA.\ t : \typeA \multimap \typeB}
+      {
+        \Gamma, x: \typeA \vljud t : \typeB
+      }
+      \hspace{2cm}
+      \infer[]{\Gamma,\Delta \vljud t \, s : \typeB}
+      {\Gamma \vljud t: \typeA \multimap \typeB \quad
+        \Delta \vljud s:  \typeA}
+  \end{flalign*}
+        } 
+  
+
+\end{frame}
+
+\begin{slide}{Examples of Linear $\lambda$-terms}
+  \begin{flalign*}
+          & x : \typeA \vljud x : \typeA && \text{(identity)}
+          \\[15pt]
+          & x : \typeA \otimes \typeB \vljud 
+          \text{pm}\ x \text{ to } a \otimes b. \, b \otimes a : \typeB \otimes \typeA
+          && \text{(swap)} 
+          \\[15pt]
+          & (-) \vljud \lambda x. \,
+          \text{pm}\ x \text{ to } a \otimes b. \, b \otimes a :
+          \typeA \otimes \typeB \multimap \typeB \otimes \typeA
+          && \text{(swap curried)}
+          \\[15pt]
+          &
+          x : \typeI \otimes \typeA \vljud \text{pm } x \text{ to }
+          i \otimes a. \, (i \text{ to } \ast.\, a) : \typeA
+          && \text{(discard triv)}
+  \end{flalign*}
+\end{slide}
+
+\begin{frame}{Examples of Linear $\lambda$-terms in Quantum}
+  \small{
+  \begin{flalign*}
+          & x : \typeB, y : \typeB \vljud \mathrm{cnot}(\mathrm{had}(x),y) 
+          : \typeQ \otimes \typeQ && \text{(EPR pair)}
+          \\[15pt]
+          &
+          x : \typeB, y : \typeB \vljud \Big (\lambda x. \,
+          \text{pm}\ x \text{ to } a \otimes b. \, b \otimes a \Big )
+          \Big (\mathrm{cnot}(\mathrm{had}(x),y) \Big )
+                    && \text{(EPR swapped)} 
+          \end{flalign*}
+  }
+          \medskip
+          \pause
+          \caixa{
+          \begin{center}
+                 Does swapping actually have any effect on the pair ?
+          \end{center}
+          }
+\end{frame}
+\begin{frame}{Next Steps}
+
+      Answer to previous question calls for semantics
+
+      \pause
+      \medskip
+      More generally a full study of linear $\lambda$-calculus
+      calls for semantics
+
+      \pause
+      \medskip
+      \dots\ which we will obtain via \alert{\underline{Category Theory}} :-)
+      \end{frame}
 
 \end{document}
