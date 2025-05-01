@@ -1,0 +1,376 @@
+\documentclass{beamer}
+\usepackage{etex} % fixes new-dimension error
+\usepackage{lmodern}
+\input{macros/preamble}
+\input{macros/macros}
+\input{macros2}
+
+%-------------- template --------------------------------------------------
+\usetheme{metropolis}
+\metroset{block=fill}
+%\usetheme{Boadilla}
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.4\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertsection
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.1\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\makeatother
+\setbeamertemplate{navigation symbols}{}
+
+%----------------------------------------------------------------------------
+\usepackage{graphicx,amsmath}
+\usepackage{stmaryrd} % cf. interleave
+\usepackage{booktabs}
+\usepackage{amscd}
+\usepackage{multicol}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{alltt}
+\usepackage{proof}
+%------ using xy ------------------------------------------------------------
+\usepackage[all]{xy}
+%\def\larrow#1#2#3{\xymatrix{ #3 & #1 \ar[l] _-{#2} }}
+\def\larrow#1#2#3{\xymatrix{ #3 & #1 \ar[l] _--{#2} }}
+\def\rarrow#1#2#3{\xymatrix{ #1 \ar[r]^-{#2} & #3 }}
+\def\arLaw#1#2#3#4#5{
+\xymatrix{
+        #1      \ar@/^1pc/[rr]^-{#4} &
+        #5 &
+        #2      \ar@/^1pc/[ll]^-{#3}
+}}
+\def\arLeq#1#2#3#4{\arLaw{#1}{#2}{#3}{#4}\leq}
+%------ using pstricks (rnode etc) ------------------------------------------
+\usepackage{pstricks,pst-node,pst-text,pst-3d}
+%------ using color ---------------------------------------------------------
+
+\newrgbcolor{goldenrod}{.80392 .60784 .11373}
+\newrgbcolor{darkgoldenrod}{.5451 .39608 .03137}
+\newrgbcolor{brown}{.15 .15 .15}
+\newrgbcolor{darkolivegreen}{.33333 .41961 .18431}
+%
+%
+\def\gold#1{{\goldenrod #1}}
+% \def\dgold#1{{\darkgoldenrod #1}}
+\def\dgold#1{{\alert{#1}}}
+%\def\brw#1{{\brown #1}}
+\def\dkb#1{{\blue #1}}
+\def\tdkb#1{\textbf{\darkblue #1}}
+%%\def\gre#1{{\green #1}}
+\def\gre#1{{\darkolivegreen #1}}
+\def\gry#1{{\gray #1}}
+\def\rdb#1{{\red #1}}
+\def\st{\mathbf{.}\,}
+\def\laplace#1#2{*\txt{\mbox{ \fcolorbox{black}{myGray}{$\begin{array}{c}\mbox{#1}\\\\#2\\\\\end{array}$} }}}
+%\newcommand{\galois}[2]{#1\; \dashv\; #2}
+
+\def\eqm{\mathbin{\equiv}}                     
+\def\noeqm{\mathbin{\not\!\equiv}}  
+%\newcommand{\flam}[2]{\lambda_{#1}\; .\; #2}
+\def\existential#1#2{\exists_{#1}\;.\; #2}
+\def\existencial#1#2{\exists_{#1}\;.\; #2}
+
+\def\pv#1#2{\langle #1, #2 \rangle}
+\def\nc#1#2{[#1]#2}
+\def\pvo#1#2{\langle \! \! \! \langle #1 \rangle \! \! \! \rangle\, #2}
+\def\nco#1#2{\llbracket #1 \rrbracket #2}
+\def\cvg#1{\llbracket \downarrow \rrbracket #1}
+\def\cvgr#1#2{\llbracket #1 \downarrow \rrbracket #2}
+\def\cvgl#1#2{\llbracket \downarrow  #1 \rrbracket #2}
+\def\cvglr#1#2{\llbracket \downarrow  #1 \downarrow \rrbracket #2}
+\def\lfp#1#2{\mu {#1}\, .\, {#2}}
+\def\lpf#1#2{\mu {#1}\, .\, {#2}}
+\def\gfp#1#2{\nu {#1}\, .\, {#2}}
+\def\gpf#1#2{\nu {#1}\, .\, {#2}}
+\def\mset#1{\vvv #1 \vvv}
+\def\vvv{\vert \! \vert}
+\def\mnc#1{\vvv [#1] \vvv}
+\def\mpv#1{\vvv \langle #1 \rangle \vvv}
+\def\bcomp#1{#1^{\text{c}}}
+\def\eqm{\mathbin{\simeq}}
+\def\noeqm{\mathbin{\not\!\simeq}}
+\def\universal#1#2{\forall_{#1}\;.\; #2}
+\def\existential#1#2{\exists_{#1}\;.\; #2}
+\def\oexistential#1#2{\exists^{1}_{#1}\;.\; #2}
+\def\MM{\mathcal{M}}
+\def\uppaal{\textsc{Uppaal}}
+\def\cc#1{\mathcal{C}(#1)}
+\def\R{\mathcal{R}}
+\def\TL#1{\mathcal{T}(#1)}
+\def\HL#1{\mathcal{H}(#1)}
+\def\ET#1{\mathsf{ExecTime(#1)}}
+\newcommand\mdoubleplus{\mathbin{+\mkern-10mu+}}
+
+\AtBeginSection[]
+{
+    \begin{frame}
+        \frametitle{Table of Contents}
+        \tableofcontents[currentsection]
+    \end{frame}
+}
+
+% context
+\AtBeginSection[]
+{
+    \begin{frame}
+        \frametitle{Table of Contents}
+        \tableofcontents[currentsection]
+    \end{frame}
+}
+\author[Renato Neves]{Renato Neves}
+
+% logos of institutions
+\titlegraphic{
+  \begin{textblock*}{5cm}(6.7cm,7.57cm)
+     \includegraphics[scale=0.05525]{./images/uminho.png}
+  \end{textblock*}
+  \begin{textblock*}{5cm}(9.4cm,7.57cm)
+    \includegraphics[scale=0.50]{./images/haslab.pdf}
+  \end{textblock*}
+}
+
+% No date
+\date{}
+
+
+\begin{document}
+
+\title{Buh !}
+\frame[plain]{\titlepage}
+
+
+\title{Next Step: Category Theory}
+
+\frame[plain]{\titlepage}
+
+\section{Basic Notions}
+
+\begin{frame}{In a Nutshell}
+
+        The Mathematics of Mathematics
+
+        \bigskip
+        \pause
+        Abstract non-sense
+
+        \bigskip
+        \pause
+        \alert{\underline{\emph{El Libertadora}}}
+
+        \bigskip
+        \pause
+        You have actually met her before
+\end{frame}
+
+\begin{frame}{A Category}
+
+        Consists of a `set' of things (a.k.a. \alert{\underline{objects}}) $A,B,C$ \dots
+
+        \medskip
+        arrows (a.k.a. \alert{\underline{morphisms}}) $f : A \to B$ connecting these things
+
+        \medskip
+        and an `identity' arrow $\id : A \to A$ for each thing $A$
+
+        \vfill
+        \pause
+        Arrows are \alert{\underline{composable}} \ie\
+        \[
+                \infer{
+                        g \comp f : A \to C
+                }{
+                        f : A \to B \qquad g : B \to C}
+        \]
+        \pause
+        (composition is associative and has $\id$ as neutral element)
+\end{frame}
+
+\begin{frame}{Examples}
+        \begin{itemize}
+                \item Sets and functions ($\Set$) \\[10pt]
+                \item Posets and monotone functions ($\Pos$) \\[10pt]
+                \item Vector spaces and linear functions ($\CVec$) \\[10pt]
+                \item Natural numbers and matrices ($\Mat$) \\[10pt]
+                \item Reals numbers with infinity and $\leq$ relation ($\CR$)  \\[10pt]
+        \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Finality}
+        \begin{definition}
+           An obj. $X$ is \alert{\underline{final}} if for every obj. $A$ there exists a
+           \alert{\underline{unique}} arrow
+           \[
+                   ! : A \to X
+           \]
+        \end{definition}
+        
+        \pause
+        \medskip
+        In $\Set$, $\Pos$, $\CVec$ it is singleton set
+        (represents `\alert{\underline{discarding}} data')
+        
+        \medskip
+        In $\Mat$ it is $0$ (discarding analogy still applies)
+
+        \medskip
+        In $\CR$ it is infinity (the greatest element)
+\end{frame}
+
+
+\begin{frame}{Categorical Products}
+        \begin{definition}
+        An obj. $X$ called \alert{\underline{product}} of objs. $A$ and $B$ if
+        \[
+               \xymatrix@C=50pt{
+                       & C \ar[dl]_{f} \ar[dr]^{g} \ar@{.>}[d]|{ \pv{f}{g} } & 
+                       \\
+                       A & \ar[l]^{\pi_1} \ar[r]_{\pi_2}
+                       X & B
+               }
+        \]
+        \end{definition}
+
+        \pause
+        \medskip
+        In $\Set$, $\Pos$, $\CVec$ given by Cartesian product
+
+        \medskip
+        In $\Mat$ given by addition (leads to vertical stacking of matrices)
+
+        \medskip
+        In $\CR$ given by minimum  (\ie\ the greatest lower bound)
+\end{frame}
+
+
+\begin{frame}{Categorical Exponentials}
+
+        \begin{definition}
+                An obj. $X$ called \alert{\underline{exponential}} of objs. $A$
+                and $B$ if 
+        \[
+               \xymatrix@C=50pt{
+                       A \times B \ar[dr]^{f} 
+                       \ar@{.>}[d]|{(\lambda f) \times \id}
+                       \\
+                       X \times B \ar[r]_{\mathrm{app}} & C
+               }
+        \]
+        \end{definition}
+
+        \pause
+        \medskip
+        In $\Set$, $\Pos$ given by the set of (monotone) functions $A \to B$
+
+        \pause
+        \medskip
+        Other examples will be analysed later on
+\end{frame}
+
+\section{Lambda-calculus and Cartesian-closed Categories}
+
+\begin{frame}{Cartesian-closed Categories}
+
+       We will now \alert{\underline{vastly generalise}} our semantics of
+       $\lambda$-calculus \dots\
+
+       \medskip
+       \pause
+       \dots\ via the so-called Cartesian-closed categories
+
+       \pause
+       \vfill
+       \begin{definition}
+               A category is called \alert{\underline{Cartesian-closed}} if it
+               has a final object, binary products, and exponentials
+       \end{definition}
+\end{frame}
+
+\begin{frame}{Denotational Semantics in a Cartesian-closed Category}
+  Types $\typeA$ interpreted as \alert{\underline{objects}} $\sem{\typeA}$
+  \begin{flalign*}
+    \sem{1} & = 1 \\
+    \sem{\typeA \times \typeB} & = \sem{\typeA} \times \sem{\typeB} \\
+   \sem{\typeA \to \typeB} & = \sem{\typeB}^{\sem{\typeA}} 
+ \end{flalign*}
+
+ Typing contexts $\Gamma$ interpreted as products
+ \begin{flalign*}
+  \sem{\Gamma}\ = \sem{x_1 : \typeA_1, \dots, x_n : \typeA_n}\ =
+ \sem{\typeA_1}\ \times \dots \times \sem{\typeA_n} 
+ \end{flalign*}
+
+ $\lambda$-terms $\Gamma \vljud t : \typeA$ interpreted as \alert{\underline{arrows}}
+ \begin{flalign*}
+   \sem{\Gamma \vljud t : \typeA}\ : \sem{\Gamma}\ \longrightarrow \sem{\typeA}
+ \end{flalign*}
+
+\end{frame}
+
+\begin{frame}{Denotational Semantics in a Cartesian-closed Category}
+ \small{
+   \begin{flalign*}
+      \infer[]{\sem{\Gamma \vljud x_i : \typeA} = \pi_i}{x_i :
+        \typeA \in \Gamma} \hspace{1.2cm}
+      \infer[]{\sem{\Gamma \vljud \ast : 1}\ =\ !}{}  \hspace{1.2cm}
+      \infer[]{\sem{\Gamma \vljud \pi_1 t : \typeA} = \pi_1 \comp f }
+      {\sem{\Gamma \vljud t : \typeA \times \typeB} = f}
+  \end{flalign*}
+  \begin{flalign*}
+      \infer[]{\sem{\Gamma \vljud \langle t,s \rangle :
+\typeA \times \typeB}\ = \pv{f}{g}}
+    {\sem{\Gamma \vljud t: \typeA}\ = f \qquad \sem{\Gamma \vljud s: \typeB}\ = g}
+    \hspace{0.3cm}
+     \infer[]{\sem{\Gamma \vljud \lambda x : \typeA . \, t : \typeA
+        \to \typeB}\ = \lambda f}
+      {\sem{\Gamma, x : \typeA \vljud t : \typeB}\ = f}
+    \end{flalign*}
+   \begin{flalign*}
+           \infer[]{\sem{\Gamma \vljud t \, s : \typeB}\ = \mathrm{app} \comp \pv{f}{g}}
+      {\sem{\Gamma \vljud  t : \typeA \to \typeB}\ = f \quad
+        \sem{\Gamma \vljud  s : \typeA}\ = g}
+    \end{flalign*}
+}
+\end{frame}
+
+\begin{frame}{Case-study: The Boolean Category}
+        \[
+                \xymatrix@C=40pt{
+                        0 \ar[r]^{\leq} \ar@(ul,dl)[]_{\leq} & 1 \ar@(ur,dr)[]^{\leq} 
+                }
+        \]
+
+        \bigskip
+        \bigskip
+        Show that it has final object and binary products
+
+        Show that it has exponentials \hspace{6cm}
+        {\small (hint: use negation and disjunction)}
+
+        Show that $b \to c \leq (a \to b) \to (a \to c)$
+\end{frame}
+
+\begin{frame}{Case-study: Programming to the Rescue !}
+
+        Previous problem \alert{\underline{proved}} via the \alert{\underline{program}}
+        \[
+                f : \typeB \to \typeC \vljud
+                \lambda g. \, \lambda x. \, f(g \, (x)) : (\typeA \to \typeB)
+                \to (\typeA \to \typeC)
+        \]
+        \pause
+        Much simpler than before !!!
+
+        \pause
+        \medskip
+        But wait \dots\ is then $\lambda$-calculus really a programming language ?
+\end{frame}
+\end{document}
