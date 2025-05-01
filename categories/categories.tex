@@ -370,7 +370,164 @@
         Much simpler than before !!!
 
         \pause
-        \medskip
+        \bigskip
         But wait \dots\ is then $\lambda$-calculus really a programming language ?
 \end{frame}
+
+\section{From Cartesian to Linear}
+
+\begin{frame}{Monoidal Categories}
+
+        A monoidal category allows us
+        \begin{itemize}
+                \item to \alert{\underline{pair}} two objs. $A$ and $B$ into a single one $A
+                        \otimes B$ 
+                \item and analogously for morphisms, \ie\
+                        \[
+                                \infer{
+                                        f \otimes g : A \otimes B \to A' \otimes B'
+                                }{
+                                        f : A \to A' \qquad g : B \to B'
+                                }
+                        \]
+                \item It has an obj. $I$ such that $i : I \otimes A \stackrel{\cong}{\to} A$ for
+                        every obj. $A$
+        \end{itemize}
+
+        \medskip
+        A number of coherence laws hold \dots
+
+        Also assume the existence of a \alert{\underline{symmetry map}}
+        $\mathrm{sw} : A \otimes B \stackrel{\cong}{\to} B \otimes A$
+\end{frame}
+
+
+\begin{frame}{Examples}
+        \begin{itemize}
+                \item Every category with binary products and final object is monoidal  \\[10pt]
+                \item $\CVec$ with the \alert{\underline{tensor product}}
+                        (the mathematical basis of entanglement) is monoidal
+                        \\[10pt]
+                \item $\CR$ with addition is monoidal  \\[10pt]
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{Categorical Exponentials Revisited}
+
+        \begin{definition}
+                An obj. $X$ called \alert{\underline{exponential}} of objs. $A$
+                and $B$ if 
+        \[
+               \xymatrix@C=50pt{
+                       A \otimes B \ar[dr]^{f} 
+                       \ar@{.>}[d]|{(\lambda f) \otimes \id}
+                       \\
+                       X \otimes B \ar[r]_{\mathrm{app}} & C
+               }
+        \]
+        \end{definition}
+
+        \pause
+        \medskip
+        In $\Set$, $\Pos$ given by the set of (monotone) functions $A \to B$
+
+        \pause
+        \medskip
+        In $\CVec$ given by linear maps
+\end{frame}
+
+\begin{frame}{Monoidal-closed Categories}
+
+       We will now (finally) give semantics to linear
+       $\lambda$-calculus \dots\
+
+       \medskip
+       \pause
+       \dots\ via the so-called monoidal-closed categories
+
+       \pause
+       \vfill
+       \begin{definition}
+               A category called \alert{\underline{monoidal-closed}} if 
+               it is monoidal and has exponentials
+       \end{definition}
+\end{frame}
+
+\begin{frame}{Denotational Semantics in a Monoidal-closed Category}
+  Types $\typeA$ interpreted as \alert{\underline{objects}} $\sem{\typeA}$
+  \begin{flalign*}
+    \sem{\typeI} & = I \\
+    \sem{\typeA \otimes \typeB} & = \sem{\typeA}\ \otimes\ \sem{\typeB} \\
+   \sem{\typeA \multimap \typeB} & = \sem{\typeB}^{\sem{\typeA}} 
+ \end{flalign*}
+
+ Typing contexts $\Gamma$ interpreted as products
+ \begin{flalign*}
+  \sem{\Gamma}\ = \sem{x_1 : \typeA_1, \dots, x_n : \typeA_n}\ =
+ \sem{\typeA_1}\ \otimes \dots \otimes \sem{\typeA_n} 
+ \end{flalign*}
+
+ $\lambda$-terms $\Gamma \vljud t : \typeA$ interpreted as \alert{\underline{arrows}}
+ \begin{flalign*}
+   \sem{\Gamma \vljud t : \typeA}\ : \sem{\Gamma}\ \longrightarrow \sem{\typeA}
+ \end{flalign*}
+
+\end{frame}
+
+\begin{frame}{Denotational Semantics in a Monoidal-closed Category}
+  
+  \small{
+  \begin{flalign*}
+      \hspace{-0.2cm}
+      \infer[]{\sem{x : \typeA \vljud x : \typeA} = \id}{} \hspace{1cm}
+      \infer[]{\sem{(-) \vljud  \ast : \typeI} = \id}{} 
+  \end{flalign*}
+  \begin{flalign*}
+      \hspace{-0.2cm}
+      \infer{\sem{\Gamma,\Delta \vljud t \text{ to } \ast.\  \, s: \typeA}\ = i \comp (f \otimes g)}{
+              \sem{\Gamma \vljud t : \typeI}\ = f \qquad
+              \sem{\Delta \vljud s : \typeA}\ = g
+      }
+      \hspace{1cm}
+      \infer[]{\sem{\Gamma,\Delta \vljud t \otimes s : \typeA \otimes \typeB}\ = f \otimes g}
+      {\sem{\Gamma \vljud t : \typeA}\ = f 
+      \qquad \sem{\Delta \vljud s: \typeB}\ = g
+      }
+  \end{flalign*}
+  \begin{flalign*}
+      \infer{
+              \sem{\Gamma, \Delta \vljud 
+              \text{pm } t \text{ to } x \otimes y.\, s: \typeC}\ = 
+              g \comp \mathrm{sw} \comp (f \otimes \id)
+      }{
+              \sem{\Gamma \vljud t : \typeA \otimes \typeB}\ = f
+              \qquad
+              \sem{\Delta, x: \typeA, y: \typeB \vljud s: \typeC}\ = g
+      }
+  \end{flalign*}
+  \begin{flalign*}
+      \hspace{-0.2cm}
+      \infer[]{\sem{\Gamma \vljud \lambda x : \typeA.\ t : \typeA \multimap \typeB}\ = \lambda f}
+      {
+              \sem{\Gamma, x: \typeA \vljud t : \typeB}\ = f
+      }
+      \hspace{1cm}
+      \infer[]{
+              \sem{\Gamma,\Delta \vljud t \, s : \typeB}\ = \mathrm{app} \comp (f \otimes g)
+      }
+      {
+              \sem{\Gamma \vljud t: \typeA \multimap \typeB}\ = f  \quad
+              \sem{\Delta \vljud s:  \typeA}\ = g }
+  \end{flalign*}
+        } 
+  
+      \pause
+      \begin{center}
+              {\scriptsize (Semantics slightly oversimplified)}
+      \end{center}
+\end{frame}
+
+
+
+
 \end{document}
