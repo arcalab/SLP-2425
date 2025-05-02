@@ -147,7 +147,7 @@
 \frame[plain]{\titlepage}
 
 
-\title{Next Step: Category Theory}
+\title{Next Stop: Category Theory}
 
 \frame[plain]{\titlepage}
 
@@ -528,6 +528,93 @@
 \end{frame}
 
 
+\begin{frame}{Case-study: The Category $\CR$}
+        \[
+                \xymatrix{
+                        \dots\ \ar[r]^{\leq} 
+                        & 
+                        0  \ar[r]^{\leq} 
+                        &
+                        1 \ar[r]^{\leq}
+                        & 
+                        \> \dots\ \ar[r]^{\leq} 
+                        &
+                        \infty
+                }
+        \]
+
+        \bigskip
+        \bigskip
+        Show that it is monoidal via addition
+
+        Show that it has exponentials \hspace{6cm}
+        {\small (hint: consider subtraction)}
+
+        Show that $a + b \leq c \Rightarrow 0 \leq c - b - a$
+
+\end{frame}
+
+\begin{frame}{Case-study: Programming (again) to the Rescue !}
+
+        Previous problem \alert{\underline{proved}} via the
+        \alert{\underline{program}}
+        \[
+                (-) \vljud \lambda y_1.\ \lambda y_2.\ t[y_1 \otimes y_2/x] :
+                \typeA \multimap (\typeB \multimap \typeC)
+        \]
+
+        {\small (where $x : \typeA \otimes \typeB \vljud t : \typeC$ serves as a witness
+        to $a + b \leq c$) }
+\end{frame}
 
 
+\begin{frame}{Case-study: Pointed Sets and Strict Functions}
+
+        \begin{definition}
+                A set $X$ is called \alert{\underline{pointed}} if it has
+                a distinguished element $0_X$
+        \end{definition}
+
+        \medskip
+        \begin{definition}
+                A function of pointed sets $f : X \to Y$ is
+                \alert{\underline{strict}} if $f(0_X) = 0_Y$
+        \end{definition}
+
+        \medskip
+        \pause
+        $\PSet$ denotes the category of pointed sets and strict maps
+
+        \medskip
+        \pause
+        An interesting category to interpret \alert{\underline{strict evaluation}}
+\end{frame}
+
+\begin{frame}{Case-study: Pointed Sets and Strict Functions}
+
+        $\PSet$ is monoidal. $A \otimes B$ is set of pairs $a \otimes b$ with
+        equations
+        \[
+                0_A \otimes b = b \otimes 0_B = 0_{A \otimes B}
+        \]
+
+
+        \medskip
+        Fundamental for strict evaluation
+\end{frame}
+
+\begin{frame}{Case-study: Pointed Sets and Strict Functions}
+        Show that it has exponentials \dots
+
+        \dots\ and projections $\pi_1 : A \otimes B \to A$ and $\pi_2 : A
+        \otimes B \to B$
+
+
+        \bigskip
+        \pause
+        Show that if $\sem{\mathrm{div}}\ = x \mapsto 0$ then we have
+        \[
+                \pi_2\ (\mathrm{div} \otimes t)\ =\ \mathrm{div}
+        \]
+\end{frame}
 \end{document}
