@@ -36,6 +36,10 @@ Learning outcomes:
   | 07 apr. 2025 | Equational system of simply-typed lambda-calculus ([slides](./lambda_calc/lambdaCalc.pdf)) |
   | 08 apr. 2025 | Continuation of the previous lecture ([slides](./lambda_calc/lambdaCalc.pdf)) |
   | 22 apr. 2025 | Disjunctive types ([slides](./lambda_calc/lambdaCalc.pdf)) |
+  | 28 apr. 2025 | From Cartesian to Linear theories ([slides](./lambda_calc/lambdaCalc.pdf)) |
+  | 29 apr. 2025 | Category theory recap ([slides](./categories/categories.pdf)) |
+  | 05 may  2025 | Categorical interpretation of lambda-calculus ([slides](./categories/categories.pdf)) |
+  | 06 may  2025 | Continuation of the previous lecture. Exercises ([slides](./categories/categories.pdf)) |
 
 
 # Assessment
