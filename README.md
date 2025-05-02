@@ -1,4 +1,6 @@
-# Introduction and objectives This course introduces formal semantics of programming languages. It starts
+# Introduction and objectives 
+
+This course introduces formal semantics of programming languages. It starts
 with different semantic approaches (operational, denotational, and axiomatic)
 in the imperative setting. It then focusses on the semantics of functional
 languages, with lambda-calculus as the central core.
