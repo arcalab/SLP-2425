@@ -15,6 +15,7 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{tikz-cd}
+\usepackage[all]{xy}
 \usepackage{quantikz}
 \usepackage[linewidth=1pt]{mdframed}
 %%
@@ -50,7 +51,9 @@
 \begin{abstract}
 This handout briefly summarises our previous lectures and presents related
 problems.  It addresses the three styles of semantics that we have studied so
-far: namely operational, denotational, and axiomatic semantics.
+far: namely operational, denotational, and axiomatic semantics. It also
+addresses simply-typed $\lambda$-calculus as well as its (categorical)
+denotational semantics.
 \end{abstract}
 
 \section{Operational Semantics}
@@ -917,6 +920,727 @@ $\prog{p}$ and condition $\Phi$ we were able to prove $\vdash_H \{ \mathrm{wp}
         Use this last result to prove the relative completeness of the Hoare calculus
         from the relative completeness of the weakest pre-condition calculus.
 \end{problem}
+
+\section{Simply-typed $\lambda$-calculus}
+
+Let us now turn our attention to higher-order programming, more specifically to
+its genesis, underlying language, and semantics. In a perhaps surprising turn
+of events, our study started with the analysis of a deductive logical system
+(Figure~\ref{fig:logical}) -- initiated by Aristotle more than two thousand
+years ago. We saw in particular how it can be used to prove new knowledge from
+a given basic set of `beliefs' $\Gamma$.
+
+\begin{figure}[h]
+\begin{minipage}{1\textwidth}
+  \begin{flalign*}
+      \infer[\rulename{ass}]{\Gamma \vljud \typeA}{\typeA \in \Gamma} \hspace{2cm}
+      \infer[\rulename{trv}]{\Gamma \vljud  1}{}  \hspace{2cm}
+      \infer[\rulename{\pi_1}]{\Gamma \vljud \typeA}{\Gamma \vljud \typeA \times \typeB} \hspace{2cm}
+      \infer[\rulename{\pi_2}]{\Gamma \vljud \typeB}{\Gamma \vljud \typeA \times \typeB}
+  \end{flalign*}
+  \begin{flalign*}
+      \infer[\rulename{prd}]{\Gamma \vljud \typeA \times \typeB}
+      {\Gamma \vljud \typeA \qquad \Gamma \vljud \typeB} \hspace{2cm}
+      \infer[\rulename{cry}]{\Gamma \vljud \typeA \to \typeB}{\Gamma, \typeA \vljud  \typeB}
+      \hspace{2cm}
+      \infer[\rulename{app}]{\Gamma \vljud \typeB}
+      {\Gamma \vljud  \typeA \to \typeB \quad
+        \Gamma \vljud  \typeA}
+  \end{flalign*}
+
+\end{minipage}
+\caption{A Cartesian deductive system.}
+\label{fig:logical}
+\end{figure}
+
+\begin{problem}
+        Use the logical system from Figure~\ref{fig:logical} to deduce the
+        following judgements.
+        \begin{itemize}
+                \item $\typeA \times \typeB \vljud \typeB \times \typeA$
+                %
+                \item $\typeA \times (\typeA \to \typeB) \vljud \typeB$
+                %
+                \item $\typeA \to \typeB, \typeB \to \typeC \vljud \typeA \to
+                        \typeC$
+                %
+                \item $\typeA \to \typeB, \typeA \to \typeC \vljud \typeA \to
+                        \typeB \times \typeC$
+        \end{itemize}
+\end{problem}
+Do the previous judgements remind you of type signatures of certain programs?
+Let us see if you can put your finger on it with the following observations.
+In the lectures we saw how to `enrich' the previous logical system to a
+fundamental language in programming theory (the simply-typed
+$\lambda$-calculus), as presented in Figure~\ref{fig:lambda_calc}. Recall that
+each rule in the calculus corresponds to a rule from Figure~\ref{fig:logical}
+-- and therefore each proof derivation based on Figure~\ref{fig:logical} yields
+a $\lambda$-term.
+
+\begin{figure}[h]
+\begin{minipage}{1\textwidth}
+  \begin{flalign*}
+      \infer[\rulename{ass}]{\Gamma \vljud x : \typeA}{x :
+        \typeA \in \Gamma} \hspace{2cm}
+      \infer[\rulename{triv}]{\Gamma \vljud \ast : 1}{}  \hspace{1.5cm}
+      \infer[\rulename{\pi_1}]{\Gamma \vljud \pi_1 \, t : \typeA }
+      {\Gamma \vljud t: \typeA \times \typeB} \hspace{1.5cm}
+      \infer[\rulename{\pi_2}]{\Gamma \vljud \pi_2 \, t : \typeA }
+      {\Gamma \vljud t: \typeA \times \typeB} 
+  \end{flalign*}
+  \begin{flalign*}
+     \infer[\rulename{prd}]{\Gamma \vljud \langle t,s \rangle :
+        \typeA \times \typeB}
+      {\Gamma \vljud t: \typeA \qquad \Gamma \vljud s: \typeB} \hspace{2cm}
+      \infer[\rulename{cry}]{\Gamma \vljud \lambda x : \typeA . \, t : \typeA
+        \to \typeB}
+      {\Gamma, x : \typeA \vljud t : \typeB}
+    \end{flalign*}
+   \begin{flalign*}
+      \infer[\rulename{app}]{\Gamma \vljud t \, s : \typeB}
+      {\Gamma \vljud  t : \typeA \to \typeB \quad
+        \Gamma \vljud  s : \typeA}
+    \end{flalign*}
+\end{minipage}
+\caption{Simply-typed $\lambda$-calculus.}
+\label{fig:lambda_calc}
+\end{figure}
+
+\begin{problem}
+        Use the derivation trees that you built in the previous problem to
+        obtain the corresponding $\lambda$-terms.
+\end{problem}
+
+\begin{problem}
+        Prove the `exchange rule', \ie\ that the implication below holds.
+        \[
+                \Gamma, x : \typeA, y : \typeB,
+                \Delta \vljud t : \typeA
+                \quad \Longrightarrow \quad
+                \Gamma, y : \typeB, x : \typeA, \Delta
+                \vljud t : \typeA
+        \]
+        Which proof method will you appeal to? (Recall the proof methods you
+        used during the whole course).
+\end{problem}
+
+\begin{problem}
+        Prove the `weakening rule', \ie\ that the implication below holds.
+        \[
+                \Gamma \vljud t : \typeA
+                \quad \Longrightarrow \quad
+                \Gamma, x : \typeB \vljud t : \typeA
+        \]
+        where $x : \typeB$ is a fresh variable w.r.t. $\Gamma \vljud t :
+        \typeA$. Feel free to use the exchange rule (if necessary).
+\end{problem}
+
+Next, we saw that simply-typed $\lambda$-calculus also comes equipped with a
+really powerful equational system $(=_{\beta \eta})$. It has different
+applications, from being the barebones of operational semantics to allowing
+reasoning about categorical properties in a syntactic manner.  In this course
+we also saw how it can be used to prove equivalences between programs.  The
+equational system is described in Figure~\ref{fig:eq_lambda_calc}. Let us put
+it to work!
+
+\begin{figure}[h]
+\begin{minipage}{1\textwidth}
+        \begin{align*}
+                \pi_1 \pv{t}{s} =_{\beta \eta} t
+                \hspace{2.5cm}
+                &
+                t =_{\beta \eta} \ast \hspace{2.5cm} (\text{if } \Gamma \vljud t : 1) 
+                \hspace{2.5cm}
+                \\
+                \pi_2 \pv{t}{s} =_{\beta \eta} s 
+                \hspace{2.5cm}
+                &
+                \lambda x. \, t \> s =_{\beta \eta} t[s/x] 
+                \\
+                \pv{ \pi_1 \, t}{ \pi_2 \, t } =_{\beta \eta} t
+                \hspace{2.5cm}
+                &
+                \lambda x.  (t \> x) =_{\beta \eta} t
+        \end{align*}
+        %
+        \noindent\dotfill{}
+        %
+        \begin{align*}
+                \infer{t =_{\beta \eta} t}{}
+                \hspace{2.5cm}
+                \infer{s =_{\beta \eta} t}{t =_{\beta \eta} s}
+                \hspace{2.5cm}
+                \infer{t =_{\beta \eta} u}
+                {
+                        t =_{\beta \eta} s \qquad
+                        s =_{\beta \eta} u
+                }
+        \end{align*}
+        %
+        \begin{align*}
+          \infer{\pi_1 \, t =_{\beta \eta} \pi_1 \, s}{
+          t =_{\beta \eta} s} 
+        \hspace{2.5cm}
+          \infer{\pi_2 \, t =_{\beta \eta} \pi_2\, s}{
+          t =_{\beta \eta} s} 
+        \hspace{2.5cm}
+        \infer{ \pv{t}{u} =_{\beta \eta} \pv{s}{v} }{
+                          t =_{\beta \eta} s
+                          \qquad
+                          u =_{\beta \eta} v
+                  }
+        \end{align*}
+        %
+        \begin{align*}
+                \infer{ t \> u =_{\beta \eta} s \> v }{
+                          t =_{\beta \eta} s
+                          \qquad
+                          u =_{\beta \eta} v
+                  }
+                \hspace{2.5cm}
+                \infer {\lambda x. \> t =_{\beta \eta} \lambda x. \> s}{
+                        t =_{\beta \eta} s
+                }
+        \end{align*}
+        \begin{align*}
+                \infer{
+                        \pi \Gamma \vljud t =_{\beta \eta}  s
+                }{
+                        \Gamma \vljud t =_{\beta \eta} s
+                }
+                \hspace{2.5cm}
+                \infer{
+                        u[t/x] =_{\beta \eta} v[s/x]
+                }{
+                        u =_{\beta \eta} v \qquad t =_{\beta \eta} s
+                }
+        \end{align*}
+\end{minipage}
+\caption{Equational system of simply-typed $\lambda$-calculus.}
+\label{fig:eq_lambda_calc2}
+\end{figure}
+
+
+\begin{problem}
+        Prove that the following equations are hold.
+        \begin{itemize}
+                \item $\pi_1 \pv{\pi_1 \pv{x}{y}}{z}\ =_{\beta \eta}\ x$ 
+                \item $\Big ( \lambda y.\, \pv{\pi_2\ y}{\pi_1\ y} \Big )\>  \pv{a}{b} 
+                        =_{\beta \eta} \pv{b}{a}$
+                \item $\Big ( \lambda x.\, \pv{\pi_2\ x}{\pi_1\ x} \Big )\> 
+                      \Big ( \Big ( \lambda y.\, \pv{\pi_2\ y}{\pi_1\ y} \Big ) \> z \Big ) 
+                        =_{\beta \eta} z$
+                \item $\Big ( \lambda x. \, \lambda y. \, x \Big ) \, t \, s =_{\beta \eta} t$
+                        {\small (\underline{warning}: mind the captures) }
+                \item $\Big ( \lambda x. \, \lambda y. \, y \Big ) \, t \, s =_{\beta \eta} s$
+        \end{itemize}
+\end{problem}
+
+\begin{problem}
+        Prove the two implications below.
+        \begin{align*}
+                & \pi_1 \, t =_{\beta \eta} \pi_1 \, s
+                \> \text{ and } \> \pi_2 \, t =_{\beta \eta} \pi_2 \, s
+                \quad \Longrightarrow \quad t =_{\beta \eta} s
+                \\
+                & \lambda x. \, (\pi_1 \, t) =_{\beta \eta} \lambda x. \, (\pi_1 \, s)
+                \> \text{ and } \> 
+                \lambda x. \, (\pi_2 \, t) =_{\beta \eta} \lambda x. \, (\pi_2 \, s)
+                \quad \Longrightarrow \quad \lambda x. \, t =_{\beta \eta} \lambda x. \, s 
+        \end{align*}
+\end{problem}
+
+Whilst simply-typed $\lambda$-calculus is already quite powerful, the course
+also added disjunctive types into the mix. Not only such is useful to reason
+about conditionals, it also allows the further exploration of the synergistic
+connections between programming and logic. The introduction of disjunctive
+types followed analogous steps to before. Specifically we introduced an
+underlying logic (Figure~\ref{fig:log_disj}) and then the corresponding
+calculus (Figure~\ref{fig:calc_disj}).
+
+\begin{figure}[h]
+\begin{minipage}{1\textwidth}
+  \begin{flalign*}
+      \infer[\rulename{ass}]{\Gamma \vljud \typeA}{\typeA \in \Gamma} \hspace{2cm}
+      \infer[\rulename{trv}]{\Gamma \vljud  1}{}  \hspace{2cm}
+      \infer[\rulename{\pi_1}]{\Gamma \vljud \typeA}{\Gamma \vljud \typeA \times \typeB} \hspace{2cm}
+      \infer[\rulename{\pi_2}]{\Gamma \vljud \typeB}{\Gamma \vljud \typeA \times \typeB}
+  \end{flalign*}
+  \begin{flalign*}
+      \infer[\rulename{prd}]{\Gamma \vljud \typeA \times \typeB}
+      {\Gamma \vljud \typeA \qquad \Gamma \vljud \typeB} \hspace{2cm}
+      \infer[\rulename{cry}]{\Gamma \vljud \typeA \to \typeB}{\Gamma, \typeA \vljud  \typeB}
+      \hspace{2cm}
+      \infer[\rulename{app}]{\Gamma \vljud \typeB}
+      {\Gamma \vljud  \typeA \to \typeB \quad
+        \Gamma \vljud  \typeA}
+  \end{flalign*}
+  \noindent\dotfill{}
+  \begin{flalign*}
+          \infer[\rulename{inl}]{
+                \Gamma \vljud \typeA + \typeB
+          }{
+                \Gamma \vljud \typeA
+          }
+          \hspace{2cm}
+          \infer[\rulename{inr}]{
+                \Gamma \vljud \typeA + \typeB
+          }{
+                \Gamma \vljud \typeB
+          }
+  \end{flalign*}
+  \begin{flalign*}
+          \infer[\rulename{coprd}]{
+               \Gamma \vljud \typeC
+          }{
+            \Gamma \vljud \typeA + \typeB
+            \qquad
+            \Gamma,  \typeA \vljud \typeC
+            \qquad
+            \Gamma,  \typeB \vljud \typeC
+          }
+  \end{flalign*}
+\end{minipage}
+\caption{A Cartesian deductive system with disjunction.}
+\label{fig:log_disj}
+\end{figure}
+
+\begin{figure}[h]
+\begin{minipage}{1\textwidth}
+  \begin{flalign*}
+      \infer[\rulename{ass}]{\Gamma \vljud x : \typeA}{x :
+        \typeA \in \Gamma} \hspace{2cm}
+      \infer[\rulename{triv}]{\Gamma \vljud \ast : 1}{}  \hspace{1.5cm}
+      \infer[\rulename{\pi_1}]{\Gamma \vljud \pi_1 \, t : \typeA }
+      {\Gamma \vljud t: \typeA \times \typeB} \hspace{1.5cm}
+      \infer[\rulename{\pi_2}]{\Gamma \vljud \pi_2 \, t : \typeA }
+      {\Gamma \vljud t: \typeA \times \typeB} 
+  \end{flalign*}
+  \begin{flalign*}
+     \infer[\rulename{prd}]{\Gamma \vljud \langle t,s \rangle :
+        \typeA \times \typeB}
+      {\Gamma \vljud t: \typeA \qquad \Gamma \vljud s: \typeB} \hspace{2cm}
+      \infer[\rulename{cry}]{\Gamma \vljud \lambda x : \typeA . \, t : \typeA
+        \to \typeB}
+      {\Gamma, x : \typeA \vljud t : \typeB}
+    \end{flalign*}
+   \begin{flalign*}
+      \infer[\rulename{app}]{\Gamma \vljud t \, s : \typeB}
+      {\Gamma \vljud  t : \typeA \to \typeB \quad
+        \Gamma \vljud  s : \typeA}
+    \end{flalign*}
+  \noindent\dotfill{}
+
+  \begin{flalign*}
+          \infer[\rulename{inl}]{
+                  \Gamma \vljud \inl_{\typeB} \> t : \typeA + \typeB
+          }{
+                \Gamma \vljud t: \typeA
+          }
+          \hspace{1.5cm}
+          \infer[\rulename{inr}]{
+                  \Gamma \vljud \inr_{\typeA} \> t : \typeA + \typeB
+          }{
+                \Gamma \vljud t : \typeB
+          }
+  \end{flalign*}
+  \begin{flalign*}
+          \infer[\rulename{coprd}]{
+          \Gamma \vljud \mathrm{case} \> t \> \mathrm{ of }
+          \> \inl(x) \Rightarrow s ; \inr(y) \Rightarrow u : \typeC
+          }{
+            \Gamma \vljud t: \typeA + \typeB
+            \qquad
+            \Gamma, \, x : \typeA \vljud s: \typeC
+            \qquad
+            \Gamma, \, y : \typeB \vljud u : \typeC
+          }
+  \end{flalign*}
+
+\end{minipage}
+\caption{Simply-typed $\lambda$-calculus with disjunctive types.}
+\label{fig:calc_disj}
+\end{figure}
+
+\begin{problem}
+        Use the logical system from Figure~\ref{fig:log_disj} to deduce the
+        following judgements.
+
+  \begin{itemize}
+          \item $\typeA + \typeB \vljud \typeB + \typeA$ 
+          \item $\typeA \times (\typeB + \typeC) \vljud
+                \typeA \times \typeB + \typeA \times \typeC$
+          \item $\typeA \times \typeB + \typeA \times \typeC \vljud \typeA$
+          \item $\typeA \times \typeB + \typeA \times \typeC \vljud \typeB + \typeC$
+          \item $\typeA \times \typeB + \typeA \times \typeC \vljud
+                  \typeA \times (\typeB + \typeC)$
+  \end{itemize}        
+\end{problem}
+
+\begin{problem}
+        Use the derivation trees that you built in the previous problem to
+        obtain the corresponding $\lambda$-terms.
+\end{problem}
+
+The simply-typed $\lambda$-calculus with disjunctive types also enjoys a
+powerful equational system (Figure~\ref{fig:eq_calc_disj}) which, as with the
+previous equational system, can be used in diverse situations. Let us put this
+one to work as well!
+\begin{problem}
+        Prove that the following equations are hold.
+        \begin{flalign*}
+                \Big (\lambda x. \, \mathrm{case} \> x \> \mathrm{of} \>
+                \inl(y) \Rightarrow \inr (y) ;
+                \,
+                \inr(z) \Rightarrow \inl (z) \Big ) \> \inl(a)
+                =_{\beta \eta} \inr (a)
+                \\
+                \Big (\lambda x. \, \mathrm{case} \> x \> \mathrm{of} \>
+                \inl(y) \Rightarrow \inr (y) ;
+                \,
+                \inr(z) \Rightarrow \inl (z) \Big ) \> \inr(a)
+                =_{\beta \eta} \inl (a)
+        \end{flalign*}
+        What is this program doing? Does it remind you of anything from
+        previous courses?
+\end{problem}
+\begin{problem}
+        Prove the following implication.
+        \begin{flalign*}
+                \begin{cases}
+                        (\lambda x. \, t) \> \inl (y) =_{\beta \eta} 
+                        (\lambda x. \, s) \> \inl (y)
+                        \\
+                        (\lambda x. \, t) \> \inr (z) =_{\beta \eta}
+                        (\lambda x. \, s) \> \inr (z)
+                \end{cases}
+                \Longrightarrow
+                \lambda x. \, t =_{\beta \eta} \lambda x. \, s
+        \end{flalign*}
+        Note what the implication states: a $\lambda$-abstraction that receives
+        inputs of a disjunctive type is determined by what it does to inputs
+        `from the left and from the right'.
+\end{problem}
+
+\begin{figure}
+\begin{minipage}{1\textwidth}
+        \begin{align*}
+                \pi_1 \pv{t}{s} =_{\beta \eta} t
+                \hspace{2.5cm}
+                &
+                t =_{\beta \eta} \ast \hspace{2.5cm} (\text{if } t : 1) 
+                \hspace{2.5cm}
+                \\
+                \pi_2 \pv{t}{s} =_{\beta \eta} s 
+                \hspace{2.5cm}
+                &
+                \lambda x. \, t \> s =_{\beta \eta} t[s/x] 
+                \\
+                \pv{ \pi_1 \, t}{ \pi_2 \, t } =_{\beta \eta} t
+                \hspace{2.5cm}
+                &
+                \lambda x. \, (t \, x) =_{\beta \eta} t
+        \end{align*}
+
+        \noindent\dotfill{}
+        \begin{flalign*}
+                \mathrm{case} \> \inl \> t \> \mathrm{of} \>
+                \inl(x) \Rightarrow s;  \inr(y) \Rightarrow u
+                & =_{\beta \eta} s[t/x]
+                \\
+                \mathrm{case} \> \inr \> t \> \mathrm{of} \>
+                \inl(x) \Rightarrow s;  \inr(y) \Rightarrow u
+                & =_{\beta \eta} u[t/y]
+        \end{flalign*}
+        \vspace{-1.2cm}
+        \begin{flalign*}
+                \mathrm{case} \> x \> \mathrm{of} \>
+                \inl(y) \Rightarrow t[\inl(y)/x]; 
+                \inr(z) \Rightarrow t[\inr(z)/x]
+                & =_{\beta \eta} t
+        \end{flalign*}
+
+
+        \noindent\dotfill{}
+        %
+
+        \begin{align*}
+                \infer{t =_{\beta \eta} t}{}
+                \hspace{2.5cm}
+                \infer{s =_{\beta \eta} t}{t =_{\beta \eta} s}
+                \hspace{2.5cm}
+                \infer{t =_{\beta \eta} u}
+                {
+                        t =_{\beta \eta} s \qquad
+                        s =_{\beta \eta} u
+                }
+        \end{align*}
+        %
+        \begin{align*}
+          \infer{\pi_1 \, t =_{\beta \eta} \pi_1 \, s}{
+          t =_{\beta \eta} s} 
+        \hspace{2.5cm}
+          \infer{\pi_2 \, t =_{\beta \eta} \pi_2\, s}{
+          t =_{\beta \eta} s} 
+        \hspace{2.5cm}
+        \infer{ \pv{t}{u} =_{\beta \eta} \pv{s}{v} }{
+                          t =_{\beta \eta} s
+                          \qquad
+                          u =_{\beta \eta} v
+                  }
+        \end{align*}
+        %
+        \begin{align*}
+                \infer{ t \> u =_{\beta \eta} s \> v }{
+                          t =_{\beta \eta} s
+                          \qquad
+                          u =_{\beta \eta} v
+                  }
+                \hspace{2.5cm}
+                \infer {\lambda x. \> t =_{\beta \eta} \lambda x. \> s}{
+                        t =_{\beta \eta} s
+                }
+        \end{align*}
+        \begin{align*}
+                \infer{
+                        \pi \Gamma \vljud t =_{\beta \eta}  s
+                }{
+                        \Gamma \vljud t =_{\beta \eta} s
+                }
+                \hspace{2.5cm}
+                \infer{
+                        u[t/x] =_{\beta \eta} v[s/x]
+                }{
+                        u =_{\beta \eta} v \qquad t =_{\beta \eta} s
+                }
+        \end{align*}
+
+        \noindent\dotfill{}
+        \begin{align*}
+                \infer{
+                        \inl\ t =_{\beta \eta}\ \inl\ s
+                }{
+                        t =_{\beta \eta} s
+                }
+                \hspace{2.5cm}
+                \infer{
+                        \inr\ t =_{\beta \eta}\ \inr\ s
+                }{
+                        t =_{\beta \eta} s
+                }
+         \end{align*}
+         \begin{align*}
+                \infer{
+                        \mathrm{case} \> t \> \mathrm{of} \>
+                        \inl(x) \Rightarrow u;  \inr(y) \Rightarrow w
+                        =_{\beta \eta}
+                        \mathrm{case} \> s \> \mathrm{of} \>
+                        \inl(x) \Rightarrow v;  \inr(y) \Rightarrow r
+                }
+                {
+                       t =_{\beta \eta} s \qquad
+                       u =_{\beta \eta} v \qquad
+                       w =_{\beta \eta} r 
+                }
+        \end{align*}
+\end{minipage}
+\caption{Equational system of simply-typed $\lambda$-calculus with disjunctive types.}
+\label{fig:eq_calc_disj}
+\end{figure}
+
+\section{Semantics of simply-typed $\lambda$-calculus}
+
+
+\begin{figure}
+\begin{minipage}{1\textwidth}
+   \begin{flalign*}
+      \infer[]{\sem{\Gamma \vljud x_i : \typeA} = \pi_i}{x_i :
+        \typeA \in \Gamma} \hspace{1.2cm}
+      \infer[]{\sem{\Gamma \vljud \ast : 1}\ =\ !}{}  \hspace{1.2cm}
+      \infer[]{\sem{\Gamma \vljud \pi_1 t : \typeA} = \pi_1 \comp f }
+      {\sem{\Gamma \vljud t : \typeA \times \typeB} = f}
+  \end{flalign*}
+  \begin{flalign*}
+      \infer[]{\sem{\Gamma \vljud \langle t,s \rangle :
+        \typeA \times \typeB}\ = \pv{f}{g}}
+    {\sem{\Gamma \vljud t: \typeA}\ = f \qquad \sem{\Gamma \vljud s: \typeB}\ = g}
+    \hspace{0.3cm}
+     \infer[]{\sem{\Gamma \vljud \lambda x : \typeA . \, t : \typeA
+        \to \typeB}\ = \lambda f}
+      {\sem{\Gamma, x : \typeA \vljud t : \typeB}\ = f}
+    \end{flalign*}
+   \begin{flalign*}
+   \infer[]{\sem{\Gamma \vljud t \, s : \typeB}\ = \mathrm{app} \comp \pv{f}{g}}
+      {\sem{\Gamma \vljud  t : \typeA \to \typeB}\ = f \quad
+        \sem{\Gamma \vljud  s : \typeA}\ = g}
+    \end{flalign*}
+
+  \vspace{-0.4cm}
+
+  \noindent\dotfill{}
+
+  \vspace{-0.5cm}
+
+    \begin{flalign*}
+          \infer[]{
+                  \sem{\Gamma \vljud \inl_{\typeB} \> t : \typeA + \typeB}\ =
+                  i_1 \comp f
+          }{
+                  \sem{\Gamma \vljud t: \typeA}\ = f 
+          }
+          \hspace{1.5cm}
+          \infer[]{
+                  \sem{\Gamma \vljud \inr_{\typeA} \> t : \typeA + \typeB}\ =
+                  i_2 \comp f
+          }{
+                  \sem{\Gamma \vljud t : \typeB}\ = f
+          }
+  \end{flalign*}
+  \begin{flalign*}
+          \infer[]{
+          \sem{\Gamma \vljud \mathrm{case} \> t \> \mathrm{ of }
+          \> \inl(x) \Rightarrow s ; \inr(y) \Rightarrow u : \typeC}\
+  = [g,h] \comp \mathrm{dist} \comp \pv{\id}{f}
+          }{
+            \sem{\Gamma \vljud t: \typeA + \typeB}\ = f
+            \qquad
+            \sem{\Gamma, \, x : \typeA \vljud s: \typeC}\ = g
+            \qquad
+            \sem{\Gamma, \, y : \typeB \vljud u : \typeC}\ = h
+          }
+  \end{flalign*}
+
+
+\end{minipage}
+\caption{Functional semantics of simply-typed $\lambda$-calculus}
+\label{fig:sem_stlc}
+\end{figure}
+\begin{problem}
+        Unravelling
+        \begin{itemize}
+                \item $\sem{x,y,z \vljud \pi_1 \pv{\pi_1 \pv{x}{y}}{z}}(a,b,c) = \dots$ 
+                \item $\sem{x \vljud \pv{\pi_2 \, x}{\pi_1 \, x}}(a,b) = \dots$
+                \item $\sem{x \vljud \Big (\lambda y. \, \pv{x}{y} \Big ) \, x } (a) = \dots$
+        \end{itemize}
+\end{problem}
+
+\begin{problem}
+        Equalities
+        \begin{itemize}
+                \item  $\sem{\pi_1 \, \pv{t}{s}} = \sem{t}$
+                \item $\sem{\pv{\pi_1 \, t}{\pi_2 \, t}} = \sem{t}$
+                \item $\sem{x : 1 \vljud \pi_2 \pv{x}{\ast} } = \id$
+        \end{itemize}
+\end{problem}
+
+
+
+\begin{problem}
+        \[
+                \xymatrix@C=40pt{
+                        0 \ar[r]^{\leq} \ar@(ul,dl)[]_{\leq} & 1 \ar@(ur,dr)[]^{\leq} 
+                }
+        \]
+        Show that it has final object and binary products
+
+        Show that it has exponentials
+\end{problem}
+
+\begin{problem}
+        What is the meaning of $\sem{\Gamma \vljud t : \typeA}$ ?
+
+        Show that $b \to c \leq (a \to b) \to (a \to c)$
+
+        Show that $1 \leq a \to a$
+
+        Show that $x \leq y \to x$
+\end{problem}
+        \begin{definition}
+                A set $X$ is called pointed if it has
+                a distinguished element $0_X$
+        \end{definition}
+
+        \begin{definition}
+                A function of pointed sets $f : X \to Y$ is
+                strict if $f(0_X) = 0_Y$
+        \end{definition}
+\newcommand{\PSet}{\catfont{PSet}}
+
+        $\PSet$ denotes the category of pointed sets and strict maps
+
+        $\PSet$ is monoidal. $A \otimes B$ is set of pairs $a \otimes b$ with
+        equations
+        \[
+                0_A \otimes b = b \otimes 0_B = 0_{A \otimes B}
+        \]
+
+\begin{problem}
+        Show that it has exponentials \dots
+
+        \dots\ and projections $\pi_1 : A \otimes B \to A$ and $\pi_2 : A
+        \otimes B \to B$
+
+        Show that if $\sem{\mathrm{div}}\ = x \mapsto 0$ then we have
+        \[
+                \pi_2\ (\mathrm{div} \otimes t)\ =\ \mathrm{div}
+        \]
+\end{problem}
+
+\begin{problem}
+        Semantics linear disjunctive types
+\end{problem}
+\newcommand{\typeI}{\typefont{I}}
+
+\begin{figure}[h]
+\begin{minipage}{1\textwidth}
+  \begin{flalign*}
+      \hspace{-0.2cm}
+      \infer[]{\sem{x : \typeA \vljud x : \typeA} = \id}{} \hspace{1cm}
+      \infer[]{\sem{(-) \vljud  \ast : \typeI} = \id}{} 
+  \end{flalign*}
+  \begin{flalign*}
+      \hspace{-0.2cm}
+      \infer{\sem{\Gamma,\Delta \vljud t \text{ to } \ast.\  \, s: \typeA}\ = i \comp (f \otimes g)}{
+              \sem{\Gamma \vljud t : \typeI}\ = f \qquad
+              \sem{\Delta \vljud s : \typeA}\ = g
+      }
+      \hspace{1cm}
+      \infer[]{\sem{\Gamma,\Delta \vljud t \otimes s : \typeA \otimes \typeB}\ = f \otimes g}
+      {\sem{\Gamma \vljud t : \typeA}\ = f 
+      \qquad \sem{\Delta \vljud s: \typeB}\ = g
+      }
+  \end{flalign*}
+  \begin{flalign*}
+      \infer{
+              \sem{\Gamma, \Delta \vljud 
+              \text{pm } t \text{ to } x \otimes y.\, s: \typeC}\ = 
+              g \comp \mathrm{sw} \comp (f \otimes \id)
+      }{
+              \sem{\Gamma \vljud t : \typeA \otimes \typeB}\ = f
+              \qquad
+              \sem{\Delta, x: \typeA, y: \typeB \vljud s: \typeC}\ = g
+      }
+  \end{flalign*}
+  \begin{flalign*}
+      \hspace{-0.2cm}
+      \infer[]{\sem{\Gamma \vljud \lambda x : \typeA.\ t : \typeA \multimap \typeB}\ = \lambda f}
+      {
+              \sem{\Gamma, x: \typeA \vljud t : \typeB}\ = f
+      }
+      \hspace{1cm}
+      \infer[]{
+              \sem{\Gamma,\Delta \vljud t \, s : \typeB}\ = \mathrm{app} \comp (f \otimes g)
+      }
+      {
+              \sem{\Gamma \vljud t: \typeA \multimap \typeB}\ = f  \quad
+              \sem{\Delta \vljud s:  \typeA}\ = g }
+  \end{flalign*}
+\end{minipage}
+\caption{Categorical semantics of simply-typed $\lambda$-calculus}
+\label{fig:sem_lin}
+\end{figure}
+
+      
 \end{document}
 
 
