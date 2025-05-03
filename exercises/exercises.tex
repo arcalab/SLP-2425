@@ -1558,6 +1558,7 @@ sense and is central. But what happens if we choose another Cartesian-closed
 category?
 
 \begin{problem}
+        \label{prob:boole}
         Consider the Boolean category which is described by the following graph.
         \[
                 \xymatrix@C=40pt{
@@ -1589,42 +1590,22 @@ input and output) or perhaps something beyond that?
         disjunctive types. Can you extend it to include such types? Does the
         notion of Cartesian-closed category suffice?
 \end{problem}
-        \begin{definition}
-                A set $X$ is called pointed if it has
-                a distinguished element $0_X$
-        \end{definition}
 
-        \begin{definition}
-                A function of pointed sets $f : X \to Y$ is
-                strict if $f(0_X) = 0_Y$
-        \end{definition}
-\newcommand{\PSet}{\catfont{PSet}}
+\section{From Cartesian to linear}
 
-        $\PSet$ denotes the category of pointed sets and strict maps
-
-        $\PSet$ is monoidal. $A \otimes B$ is set of pairs $a \otimes b$ with
-        equations
-        \[
-                0_A \otimes b = b \otimes 0_B = 0_{A \otimes B}
-        \]
-
-\begin{problem}
-        Show that it has exponentials \dots
-
-        \dots\ and projections $\pi_1 : A \otimes B \to A$ and $\pi_2 : A
-        \otimes B \to B$
-
-        Show that if $\sem{\mathrm{div}}\ = x \mapsto 0$ then we have
-        \[
-                \pi_2\ (\mathrm{div} \otimes t)\ =\ \mathrm{div}
-        \]
-\end{problem}
-
-\begin{problem}
-        Semantics linear disjunctive types
-\end{problem}
+Alright, we are almost at the end of the course. What we observed lastly was
+that cartesianism is inappropriate for many common or emergent computational
+paradigms. This includes for example the by now famous quantum and bayesian
+instances. But even in classical concepts one observes this phenomenon. A prime
+example is the distinction between lazy and strict evaluation: laziness is more
+often associated with cartesianism whilst strictness requires a more
+`forgiving' structure (recall your lectures). The situation led us 
+to a more general, less structured notion of $\lambda$-calculus --
+termed \emph{linear} $\lambda$-calculus in the lectures and whose general idea
+is that variables cannot be discarded nor duplicated. We also saw that the
+ideal semantic framework for this new calculus is that of a monoidal-closed
+category (as described in Figure~\ref{fig:sem_lin}). 
 \newcommand{\typeI}{\typefont{I}}
-
 \begin{figure}[h]
 \begin{minipage}{1\textwidth}
   \begin{flalign*}
@@ -1670,10 +1651,54 @@ input and output) or perhaps something beyond that?
               \sem{\Delta \vljud s:  \typeA}\ = g }
   \end{flalign*}
 \end{minipage}
-\caption{Categorical semantics of simply-typed $\lambda$-calculus}
+\caption{Categorical semantics of linear $\lambda$-calculus}
 \label{fig:sem_lin}
 \end{figure}
 
+\begin{problem}
+        Show that every cartesian-closed category is also monoidal-closed.
+\end{problem}
+
+\begin{problem}
+        Consider the category of real numbers with infinity and whose morphisms
+        are given by the $\leq$ relation. Show that this category is
+        monoidal-closed when the tensor is the addition. Here is a hint: resort
+        to suprema.
+\end{problem}
+
+\begin{problem}
+Reflect now on the meaning of $\sem{\Gamma \vljud t : \typeA}$ in this category
+of real numbers. If Problem~\eqref{prob:boole} yields a language for reasoning
+about Boolean algebra, what do we now have?
+\end{problem}
+
+\newcommand{\PSet}{\catfont{PSet}}
+\begin{problem}
+        Let $\PSet$ be the category of pointed sets and strict functions. Given
+        two pointed sets we define their tensor $A \otimes B$ as the set of
+        pairs $a \otimes b$ ($a \in A$, $b \in B$) subjected to the equations,
+        \[
+                0_A \otimes b = b \otimes 0_B = 0_{A \otimes B}
+        \]
+        Show that with such structure $\PSet$ becomes monoidal-closed.
+\end{problem}
+
+\begin{problem}
+        Show that $\PSet$ has projection maps $\pi_1 : A \otimes B \to A$ and
+        $\pi_2 : A \otimes B \to B$. Moreover show that if
+        $\sem{\mathrm{div}}\ = x \mapsto 0$ then we have
+        \[
+                \sem{ \pi_2\ (\mathrm{div} \otimes t) } = \sem{ \mathrm{div} }
+        \]
+        (precisely as expected from strict evaluation!)
+\end{problem}
+
+\begin{problem}
+        The categorical semantics in Figure~\ref{fig:sem_stlc} does not include
+        disjunctive types. Can you extend it to include such types? Does the
+        notion of monoidal-closed category suffice? Be careful to not violate
+        the principle that variables cannot be discarded nor copied.
+\end{problem}
       
 \end{document}
 
