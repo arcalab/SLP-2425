@@ -1122,9 +1122,11 @@ it to work!
 
 
 \begin{problem}
+        \label{probl}
         Prove that the following equations are hold.
         \begin{itemize}
                 \item $\pi_1 \pv{\pi_1 \pv{x}{y}}{z}\ =_{\beta \eta}\ x$ 
+                \item $\Big ( \lambda y. \, \pv{x}{y} \Big ) \> x =_{\beta \eta} \pv{x}{x}$
                 \item $\Big ( \lambda y.\, \pv{\pi_2\ y}{\pi_1\ y} \Big )\>  \pv{a}{b} 
                         =_{\beta \eta} \pv{b}{a}$
                 \item $\Big ( \lambda x.\, \pv{\pi_2\ x}{\pi_1\ x} \Big )\> 
@@ -1450,6 +1452,18 @@ one to work as well!
 
 \section{Semantics of simply-typed $\lambda$-calculus}
 
+We now focus on denotational semantics for the simply-typed $\lambda$-calculus.
+Recall why such semantics are important: among other things they connect the
+language to a mathematical model (which can then be used to derive further
+intuitions and to deduce further properties about our programs). Of course this
+then leads to the standing question \emph{``which mathematical model should we
+connect our language to?"}. Following the tradition of `program calculus', in
+the lectures we chose the mathematical model of sets and functions. Nice!! This
+makes our intuitions about $\lambda$-terms as \emph{functional} programs very
+precise. Can we do better? In the words of B. Obama \emph{``yes, we can"}.  The
+idea is of course to involve category theory. It will allow us to vastly
+generalise our functional semantics to any Cartesian-closed category (as the
+choice of mathematical model), as described in Figure~\ref{fig:sem_stlc}.
 
 \begin{figure}
 \begin{minipage}{1\textwidth}
@@ -1475,85 +1489,105 @@ one to work as well!
         \sem{\Gamma \vljud  s : \typeA}\ = g}
     \end{flalign*}
 
-  \vspace{-0.4cm}
-
-  \noindent\dotfill{}
-
-  \vspace{-0.5cm}
-
-    \begin{flalign*}
-          \infer[]{
-                  \sem{\Gamma \vljud \inl_{\typeB} \> t : \typeA + \typeB}\ =
-                  i_1 \comp f
-          }{
-                  \sem{\Gamma \vljud t: \typeA}\ = f 
-          }
-          \hspace{1.5cm}
-          \infer[]{
-                  \sem{\Gamma \vljud \inr_{\typeA} \> t : \typeA + \typeB}\ =
-                  i_2 \comp f
-          }{
-                  \sem{\Gamma \vljud t : \typeB}\ = f
-          }
-  \end{flalign*}
-  \begin{flalign*}
-          \infer[]{
-          \sem{\Gamma \vljud \mathrm{case} \> t \> \mathrm{ of }
-          \> \inl(x) \Rightarrow s ; \inr(y) \Rightarrow u : \typeC}\
-  = [g,h] \comp \mathrm{dist} \comp \pv{\id}{f}
-          }{
-            \sem{\Gamma \vljud t: \typeA + \typeB}\ = f
-            \qquad
-            \sem{\Gamma, \, x : \typeA \vljud s: \typeC}\ = g
-            \qquad
-            \sem{\Gamma, \, y : \typeB \vljud u : \typeC}\ = h
-          }
-  \end{flalign*}
-
-
+%  \vspace{-0.4cm}
+%
+%  \noindent\dotfill{}
+%
+%  \vspace{-0.5cm}
+%
+%    \begin{flalign*}
+%          \infer[]{
+%                  \sem{\Gamma \vljud \inl_{\typeB} \> t : \typeA + \typeB}\ =
+%                  i_1 \comp f
+%          }{
+%                  \sem{\Gamma \vljud t: \typeA}\ = f 
+%          }
+%          \hspace{1.5cm}
+%          \infer[]{
+%                  \sem{\Gamma \vljud \inr_{\typeA} \> t : \typeA + \typeB}\ =
+%                  i_2 \comp f
+%          }{
+%                  \sem{\Gamma \vljud t : \typeB}\ = f
+%          }
+%  \end{flalign*}
+%  \begin{flalign*}
+%          \infer[]{
+%          \sem{\Gamma \vljud \mathrm{case} \> t \> \mathrm{ of }
+%          \> \inl(x) \Rightarrow s ; \inr(y) \Rightarrow u : \typeC}\
+%  = [g,h] \comp \mathrm{dist} \comp \pv{\id}{f}
+%          }{
+%            \sem{\Gamma \vljud t: \typeA + \typeB}\ = f
+%            \qquad
+%            \sem{\Gamma, \, x : \typeA \vljud s: \typeC}\ = g
+%            \qquad
+%            \sem{\Gamma, \, y : \typeB \vljud u : \typeC}\ = h
+%          }
+%  \end{flalign*}
 \end{minipage}
-\caption{Functional semantics of simply-typed $\lambda$-calculus}
+\caption{Semantics of simply-typed $\lambda$-calculus in a Cartesian-closed category.}
 \label{fig:sem_stlc}
 \end{figure}
+
 \begin{problem}
-        Unravelling
+        Show that the category $\CSet$ of sets and functions is
+        Cartesian-closed, \ie\ that it has a final object, binary products, and
+        exponentials.
+\end{problem}
+\begin{problem}
+        Use the semantics in $\CSet$ to calculate the outputs of the programs
+        below. Compare the results obtained here against results obtained in
+        Problem~\eqref{probl}. What did you conclude?
         \begin{itemize}
                 \item $\sem{x,y,z \vljud \pi_1 \pv{\pi_1 \pv{x}{y}}{z}}(a,b,c) = \dots$ 
-                \item $\sem{x \vljud \pv{\pi_2 \, x}{\pi_1 \, x}}(a,b) = \dots$
+                \item $\sem{x \vljud \pv{\pi_2 \, x}{\pi_1 \, x}}(a_1,a_2) = \dots$
                 \item $\sem{x \vljud \Big (\lambda y. \, \pv{x}{y} \Big ) \, x } (a) = \dots$
         \end{itemize}
 \end{problem}
 
 \begin{problem}
-        Equalities
+        Prove that the following equations hold.
         \begin{itemize}
                 \item  $\sem{\pi_1 \, \pv{t}{s}} = \sem{t}$
                 \item $\sem{\pv{\pi_1 \, t}{\pi_2 \, t}} = \sem{t}$
-                \item $\sem{x : 1 \vljud \pi_2 \pv{x}{\ast} } = \id$
+                \item $\sem{x : 1 \vljud \pi_2 \pv{x}{\ast} } = \sem{x : 1 \vljud x}$
         \end{itemize}
 \end{problem}
 
-
+In the two previous problems the concept of `program output' makes complete
+sense and is central. But what happens if we choose another Cartesian-closed
+category?
 
 \begin{problem}
+        Consider the Boolean category which is described by the following graph.
         \[
                 \xymatrix@C=40pt{
                         0 \ar[r]^{\leq} \ar@(ul,dl)[]_{\leq} & 1 \ar@(ur,dr)[]^{\leq} 
                 }
         \]
-        Show that it has final object and binary products
+        Show that it has a final object, binary products, and exponentials.
+        Here is a hint: resort to suprema.
+\end{problem}
 
-        Show that it has exponentials
+Reflect now on the meaning of $\sem{\Gamma \vljud t : \typeA}$ in the Boolean
+category. What did you conclude? Are thus $\lambda$-terms merely programs (with
+input and output) or perhaps something beyond that?
+
+\begin{problem}
+        Use $\lambda$-calculus to prove the following well-known inequalities
+        in Boolean algebra.
+        \begin{itemize}
+                \item $1 \leq a \to a$
+                \item $x \leq y \to x$
+                \item $b \to c \leq (a \to b) \to (a \to c)$
+
+        \end{itemize}
 \end{problem}
 
 \begin{problem}
-        What is the meaning of $\sem{\Gamma \vljud t : \typeA}$ ?
-
-        Show that $b \to c \leq (a \to b) \to (a \to c)$
-
-        Show that $1 \leq a \to a$
-
-        Show that $x \leq y \to x$
+        We might as well address now the huge elephant in the room. The
+        categorical semantics in Figure~\ref{fig:sem_stlc} does not include
+        disjunctive types. Can you extend it to include such types? Does the
+        notion of Cartesian-closed category suffice?
 \end{problem}
         \begin{definition}
                 A set $X$ is called pointed if it has
