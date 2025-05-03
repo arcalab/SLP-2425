@@ -46,7 +46,7 @@ Learning outcomes:
 
 # Assessment
 
-Two tests (24 Mar and 26 May)
+Two tests (24 Mar and 20 May)
  
 # Contacts
 
